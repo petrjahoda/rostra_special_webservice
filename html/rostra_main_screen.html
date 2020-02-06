@@ -11,41 +11,61 @@
 </script>
 
 <div id="inputs" style="margin: auto; width: 50%;padding: 10px">
-    <div class="row" style="padding: 10px;padding-top: 30px">
-        <p>Operátor</p>
-        <input class="text-center" type="text" data-role="input" data-prepend="<span class='mif-user'></span>"
-               placeholder="Zadejte prosím své osobní číslo" data-autocomplete="0456 (Petr Jahoda), 1234567890 (Karel Veliky)">
+    <div class="row" style="padding: 5px;padding-top: 30px">
+        <div class="cell-9">
+            <input type="text" data-role="input" data-prepend="<span class='mif-user'></span>"
+                   placeholder="Zadejte prosím své osobní číslo"
+                   data-autocomplete="0456 (Petr Jahoda), 1234567890 (Karel Veliky)">
+        </div>
+        <div class="cell-3">
+            <a class="button" href="search_user" style="width: 150px"
+               role="button">Najít</a>
+
+        </div>
     </div>
-    <a class="button small" href="search_user" style="width: 150px;left:50%;transform: translate(-50%)" role="button">Najít</a>
-    <div class="row" style="padding: 10px;padding-top: 20px">
-        <p>Zakázka a operace</p>
-        <input type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>"
-               placeholder="Zadejte prosím číslo výrobního příkazu">
+    <div class="row" style="padding: 5px">
+        <div class="cell-9">
+            <input type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>"
+                   placeholder="Zadejte prosím číslo výrobního příkazu">
+        </div>
+        <div class="cell-3">
+            <a class="button" href="search_order" style="width: 150px" role="button">Najít</a>
+        </div>
     </div>
-    <a class="button small" href="search_order" style="width: 150px;left:50%;transform: translate(-50%)" role="button">Najít</a>
-    <div class="row" style="padding: 10px">
-        <input type="text" data-role="input" data-prepend="<span class='mif-lines'></span>"
-               placeholder="Vyberte prosím číslo operace" data-autocomplete="Test1, Test 2, Test 3">
+
+    <div class="row" style="padding: 5px">
+        <div class="cell-9">
+            <input type="text" data-role="input" data-prepend="<span class='mif-lines'></span>"
+                   placeholder="Vyberte prosím číslo operace" data-autocomplete="Test1, Test 2, Test 3">
+        </div>
     </div>
-    <div class="row" style="padding: 10px;padding-top: 20px">
-        <p>Zdroj a pracoviště</p>
-        <input type="text" data-role="input" data-prepend="<span class='mif-home'></span>"
-               placeholder="Zadejte prosím číslo zdroje">
+    <div class="row" style="padding: 5px">
+        <div class="cell-9">
+            <input type="text" data-role="input" data-prepend="<span class='mif-home'></span>"
+                   placeholder="Zadejte prosím číslo zdroje">
+        </div>
+        <div class="cell-3">
+            <a class="button" href="search_source" style="width: 150px"
+               role="button">Najít</a>
+        </div>
     </div>
-    <a class="button small" href="search_source" style="width: 150px;left:50%;transform: translate(-50%)" role="button">Najít</a>
-    <div class="row" style="padding: 10px">
-        <input type="text" data-role="input" data-prepend="<span class='mif-bookmark'></span>"
-               placeholder="Vyberte prosím pracoviště" data-autocomplete="Pracoviste1, Pracoviste 2">
+    <div class="row" style="padding: 5px">
+        <div class="cell-9">
+            <input type="text" data-role="input" data-prepend="<span class='mif-bookmark'></span>"
+                   placeholder="Vyberte prosím pracoviště" data-autocomplete="Pracoviste1, Pracoviste 2">
+        </div>
     </div>
 </div>
 
-<div id="buttons" style="margin:0 auto;display:inline-block;left:50%;transform: translate(-50%);margin-top: 30px">
-    <a class="button success large drop-shadow" href="start_order" style="width: 150px;margin-right: 20px;" role="button">Začátek</a>
+<div id="buttons" style="margin:0 auto;display:inline-block;left:50%;transform: translate(-50%);margin-top: 50px">
+    <a class="button success large drop-shadow" href="start_order" style="width: 150px;margin-right: 20px;"
+       role="button">Začátek</a>
     <a class="button alert large drop-shadow disabled" href="end_order" style="width: 150px" role="button">Konec</a>
-    <a class="button primary large drop-shadow disabled" href="transfer_order" style="width: 150px;margin-left: 20px" role="button">Přenos</a>
+    <a class="button primary large drop-shadow disabled" href="transfer_order" style="width: 150px;margin-left: 20px"
+       role="button">Přenos</a>
 </div>
 
-<div id="ordertable" style="padding: 30px">
+<div id="ordertable" style="padding: 50px">
     <table class="table">
         <thead>
         <tr>
