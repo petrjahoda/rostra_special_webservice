@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="../css/metro-all.css">
+<link rel="stylesheet" href="../css/metro-icons.css">
+<script src="../js/metro.min.js"></script>
+<script type="text/javascript">
+    const time = new EventSource('/time');
+    time.addEventListener('time', () => {
+        document.getElementById("time").innerHTML = event.data;
+
+    }, false);
+</script>
+
+<div id="inputs" style="margin: auto; width: 50%;padding: 10px">
+    <div class="row" style="padding: 10px;padding-top: 30px">
+        <p>Operátor</p>
+        <input class="text-center" type="text" data-role="input" data-prepend="<span class='mif-user'></span>"
+               placeholder="Zadejte prosím své osobní číslo" data-autocomplete="0456 (Petr Jahoda), 1234567890 (Karel Veliky)">
+    </div>
+    <a class="button small" href="search_user" style="width: 150px;left:50%;transform: translate(-50%)" role="button">Najít</a>
+    <div class="row" style="padding: 10px;padding-top: 20px">
+        <p>Zakázka a operace</p>
+        <input type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>"
+               placeholder="Zadejte prosím číslo výrobního příkazu">
+    </div>
+    <a class="button small" href="search_order" style="width: 150px;left:50%;transform: translate(-50%)" role="button">Najít</a>
+    <div class="row" style="padding: 10px">
+        <input type="text" data-role="input" data-prepend="<span class='mif-lines'></span>"
+               placeholder="Vyberte prosím číslo operace" data-autocomplete="Test1, Test 2, Test 3">
+    </div>
+    <div class="row" style="padding: 10px;padding-top: 20px">
+        <p>Zdroj a pracoviště</p>
+        <input type="text" data-role="input" data-prepend="<span class='mif-home'></span>"
+               placeholder="Zadejte prosím číslo zdroje">
+    </div>
+    <a class="button small" href="search_source" style="width: 150px;left:50%;transform: translate(-50%)" role="button">Najít</a>
+    <div class="row" style="padding: 10px">
+        <input type="text" data-role="input" data-prepend="<span class='mif-bookmark'></span>"
+               placeholder="Vyberte prosím pracoviště" data-autocomplete="Pracoviste1, Pracoviste 2">
+    </div>
+</div>
+
+<div id="buttons" style="margin:0 auto;display:inline-block;left:50%;transform: translate(-50%);margin-top: 30px">
+    <a class="button success large drop-shadow" href="start_order" style="width: 150px;margin-right: 20px;" role="button">Začátek</a>
+    <a class="button alert large drop-shadow disabled" href="end_order" style="width: 150px" role="button">Konec</a>
+    <a class="button primary large drop-shadow disabled" href="transfer_order" style="width: 150px;margin-left: 20px" role="button">Přenos</a>
+</div>
+
+<div id="ordertable" style="padding: 30px">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Typ</th>
+            <th>Zakázka</th>
+            <th>Pracoviště</th>
+            <th>Zahájení</th>
+            <th>Ok</th>
+            <th>Nok</th>
+            <th>Přeneseno</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>C</td>
+            <td>VP-12345</td>
+            <td>CNC-23</td>
+            <td>213</td>
+            <td>2</td>
+            <td>0</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div id="time" class="text-leader"
+     style="position:absolute;font-size: 1.5vw;font-weight: 300;bottom:1%;left:1.5%">
+</div>
+<div class="text"
+     style="position:absolute;font-size: 1vw;font-weight: 100;bottom:2%;right:1%">
+    {{.Version}}
+</div>
+<div class="text-leader"
+     style="position:absolute;font-size: 1.5vw;font-weight: 500;bottom:1%;left:50%;transform: translate(-50%);">
+    www.zapsi.eu
+</div>
+

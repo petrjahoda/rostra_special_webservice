@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="../css/metro-all.css">
+<link rel="stylesheet" href="../css/metro-icons.css">
+<script src="../js/metro.min.js"></script>
+<script type="text/javascript">
+    const time = new EventSource('/time');
+    time.addEventListener('time', () => {
+        document.getElementById("time").innerHTML = event.data;
+
+    }, false);
+</script>
+
+START ORDER
+
+
+<div id="time" class="text-leader"
+     style="position:absolute;font-size: 1.5vw;font-weight: 300;bottom:1%;left:1.5%">
+</div>
+<div class="text"
+     style="position:absolute;font-size: 1vw;font-weight: 100;bottom:2%;right:1%">
+    {{.Version}}
+</div>
+<div class="text-leader"
+     style="position:absolute;font-size: 1.5vw;font-weight: 500;bottom:1%;left:50%;transform: translate(-50%);">
+    www.zapsi.eu
+</div>
+
