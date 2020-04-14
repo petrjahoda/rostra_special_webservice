@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const version = "2020.1.2.11"
+const version = "2020.2.1.14"
 const deleteLogsAfter = 240 * time.Hour
 
 func main() {
@@ -14,15 +14,15 @@ func main() {
 	CreateConfigIfNotExists()
 	LoadSettingsFromConfigFile()
 	router := httprouter.New()
+	//router.GET("/rostra_main_screen", RostraMainScreen)
 
-	router.GET("/rostra_main_screen", RostraMainScreen)
+	router.GET("/", RostraMainScreen)
 	router.GET("/reset", RostraMainScreen)
 	router.GET("/data_input", DataInput)
-	router.GET("/", RostraMainScreen)
+
 	router.GET("/js/metro.min.js", metrojs)
 	router.GET("/css/metro-all.css", metrocss)
 	router.GET("/mif/metro.ttf", metrottf)
-
 	LogInfo("MAIN", "Server running")
 	_ = http.ListenAndServe(":80", router)
 }

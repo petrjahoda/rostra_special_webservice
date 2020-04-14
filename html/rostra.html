@@ -20,41 +20,47 @@
     <form action="/data_input">
         <div class="row {{.UserDisabled}}" style="padding: 5px;padding-top: 30px">
             <div class="cell-9">
-                <input type="text" data-role="input" data-prepend="<span class='mif-user'></span>"
+                <input {{.UserFocus}} type="text" data-role="input" data-prepend="<span class='mif-user'></span>"
                        placeholder="{{.Username}}" name="userid" data-default-value="{{.UsernameValue}}">
             </div>
             <div class="cell-3">
-                <input style="width: 150px" class="button primary" type="submit" value="Hledat"/>
+                <input style="width: 150px" class="button primary {{.UserDisabled}}" type="submit" value="Potvrdit"/>
             </div>
         </div>
         <div class="row {{.OrderDisabled}}" style="padding: 5px">
             <div class="cell-9">
-                <input type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>"
-                       placeholder="{{.Order}}" name="order" data-default-value="{{.OrderValue}}">
+                <input {{.OrderFocus}} type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>"
+                       placeholder="{{.Order}}" name="orderid" data-default-value="{{.OrderValue}}">
             </div>
             <div class="cell-3">
-                <input style="width: 150px" class="button primary" type="submit" value="Hledat"/>
+                <input style="width: 150px" class="button primary {{.OrderDisabled}}" type="submit" value="Potvrdit"/>
             </div>
         </div>
-        <div class="row {{.OrderDisabled}}" style="padding: 5px">
+        <div class="row {{.OperationDisabled}}" style="padding: 5px">
             <div class="cell-9">
-                <input type="text" data-role="input" data-prepend="<span class='mif-lines'></span>"
-                       placeholder="Vyberte prosím číslo operace" data-autocomplete="Test1, Test 2, Test 3">
+                <input {{.OperationFocus}}type="text" data-role="input" data-prepend="<span class='mif-lines'></span>"
+                       placeholder="{{.Operation}}" name="operationid" data-default-value="{{.OperationValue}}">
+            </div>
+            <div class="cell-3">
+                <input style="width: 150px" class="button primary {{.OperationDisabled}}" type="submit" value="Potvrdit"/>
+            </div>
+        </div>
+        <div class="row {{.WorkplaceGroupDisabled}}" style="padding: 5px">
+            <div class="cell-9">
+                <input {{.WorkplaceGroupFocus}}type="text" data-role="input" data-prepend="<span class='mif-home'></span>"
+                       placeholder="{{.WorkplaceGroup}}" name="workplacegroupid" data-default-value="{{.WorkplaceGroupValue}}">
+            </div>
+            <div class="cell-3">
+                <input style="width: 150px" class="button primary {{.WorkplaceGroupDisabled}}" type="submit" value="Potvrdit"/>
             </div>
         </div>
         <div class="row {{.WorkplaceDisabled}}" style="padding: 5px">
             <div class="cell-9">
-                <input type="text" data-role="input" data-prepend="<span class='mif-home'></span>"
-                       placeholder="{{.Workplace}}" name="workplace" data-default-value="{{.WorkplaceValue}}">
+                <input {{.WorkplaceFocus}}type="text" data-role="input" data-prepend="<span class='mif-bookmark'></span>"
+                       placeholder={{.Workplace}} name="workplaceid"data-autocomplete="Pracoviste1, Pracoviste 2">
             </div>
             <div class="cell-3">
-                <input style="width: 150px" class="button primary" type="submit" value="Hledat"/>
-            </div>
-        </div>
-        <div class="row {{.WorkplaceDisabled}}" style="padding: 5px">
-            <div class="cell-9">
-                <input type="text" data-role="input" data-prepend="<span class='mif-bookmark'></span>"
-                       placeholder="Vyberte prosím pracoviště" data-autocomplete="Pracoviste1, Pracoviste 2">
+                <input style="width: 150px" class="button primary {{.WorkplaceDisabled}}" type="submit" value="Potvrdit"/>
             </div>
         </div>
     </form>
