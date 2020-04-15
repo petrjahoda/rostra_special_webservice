@@ -1,1 +1,4 @@
 2020-04-15 10:21:11.720   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-15 10:30:44.241   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-15 10:32:47.797   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-15 10:33:47.685   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout

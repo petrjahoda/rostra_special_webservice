@@ -19,6 +19,9 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 ### Removed
 - everything about workplacegroup was removed, because order+operation get list of workplaces from syteline
 
+### Added
+- displaying information about Syteline communication problem
+
 ## [2020.2.1.14] - 2020-04-14
 
 ### Added

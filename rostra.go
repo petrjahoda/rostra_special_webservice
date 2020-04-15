@@ -56,9 +56,9 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 	data := RostraMainPage{
 		Version:             "version: " + version,
 		Username:            "Zadejte prosím své číslo",
-		Order:               "Zadejte prosím číslo zakázky",
-		Operation:           "Zadejte prosím číslo operace",
-		Workplace:           "Zadejte prosím číslo pracoviště",
+		Order:               "",
+		Operation:           "",
+		Workplace:           "",
 		UserDisabled:        "disabled",
 		OrderDisabled:       "disabled",
 		OperationDisabled:   "disabled",
@@ -96,34 +96,6 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 	}
 
 	//TODO: Show start-stop-update buttons
-	//if inputStep == checkWorkplace {
-	//	LogInfo("MAIN", "Checking workplace")
-	//
-	//	//db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
-	//	//if err != nil {
-	//	//	println("Error opening db: " + err.Error())
-	//	//}
-	//	//defer db.Close()
-	//	//var jePlatny string
-	//	//command := "declare   @JePlatny   ListYesNoType, @CisloVP    JobType, @PriponaVP  SuffixType, @Operace    OperNumType select   @CisloVP = N'"+workplaceId[0]+"', @PriponaVP = 0, @Operace = 10 exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace , @JePlatny = @JePlatny output select JePlatny = @JePlatny"
-	//	//row := db.Raw(command).Row()
-	//	//err = row.Scan(&jePlatny)
-	//
-	//	jePlatny := "1"
-	//	if jePlatny == "1" {
-	//		data.Workplace = workplaceId[0]
-	//		data.WorkplaceValue = workplaceId[0]
-	//		data.Order = orderId[0]
-	//		data.OrderValue = orderId[0]
-	//		data.UsernameValue = userId[0]
-	//		data.WorkplaceDisabled = ""
-	//	} else {
-	//		data.Username = "Číslo nenalezeno, zadejte prosím znovu"
-	//		LogInfo("MAIN", "Workplace not found for "+workplaceId[0])
-	//
-	//	}
-	//
-	//}
 	_ = tmpl.Execute(writer, data)
 }
 
@@ -132,6 +104,10 @@ func CheckOrderInSyteline(orderId []string, userId []string, data *RostraMainPag
 	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
 	if err != nil {
 		LogError("MAIN", "Error opening db: "+err.Error())
+		data.UsernameValue = userId[0]
+		data.Order = "Problém při komunikaci se Syteline, kontaktujte prosím IT"
+		data.OrderDisabled = ""
+		return
 	}
 	defer db.Close()
 	var jePlatny string
@@ -149,7 +125,6 @@ func CheckOrderInSyteline(orderId []string, userId []string, data *RostraMainPag
 		data.Order = "Číslo nenalezeno, zadejte prosím znovu"
 		data.OrderDisabled = ""
 	}
-	//TODO: CheckOrderInZapsi(orderId)
 }
 
 func CheckUserInSyteline(userId []string, data *RostraMainPage) {
@@ -161,6 +136,10 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) {
 	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
 	if err != nil {
 		LogError("MAIN", "Error opening db: "+err.Error())
+		data.Username = "Problém při komunikaci se Syteline, kontaktujte prosím IT"
+		data.UserDisabled = ""
+		data.UserFocus = "autofocus"
+		return
 	}
 	defer db.Close()
 	var jePlatny string
@@ -173,6 +152,7 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) {
 		data.UsernameValue = jmeno
 		data.OrderDisabled = ""
 		data.OrderFocus = "autofocus"
+		data.Order = "Zadejte prosím číslo zakázky"
 	} else {
 		LogInfo("MAIN", "User not found for "+userId[0])
 		data.Username = "Číslo nenalezeno, zadejte prosím znovu"
@@ -245,11 +225,11 @@ func RostraMainScreen(writer http.ResponseWriter, r *http.Request, params httpro
 
 		Username:       "Zadejte prosím své číslo",
 		UsernameValue:  "",
-		Order:          "Zadejte prosím číslo zakázky",
+		Order:          "",
 		OrderValue:     "",
-		Operation:      "Zadejte prosím číslo operace",
+		Operation:      "",
 		OperationValue: "",
-		Workplace:      "Zadejte prosím číslo pracoviště",
+		Workplace:      "",
 		WorkplaceValue: "",
 
 		OrderDisabled:     "disabled",
