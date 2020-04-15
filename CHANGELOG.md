@@ -14,6 +14,10 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.1.15] - 2020-04-15
+
+### Removed
+- everything about workplacegroup was removed, because order+operation get list of workplaces from syteline
 
 ## [2020.2.1.14] - 2020-04-14
 

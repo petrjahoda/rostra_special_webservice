@@ -8,30 +8,26 @@ import (
 )
 
 type RostraMainPage struct {
-	Version        string
-	Username       string
-	Order          string
-	Operation      string
-	WorkplaceGroup string
-	Workplace      string
+	Version   string
+	Username  string
+	Order     string
+	Operation string
+	Workplace string
 
-	UsernameValue       string
-	OrderValue          string
-	OperationValue      string
-	WorkplaceGroupValue string
-	WorkplaceValue      string
+	UsernameValue  string
+	OrderValue     string
+	OperationValue string
+	WorkplaceValue string
 
-	UserDisabled           string
-	OrderDisabled          string
-	OperationDisabled      string
-	WorkplaceGroupDisabled string
-	WorkplaceDisabled      string
+	UserDisabled      string
+	OrderDisabled     string
+	OperationDisabled string
+	WorkplaceDisabled string
 
-	UserFocus           string
-	OrderFocus          string
-	OperationFocus      string
-	WorkplaceGroupFocus string
-	WorkplaceFocus      string
+	UserFocus      string
+	OrderFocus     string
+	OperationFocus string
+	WorkplaceFocus string
 
 	StartOrderButton    string
 	EndOrderButton      string
@@ -42,7 +38,6 @@ const (
 	checkUser int = iota
 	checkOrder
 	checkOperation
-	checkWorkplaceGroup
 	checkWorkplace
 )
 
@@ -53,30 +48,26 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 	userId := r.Form["userid"]
 	orderId := r.Form["orderid"]
 	operationId := r.Form["operationid"]
-	workplaceGroupId := r.Form["workplacegroupid"]
 	workplaceId := r.Form["workplaceid"]
 	LogInfo("MAIN", "user: "+userId[0])
 	LogInfo("MAIN", "order: "+orderId[0])
 	LogInfo("MAIN", "operation: "+operationId[0])
-	LogInfo("MAIN", "workplacegroup: "+workplaceGroupId[0])
 	LogInfo("MAIN", "workplace: "+workplaceId[0])
 	data := RostraMainPage{
-		Version:                "version: " + version,
-		Username:               "Zadejte prosím své číslo",
-		Order:                  "Zadejte prosím číslo zakázky",
-		Operation:              "Zadejte prosím číslo operace",
-		WorkplaceGroup:         "Zadejte prosím číslo skupiny pracoviště",
-		Workplace:              "Zadejte prosím číslo pracoviště",
-		UserDisabled:           "disabled",
-		OrderDisabled:          "disabled",
-		OperationDisabled:      "disabled",
-		WorkplaceGroupDisabled: "disabled",
-		WorkplaceDisabled:      "disabled",
-		StartOrderButton:       "disabled",
-		EndOrderButton:         "disabled",
-		TransferOrderButton:    "disabled",
+		Version:             "version: " + version,
+		Username:            "Zadejte prosím své číslo",
+		Order:               "Zadejte prosím číslo zakázky",
+		Operation:           "Zadejte prosím číslo operace",
+		Workplace:           "Zadejte prosím číslo pracoviště",
+		UserDisabled:        "disabled",
+		OrderDisabled:       "disabled",
+		OperationDisabled:   "disabled",
+		WorkplaceDisabled:   "disabled",
+		StartOrderButton:    "disabled",
+		EndOrderButton:      "disabled",
+		TransferOrderButton: "disabled",
 	}
-	inputStep := CheckInputStep(userId, orderId, operationId, workplaceGroupId, workplaceId)
+	inputStep := CheckInputStep(orderId, operationId, workplaceId)
 	switch inputStep {
 	case checkUser:
 		CheckUserInSyteline(userId, &data)
@@ -90,18 +81,6 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 			data.OperationValue = "Operace"
 			data.UsernameValue = userId[0]
 			data.OrderValue = orderId[0]
-			data.WorkplaceGroupDisabled = ""
-		}
-	case checkWorkplaceGroup:
-		{
-			//TODO: Check WorkplaceGroup
-			LogInfo("MAIN", "Checking workplacegroup")
-			data.WorkplaceGroup = "Skupina"
-			data.WorkplaceGroupValue = "Skupina"
-			data.UsernameValue = userId[0]
-			data.OrderValue = orderId[0]
-			data.OperationValue = operationId[0]
-			data.WorkplaceDisabled = ""
 		}
 	case checkWorkplace:
 		{
@@ -112,12 +91,11 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 			data.UsernameValue = userId[0]
 			data.OrderValue = orderId[0]
 			data.OperationValue = operationId[0]
-			data.WorkplaceGroupValue = workplaceGroupId[0]
 			data.StartOrderButton = ""
 		}
 	}
 
-	//TODO: Check start-stop-update
+	//TODO: Show start-stop-update buttons
 	//if inputStep == checkWorkplace {
 	//	LogInfo("MAIN", "Checking workplace")
 	//
@@ -204,15 +182,13 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) {
 	//TODO: CheckUserInZapsi(userId, jmeno)
 }
 
-func CheckInputStep(userId []string, orderId []string, operationId []string, workplaceGroupId []string, workplaceId []string) interface{} {
-	if orderId[0] == "" && operationId[0] == "" && workplaceGroupId[0] == "" && workplaceId[0] == "" {
+func CheckInputStep(orderId []string, operationId []string, workplaceId []string) interface{} {
+	if orderId[0] == "" && operationId[0] == "" && workplaceId[0] == "" {
 		return checkUser
-	} else if operationId[0] == "" && workplaceGroupId[0] == "" && workplaceId[0] == "" {
+	} else if operationId[0] == "" && workplaceId[0] == "" {
 		return checkOrder
-	} else if workplaceGroupId[0] == "" && workplaceId[0] == "" {
-		return checkOperation
 	} else if workplaceId[0] == "" {
-		return checkWorkplaceGroup
+		return checkOperation
 	}
 	return checkWorkplace
 
@@ -267,21 +243,18 @@ func RostraMainScreen(writer http.ResponseWriter, r *http.Request, params httpro
 	data := RostraMainPage{
 		Version: "version: " + version,
 
-		Username:            "Zadejte prosím své číslo",
-		UsernameValue:       "",
-		Order:               "Zadejte prosím číslo zakázky",
-		OrderValue:          "",
-		Operation:           "Zadejte prosím číslo operace",
-		OperationValue:      "",
-		WorkplaceGroup:      "Zadejte prosím číslo skupiny pracoviště",
-		WorkplaceGroupValue: "",
-		Workplace:           "Zadejte prosím číslo pracoviště",
-		WorkplaceValue:      "",
+		Username:       "Zadejte prosím své číslo",
+		UsernameValue:  "",
+		Order:          "Zadejte prosím číslo zakázky",
+		OrderValue:     "",
+		Operation:      "Zadejte prosím číslo operace",
+		OperationValue: "",
+		Workplace:      "Zadejte prosím číslo pracoviště",
+		WorkplaceValue: "",
 
-		OrderDisabled:          "disabled",
-		OperationDisabled:      "disabled",
-		WorkplaceGroupDisabled: "disabled",
-		WorkplaceDisabled:      "disabled",
+		OrderDisabled:     "disabled",
+		OperationDisabled: "disabled",
+		WorkplaceDisabled: "disabled",
 
 		UserFocus: "autofocus",
 

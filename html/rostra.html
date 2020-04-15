@@ -45,19 +45,10 @@
                 <input style="width: 150px" class="button primary {{.OperationDisabled}}" type="submit" value="Potvrdit"/>
             </div>
         </div>
-        <div class="row {{.WorkplaceGroupDisabled}}" style="padding: 5px">
-            <div class="cell-9">
-                <input {{.WorkplaceGroupFocus}}type="text" data-role="input" data-prepend="<span class='mif-home'></span>"
-                       placeholder="{{.WorkplaceGroup}}" name="workplacegroupid" data-default-value="{{.WorkplaceGroupValue}}">
-            </div>
-            <div class="cell-3">
-                <input style="width: 150px" class="button primary {{.WorkplaceGroupDisabled}}" type="submit" value="Potvrdit"/>
-            </div>
-        </div>
         <div class="row {{.WorkplaceDisabled}}" style="padding: 5px">
             <div class="cell-9">
-                <input {{.WorkplaceFocus}}type="text" data-role="input" data-prepend="<span class='mif-bookmark'></span>"
-                       placeholder={{.Workplace}} name="workplaceid"data-autocomplete="Pracoviste1, Pracoviste 2">
+                <input {{.WorkplaceFocus}}type="text" data-role="input" data-prepend="<span class='mif-home'></span>"
+                       placeholder={{.Workplace}} name="workplaceid" data-autocomplete="Pracoviste1, Pracoviste 2">
             </div>
             <div class="cell-3">
                 <input style="width: 150px" class="button primary {{.WorkplaceDisabled}}" type="submit" value="Potvrdit"/>
