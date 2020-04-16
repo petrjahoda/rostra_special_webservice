@@ -159,17 +159,24 @@ func CheckOrderInSyteline(userId []string, orderId []string, data *RostraMainPag
 		return
 	}
 	defer db.Close()
-	var jePlatny string
-	command := "declare   @JePlatny ListYesNoType, @VP Infobar = N'" + orderId[0] + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	var cisloVp string
+	var suffixVp string
+	var polozkaVp string
+	var popisPolVp string
+	var priznak_seriova_vyroba string
+	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + orderId[0] + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	row := db.Raw(command).Row()
-	err = row.Scan(&jePlatny)
-	if jePlatny == "1" {
+	err = row.Scan(&cisloVp, &suffixVp, &polozkaVp, &popisPolVp, &priznak_seriova_vyroba)
+	if err != nil {
+		LogError("MAIN", "Error: "+err.Error())
+	}
+	if len(cisloVp) > 0 {
 		data.Order = orderId[0]
 		data.OrderValue = orderId[0]
 		data.UsernameValue = userId[0]
 		data.OperationDisabled = ""
 	} else {
-		LogInfo("MAIN", "Order not found for "+orderId[0])
+		LogInfo("MAIN", "Order not found for "+orderId[0]+" for command "+command)
 		data.UsernameValue = userId[0]
 		data.Order = "Číslo nenalezeno, nebo je neplatné, zadejte prosím znovu"
 		data.OrderDisabled = ""
@@ -189,9 +196,10 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) {
 	defer db.Close()
 	var jePlatny string
 	var jmeno string
-	command := "declare   @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + userId[0] + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output select JePlatny = @JePlatny, Jmeno = @Jmeno"
+	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + userId[0] + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output select JePlatny = @JePlatny, Jmeno = @Jmeno"
 	row := db.Raw(command).Row()
 	err = row.Scan(&jePlatny, &jmeno)
+	LogInfo("MAIN", "User jePlatny: "+jePlatny)
 	if jePlatny == "1" {
 		data.Username = jmeno
 		data.UsernameValue = jmeno
