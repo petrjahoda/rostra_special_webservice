@@ -14,6 +14,12 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.1.20] - 2020-04-20
+
+### Added
+- added structs for order and user
+
+
 ## [2020.2.1.16] - 2020-04-16
 
 ### Added

@@ -5,30 +5,27 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
 type RostraMainPage struct {
-	Version   string
-	Username  string
-	Order     string
-	Operation string
-	Workplace string
-
-	UsernameValue  string
-	OrderValue     string
-	OperationValue string
-	WorkplaceValue string
-
-	UserDisabled      string
-	OrderDisabled     string
-	OperationDisabled string
-	WorkplaceDisabled string
-
-	UserFocus      string
-	OrderFocus     string
-	OperationFocus string
-	WorkplaceFocus string
-
+	Version             string
+	Username            string
+	Order               string
+	Operation           string
+	Workplace           string
+	UsernameValue       string
+	OrderValue          string
+	OperationValue      string
+	WorkplaceValue      string
+	UserDisabled        string
+	OrderDisabled       string
+	OperationDisabled   string
+	WorkplaceDisabled   string
+	UserFocus           string
+	OrderFocus          string
+	OperationFocus      string
+	WorkplaceFocus      string
 	StartOrderButton    string
 	EndOrderButton      string
 	TransferOrderButton string
@@ -40,6 +37,19 @@ const (
 	checkOperation
 	checkWorkplace
 )
+
+type SytelineUser struct {
+	JePlatny string
+	Jmeno    string
+}
+
+type SytelineOrder struct {
+	CisloVp                string
+	SuffixVp               string
+	PolozkaVp              string
+	PopisPolVp             string
+	Priznak_seriova_vyroba string
+}
 
 func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	LogInfo("MAIN", "Checking data input")
@@ -67,6 +77,7 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 		EndOrderButton:      "disabled",
 		TransferOrderButton: "disabled",
 	}
+	// TODO: create structs for user, order, operation, workplace
 	inputStep := CheckInputStep(orderId, operationId, workplaceId)
 	switch inputStep {
 	case checkUser:
@@ -118,6 +129,7 @@ func GetWorkplacesFromSyteline(userId []string, orderId []string, operationId []
 }
 
 func CheckOperationInSyteline(userId []string, orderId []string, operationId []string, data *RostraMainPage) {
+	order, suffix := ParseOrder(orderId[0])
 	LogInfo("MAIN", "Checking operation")
 	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
 	if err != nil {
@@ -130,7 +142,7 @@ func CheckOperationInSyteline(userId []string, orderId []string, operationId []s
 	}
 	defer db.Close()
 	var jePlatny string
-	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + orderId[0] + "', @PriponaVP = 0, @Operace = " + operationId[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationId[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	row := db.Raw(command).Row()
 	err = row.Scan(&jePlatny)
 	if jePlatny == "1" {
@@ -148,29 +160,37 @@ func CheckOperationInSyteline(userId []string, orderId []string, operationId []s
 	}
 }
 
-func CheckOrderInSyteline(userId []string, orderId []string, data *RostraMainPage) {
+func ParseOrder(orderId string) (string, string) {
+	if strings.Contains(orderId, "-") {
+		splittedOrder := strings.Split(orderId, "-")
+		return splittedOrder[0], splittedOrder[1]
+	} else if strings.Contains(orderId, ".") {
+		splittedOrder := strings.Split(orderId, ".")
+		return splittedOrder[0], splittedOrder[1]
+	}
+	return orderId, "0"
+}
+
+func CheckOrderInSyteline(userId []string, orderId []string, data *RostraMainPage) SytelineOrder {
+	order, suffix := ParseOrder(orderId[0])
 	LogInfo("MAIN", "Checking order")
 	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
+	var sytelineOrder SytelineOrder
 	if err != nil {
 		LogError("MAIN", "Error opening db: "+err.Error())
 		data.UsernameValue = userId[0]
 		data.Order = "Problém při komunikaci se Syteline, kontaktujte prosím IT"
 		data.OrderDisabled = ""
-		return
+		return sytelineOrder
 	}
 	defer db.Close()
-	var cisloVp string
-	var suffixVp string
-	var polozkaVp string
-	var popisPolVp string
-	var priznak_seriova_vyroba string
-	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + orderId[0] + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	row := db.Raw(command).Row()
-	err = row.Scan(&cisloVp, &suffixVp, &polozkaVp, &popisPolVp, &priznak_seriova_vyroba)
+	err = row.Scan(&sytelineOrder)
 	if err != nil {
 		LogError("MAIN", "Error: "+err.Error())
 	}
-	if len(cisloVp) > 0 {
+	if len(sytelineOrder.CisloVp) > 0 {
 		data.Order = orderId[0]
 		data.OrderValue = orderId[0]
 		data.UsernameValue = userId[0]
@@ -181,28 +201,28 @@ func CheckOrderInSyteline(userId []string, orderId []string, data *RostraMainPag
 		data.Order = "Číslo nenalezeno, nebo je neplatné, zadejte prosím znovu"
 		data.OrderDisabled = ""
 	}
+	return sytelineOrder
 }
 
-func CheckUserInSyteline(userId []string, data *RostraMainPage) {
+func CheckUserInSyteline(userId []string, data *RostraMainPage) SytelineUser {
 	LogInfo("MAIN", "Checking user")
 	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
+	var sytelineUser SytelineUser
 	if err != nil {
 		LogError("MAIN", "Error opening db: "+err.Error())
 		data.Username = "Problém při komunikaci se Syteline, kontaktujte prosím IT"
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
-		return
+		return sytelineUser
 	}
 	defer db.Close()
-	var jePlatny string
-	var jmeno string
 	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + userId[0] + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output select JePlatny = @JePlatny, Jmeno = @Jmeno"
 	row := db.Raw(command).Row()
-	err = row.Scan(&jePlatny, &jmeno)
-	LogInfo("MAIN", "User jePlatny: "+jePlatny)
-	if jePlatny == "1" {
-		data.Username = jmeno
-		data.UsernameValue = jmeno
+	err = row.Scan(&sytelineUser)
+	LogInfo("MAIN", "User jePlatny: "+sytelineUser.JePlatny)
+	if sytelineUser.JePlatny == "1" {
+		data.Username = sytelineUser.Jmeno
+		data.UsernameValue = sytelineUser.Jmeno
 		data.OrderDisabled = ""
 		data.OrderFocus = "autofocus"
 		data.Order = "Zadejte prosím číslo zakázky"
@@ -213,6 +233,7 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) {
 		data.UserFocus = "autofocus"
 	}
 	//TODO: CheckUserInZapsi(userId, jmeno)
+	return sytelineUser
 }
 
 func CheckInputStep(orderId []string, operationId []string, workplaceId []string) interface{} {
