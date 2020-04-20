@@ -126,3 +126,513 @@
 2020-04-20 14:09:54.901   MAIN   INF   No workplaces, adding null workplace
 2020-04-20 14:11:57.995   MAIN   INF   Displaying main screen
 2020-04-20 14:11:57.995   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:49:24.829   MAIN   INF   Server running
+2020-04-20 16:49:25.940   MAIN   INF   Displaying main screen
+2020-04-20 16:49:25.941   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:49:49.027   MAIN   INF   Server running
+2020-04-20 16:49:50.005   MAIN   INF   Displaying main screen
+2020-04-20 16:49:50.005   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:49:50.672   MAIN   INF   Displaying main screen
+2020-04-20 16:49:50.672   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:49:51.319   MAIN   INF   Displaying main screen
+2020-04-20 16:49:51.319   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:49:53.566   MAIN   INF   Displaying main screen
+2020-04-20 16:49:53.567   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:49:59.628   MAIN   INF   Displaying main screen
+2020-04-20 16:49:59.628   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:50:47.347   MAIN   INF   Server running
+2020-04-20 16:50:47.598   MAIN   INF   Displaying main screen
+2020-04-20 16:50:47.598   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:54:11.014   MAIN   INF   Displaying main screen
+2020-04-20 16:54:11.014   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:54:15.072   MAIN   INF   Server running
+2020-04-20 16:54:15.782   MAIN   INF   Displaying main screen
+2020-04-20 16:54:15.783   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:54:19.672   MAIN   INF   Displaying main screen
+2020-04-20 16:54:19.672   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:54:27.508   MAIN   INF   Server running
+2020-04-20 16:54:27.821   MAIN   INF   Displaying main screen
+2020-04-20 16:54:27.821   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:54:29.563   MAIN   INF   Checking data input
+2020-04-20 16:54:29.563   MAIN   INF   [user]         : 
+2020-04-20 16:54:29.563   MAIN   INF   [order]        : 
+2020-04-20 16:54:29.564   MAIN   INF   [operation]    : 
+2020-04-20 16:54:29.564   MAIN   INF   [workplace]    : 
+2020-04-20 16:54:29.564   MAIN   INF   [startorder]   : Začátek
+2020-04-20 16:54:29.566   MAIN   INF   Checking data input
+2020-04-20 16:54:29.567   MAIN   INF   [user]         : 
+2020-04-20 16:54:29.567   MAIN   INF   [order]        : 
+2020-04-20 16:54:29.567   MAIN   INF   [operation]    : 
+2020-04-20 16:54:29.567   MAIN   INF   [workplace]    : 
+2020-04-20 16:54:29.567   MAIN   INF   [startorder]   : Začátek
+2020-04-20 16:54:29.569   MAIN   INF   Checking data input
+2020-04-20 16:54:29.569   MAIN   INF   [user]         : 
+2020-04-20 16:54:29.569   MAIN   INF   [order]        : 
+2020-04-20 16:54:29.569   MAIN   INF   [operation]    : 
+2020-04-20 16:54:29.569   MAIN   INF   [workplace]    : 
+2020-04-20 16:54:29.569   MAIN   INF   [startorder]   : Začátek
+2020-04-20 16:54:29.571   MAIN   INF   Checking data input
+2020-04-20 16:54:29.571   MAIN   INF   [user]         : 
+2020-04-20 16:54:29.571   MAIN   INF   [order]        : 
+2020-04-20 16:54:29.571   MAIN   INF   [operation]    : 
+2020-04-20 16:54:29.571   MAIN   INF   [workplace]    : 
+2020-04-20 16:54:29.571   MAIN   INF   [startorder]   : Začátek
+2020-04-20 16:55:05.734   MAIN   INF   Server running
+2020-04-20 16:55:08.460   MAIN   INF   Displaying main screen
+2020-04-20 16:55:08.460   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:09.502   MAIN   INF   Checking data input
+2020-04-20 16:55:09.502   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:10.365   MAIN   INF   Checking data input
+2020-04-20 16:55:10.366   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:11.023   MAIN   INF   Checking data input
+2020-04-20 16:55:11.023   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:12.195   MAIN   INF   Checking data input
+2020-04-20 16:55:12.195   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:40.341   MAIN   INF   Checking data input
+2020-04-20 16:55:40.341   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:41.764   MAIN   INF   Checking data input
+2020-04-20 16:55:41.765   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:45.194   MAIN   INF   Checking data input
+2020-04-20 16:55:45.194   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:45.923   MAIN   INF   Checking data input
+2020-04-20 16:55:45.923   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:47.005   MAIN   INF   Checking data input
+2020-04-20 16:55:47.005   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:51.689   MAIN   INF   Checking data input
+2020-04-20 16:55:51.690   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:52.431   MAIN   INF   Checking data input
+2020-04-20 16:55:52.431   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:53.338   MAIN   INF   Checking data input
+2020-04-20 16:55:53.338   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:55:54.203   MAIN   INF   Checking data input
+2020-04-20 16:55:54.204   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:56:10.614   MAIN   INF   Server running
+2020-04-20 16:56:13.298   MAIN   INF   Checking data input
+2020-04-20 16:56:13.300   MAIN   INF   Checking data input
+2020-04-20 16:56:13.302   MAIN   INF   Checking data input
+2020-04-20 16:56:16.334   MAIN   INF   Displaying main screen
+2020-04-20 16:56:16.335   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:56:17.310   MAIN   INF   Checking data input
+2020-04-20 16:56:17.311   MAIN   INF   Checking data input
+2020-04-20 16:56:17.312   MAIN   INF   Checking data input
+2020-04-20 16:56:17.314   MAIN   INF   Checking data input
+2020-04-20 16:56:17.315   MAIN   INF   Checking data input
+2020-04-20 16:56:17.317   MAIN   INF   Checking data input
+2020-04-20 16:57:20.057   MAIN   INF   Server running
+2020-04-20 16:57:22.515   MAIN   INF   Displaying main screen
+2020-04-20 16:57:22.516   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:57:23.577   MAIN   INF   Checking data input
+2020-04-20 16:57:23.578   MAIN   INF   [startorder]   : 0
+2020-04-20 16:57:23.578   MAIN   INF   [endorder]     : 0
+2020-04-20 16:57:23.578   MAIN   INF   [transferorder]: 0
+2020-04-20 16:57:23.578   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:57:27.825   MAIN   INF   Checking data input
+2020-04-20 16:57:27.825   MAIN   INF   [startorder]   : 0
+2020-04-20 16:57:27.825   MAIN   INF   [endorder]     : 0
+2020-04-20 16:57:27.825   MAIN   INF   [transferorder]: 0
+2020-04-20 16:57:27.825   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:57:33.545   MAIN   INF   Checking data input
+2020-04-20 16:57:33.545   MAIN   INF   [startorder]   : 0
+2020-04-20 16:57:33.545   MAIN   INF   [endorder]     : 0
+2020-04-20 16:57:33.545   MAIN   INF   [transferorder]: 0
+2020-04-20 16:57:33.546   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:58:14.201   MAIN   INF   Server running
+2020-04-20 16:58:17.126   MAIN   INF   Checking data input
+2020-04-20 16:58:17.127   MAIN   INF   [startorder]   : 0
+2020-04-20 16:58:17.127   MAIN   INF   [endorder]     : 0
+2020-04-20 16:58:17.127   MAIN   INF   [transferorder]: 0
+2020-04-20 16:58:17.127   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:58:57.319   MAIN   INF   Server running
+2020-04-20 16:58:57.733   MAIN   INF   Checking data input
+2020-04-20 16:58:57.734   MAIN   INF   [userid]   : 0
+2020-04-20 16:58:57.734   MAIN   INF   [startorder]   : 0
+2020-04-20 16:58:57.734   MAIN   INF   [endorder]     : 0
+2020-04-20 16:58:57.734   MAIN   INF   [transferorder]: 0
+2020-04-20 16:58:57.734   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:58:58.857   MAIN   INF   Checking data input
+2020-04-20 16:58:58.857   MAIN   INF   [userid]   : 0
+2020-04-20 16:58:58.857   MAIN   INF   [startorder]   : 0
+2020-04-20 16:58:58.857   MAIN   INF   [endorder]     : 0
+2020-04-20 16:58:58.858   MAIN   INF   [transferorder]: 0
+2020-04-20 16:58:58.858   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:59:07.596   MAIN   INF   Checking data input
+2020-04-20 16:59:07.596   MAIN   INF   [userid]   : 0
+2020-04-20 16:59:07.596   MAIN   INF   [startorder]   : 0
+2020-04-20 16:59:07.597   MAIN   INF   [endorder]     : 0
+2020-04-20 16:59:07.597   MAIN   INF   [transferorder]: 0
+2020-04-20 16:59:07.597   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:59:19.662   MAIN   INF   Checking data input
+2020-04-20 16:59:19.662   MAIN   INF   [userid]   : 0
+2020-04-20 16:59:19.662   MAIN   INF   [startorder]   : 0
+2020-04-20 16:59:19.662   MAIN   INF   [endorder]     : 0
+2020-04-20 16:59:19.662   MAIN   INF   [transferorder]: 0
+2020-04-20 16:59:19.663   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:59:44.699   MAIN   INF   Displaying main screen
+2020-04-20 16:59:44.699   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:59:46.692   MAIN   INF   Checking data input
+2020-04-20 16:59:46.693   MAIN   INF   [userid]   : 0
+2020-04-20 16:59:46.693   MAIN   INF   [startorder]   : 0
+2020-04-20 16:59:46.693   MAIN   INF   [endorder]     : 0
+2020-04-20 16:59:46.693   MAIN   INF   [transferorder]: 0
+2020-04-20 16:59:46.693   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:59:53.772   MAIN   INF   Checking data input
+2020-04-20 16:59:53.772   MAIN   INF   [userid]   : 0
+2020-04-20 16:59:53.772   MAIN   INF   [startorder]   : 0
+2020-04-20 16:59:53.772   MAIN   INF   [endorder]     : 0
+2020-04-20 16:59:53.772   MAIN   INF   [transferorder]: 0
+2020-04-20 16:59:53.772   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:59:54.284   MAIN   INF   Checking data input
+2020-04-20 16:59:54.284   MAIN   INF   [userid]   : 0
+2020-04-20 16:59:54.284   MAIN   INF   [startorder]   : 0
+2020-04-20 16:59:54.284   MAIN   INF   [endorder]     : 0
+2020-04-20 16:59:54.284   MAIN   INF   [transferorder]: 0
+2020-04-20 16:59:54.284   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 16:59:54.885   MAIN   INF   Checking data input
+2020-04-20 16:59:54.885   MAIN   INF   [userid]   : 0
+2020-04-20 16:59:54.885   MAIN   INF   [startorder]   : 0
+2020-04-20 16:59:54.885   MAIN   INF   [endorder]     : 0
+2020-04-20 16:59:54.885   MAIN   INF   [transferorder]: 0
+2020-04-20 16:59:54.885   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:00:30.484   MAIN   INF   Server running
+2020-04-20 17:00:32.061   MAIN   INF   Checking data input
+2020-04-20 17:00:32.062   MAIN   INF   [startorder]   : 0
+2020-04-20 17:00:32.062   MAIN   INF   [endorder]     : 0
+2020-04-20 17:00:32.062   MAIN   INF   [transferorder]: 0
+2020-04-20 17:00:32.062   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:00:32.843   MAIN   INF   Checking data input
+2020-04-20 17:00:32.844   MAIN   INF   [startorder]   : 0
+2020-04-20 17:00:32.844   MAIN   INF   [endorder]     : 0
+2020-04-20 17:00:32.844   MAIN   INF   [transferorder]: 0
+2020-04-20 17:00:32.844   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:01:04.536   MAIN   INF   Server running
+2020-04-20 17:01:06.459   MAIN   INF   Checking data input
+2020-04-20 17:01:06.459   MAIN   INF   [startorder]   : 0
+2020-04-20 17:01:06.459   MAIN   INF   [endorder]     : 0
+2020-04-20 17:01:06.459   MAIN   INF   [transferorder]: 0
+2020-04-20 17:01:06.460   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:01:34.797   MAIN   INF   Server running
+2020-04-20 17:01:35.983   MAIN   INF   Checking data input
+2020-04-20 17:01:35.985   MAIN   INF   [startorder]   : 0
+2020-04-20 17:01:35.985   MAIN   INF   [endorder]     : 0
+2020-04-20 17:01:35.985   MAIN   INF   [transferorder]: 0
+2020-04-20 17:01:35.985   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:01:39.632   MAIN   INF   Checking data input
+2020-04-20 17:01:39.632   MAIN   INF   [startorder]   : 0
+2020-04-20 17:01:39.632   MAIN   INF   [endorder]     : 0
+2020-04-20 17:01:39.633   MAIN   INF   [transferorder]: 0
+2020-04-20 17:01:39.633   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:02:01.281   MAIN   INF   Server running
+2020-04-20 17:02:02.886   MAIN   INF   Checking data input
+2020-04-20 17:02:02.886   MAIN   INF   [startorder]   : 0
+2020-04-20 17:02:02.886   MAIN   INF   [endorder]     : 0
+2020-04-20 17:02:02.886   MAIN   INF   [transferorder]: 0
+2020-04-20 17:02:02.887   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:03:12.717   MAIN   INF   Checking data input
+2020-04-20 17:03:12.717   MAIN   INF   [startorder]   : 0
+2020-04-20 17:03:12.717   MAIN   INF   [endorder]     : 0
+2020-04-20 17:03:12.717   MAIN   INF   [transferorder]: 0
+2020-04-20 17:03:12.717   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:03:24.387   MAIN   INF   Server running
+2020-04-20 17:03:26.434   MAIN   INF   Checking data input
+2020-04-20 17:03:26.434   MAIN   INF   [startorder]   : 0
+2020-04-20 17:03:26.435   MAIN   INF   [endorder]     : 0
+2020-04-20 17:03:26.435   MAIN   INF   [transferorder]: 0
+2020-04-20 17:03:26.435   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:03:51.615   MAIN   INF   Server running
+2020-04-20 17:03:53.628   MAIN   INF   Checking data input
+2020-04-20 17:03:53.629   MAIN   INF   Checking data input
+2020-04-20 17:03:53.631   MAIN   INF   Checking data input
+2020-04-20 17:04:09.918   MAIN   INF   Displaying main screen
+2020-04-20 17:04:09.919   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:04:12.270   MAIN   INF   Checking data input
+2020-04-20 17:04:12.271   MAIN   INF   Checking data input
+2020-04-20 17:04:12.271   MAIN   INF   Checking data input
+2020-04-20 17:04:12.273   MAIN   INF   Checking data input
+2020-04-20 17:04:12.275   MAIN   INF   Checking data input
+2020-04-20 17:04:12.277   MAIN   INF   Checking data input
+2020-04-20 17:04:23.993   MAIN   INF   Server running
+2020-04-20 17:04:28.938   MAIN   INF   Displaying main screen
+2020-04-20 17:04:28.939   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:04:30.492   MAIN   INF   Checking data input
+2020-04-20 17:04:30.493   MAIN   INF   Checking data input
+2020-04-20 17:04:30.494   MAIN   INF   Checking data input
+2020-04-20 17:04:30.496   MAIN   INF   Checking data input
+2020-04-20 17:04:30.498   MAIN   INF   Checking data input
+2020-04-20 17:04:30.499   MAIN   INF   Checking data input
+2020-04-20 17:05:20.500   MAIN   INF   Server running
+2020-04-20 17:05:22.317   MAIN   INF   Displaying main screen
+2020-04-20 17:05:22.317   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:05:25.577   MAIN   INF   Checking data input
+2020-04-20 17:05:25.577   MAIN   INF   [user]     : 123
+2020-04-20 17:05:25.577   MAIN   INF   [order]    : 
+2020-04-20 17:05:25.577   MAIN   INF   [operation]: 
+2020-04-20 17:05:25.578   MAIN   INF   [workplace]: 
+2020-04-20 17:05:25.578   MAIN   INF   Checking user
+2020-04-20 17:05:40.582   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:05:40.583   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:05:50.966   MAIN   INF   Server running
+2020-04-20 17:05:52.815   MAIN   INF   Displaying main screen
+2020-04-20 17:05:52.815   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:06:08.380   MAIN   INF   Server running
+2020-04-20 17:06:12.328   MAIN   INF   Displaying main screen
+2020-04-20 17:06:12.329   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:06:29.525   MAIN   INF   Server running
+2020-04-20 17:06:30.153   MAIN   INF   Displaying main screen
+2020-04-20 17:06:30.154   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:06:31.136   MAIN   INF   Checking data input
+2020-04-20 17:06:31.136   MAIN   INF   [user]     : 
+2020-04-20 17:06:31.136   MAIN   INF   [order]    : 
+2020-04-20 17:06:31.136   MAIN   INF   [operation]: 
+2020-04-20 17:06:31.136   MAIN   INF   [workplace]: 
+2020-04-20 17:06:31.136   MAIN   INF   Checking user
+2020-04-20 17:07:34.468   MAIN   INF   Server running
+2020-04-20 17:07:42.001   MAIN   INF   Displaying main screen
+2020-04-20 17:07:42.002   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:07:43.053   MAIN   INF   Checking data input
+2020-04-20 17:07:43.053   MAIN   INF   [user]     : 
+2020-04-20 17:07:43.053   MAIN   INF   [order]    : 
+2020-04-20 17:07:43.053   MAIN   INF   [operation]: 
+2020-04-20 17:07:43.053   MAIN   INF   [workplace]: 
+2020-04-20 17:07:43.053   MAIN   INF   1
+2020-04-20 17:07:43.053   MAIN   INF   Checking user
+2020-04-20 17:08:00.035   MAIN   INF   Server running
+2020-04-20 17:08:02.883   MAIN   INF   Checking data input
+2020-04-20 17:08:02.886   MAIN   INF   [user]     : 
+2020-04-20 17:08:02.886   MAIN   INF   [order]    : 
+2020-04-20 17:08:02.886   MAIN   INF   [operation]: 
+2020-04-20 17:08:02.887   MAIN   INF   [workplace]: 
+2020-04-20 17:08:02.887   MAIN   INF   [workplace]: Začátek
+2020-04-20 17:08:02.887   MAIN   INF   1
+2020-04-20 17:08:02.887   MAIN   INF   Checking user
+2020-04-20 17:10:38.224   MAIN   INF   Server running
+2020-04-20 17:10:43.069   MAIN   INF   Displaying main screen
+2020-04-20 17:10:43.070   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:11:44.811   MAIN   INF   Server running
+2020-04-20 17:11:48.229   MAIN   INF   Displaying main screen
+2020-04-20 17:11:48.230   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:11:49.823   MAIN   INF   Checking data input
+2020-04-20 17:11:49.823   MAIN   INF   [user]     : 
+2020-04-20 17:11:49.823   MAIN   INF   [order]    : 
+2020-04-20 17:11:49.823   MAIN   INF   [operation]: 
+2020-04-20 17:11:49.823   MAIN   INF   [workplace]: 
+2020-04-20 17:11:49.823   MAIN   INF   [start]    : 1
+2020-04-20 17:11:49.824   MAIN   INF   [end]      : 0
+2020-04-20 17:11:49.824   MAIN   INF   [transfer] : 0
+2020-04-20 17:11:49.824   MAIN   INF   Checking user
+2020-04-20 17:13:57.516   MAIN   INF   Server running
+2020-04-20 17:14:03.266   MAIN   INF   Displaying main screen
+2020-04-20 17:14:03.268   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:14:04.196   MAIN   INF   Checking data input
+2020-04-20 17:14:04.197   MAIN   INF   [user]     : 
+2020-04-20 17:14:04.197   MAIN   INF   [order]    : 
+2020-04-20 17:14:04.197   MAIN   INF   [operation]: 
+2020-04-20 17:14:04.197   MAIN   INF   [workplace]: 
+2020-04-20 17:14:04.197   MAIN   INF   [start]    : 1
+2020-04-20 17:14:04.197   MAIN   INF   [end]      : 0
+2020-04-20 17:14:04.197   MAIN   INF   [transfer] : 0
+2020-04-20 17:14:04.197   MAIN   INF   Checking user
+2020-04-20 17:15:04.005   MAIN   INF   Server running
+2020-04-20 17:15:04.540   MAIN   INF   Checking data input
+2020-04-20 17:15:04.540   MAIN   INF   [user]     : 
+2020-04-20 17:15:04.540   MAIN   INF   [order]    : 
+2020-04-20 17:15:04.540   MAIN   INF   [operation]: 
+2020-04-20 17:15:04.541   MAIN   INF   [workplace]: 
+2020-04-20 17:15:04.541   MAIN   INF   [start]    : 1
+2020-04-20 17:15:04.541   MAIN   INF   [end]      : 0
+2020-04-20 17:15:04.541   MAIN   INF   [transfer] : 0
+2020-04-20 17:15:04.541   MAIN   INF   Checking user
+2020-04-20 17:15:15.837   MAIN   INF   Displaying main screen
+2020-04-20 17:15:15.837   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:15:17.283   MAIN   INF   Checking data input
+2020-04-20 17:15:17.284   MAIN   INF   [user]     : 
+2020-04-20 17:15:17.284   MAIN   INF   [order]    : 
+2020-04-20 17:15:17.284   MAIN   INF   [operation]: 
+2020-04-20 17:15:17.284   MAIN   INF   [workplace]: 
+2020-04-20 17:15:17.284   MAIN   INF   [start]    : 1
+2020-04-20 17:15:17.284   MAIN   INF   [end]      : 0
+2020-04-20 17:15:17.285   MAIN   INF   [transfer] : 0
+2020-04-20 17:15:17.285   MAIN   INF   Checking user
+2020-04-20 17:15:19.542   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:15:19.543   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:15:32.288   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:15:32.289   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:16:16.304   MAIN   INF   Server running
+2020-04-20 17:16:20.630   MAIN   INF   Displaying main screen
+2020-04-20 17:16:20.630   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:16:21.647   MAIN   INF   Checking data input
+2020-04-20 17:16:21.647   MAIN   INF   [user]     : 
+2020-04-20 17:16:21.648   MAIN   INF   [order]    : 
+2020-04-20 17:16:21.648   MAIN   INF   [operation]: 
+2020-04-20 17:16:21.648   MAIN   INF   [workplace]: 
+2020-04-20 17:16:21.648   MAIN   INF   [start]    : 1
+2020-04-20 17:16:21.648   MAIN   INF   [end]      : 0
+2020-04-20 17:16:21.648   MAIN   INF   [transfer] : 0
+2020-04-20 17:16:21.648   MAIN   INF   Checking user
+2020-04-20 17:16:48.859   MAIN   INF   Server running
+2020-04-20 17:16:50.236   MAIN   INF   Checking data input
+2020-04-20 17:16:50.236   MAIN   INF   [user]     : 
+2020-04-20 17:16:50.236   MAIN   INF   [order]    : 
+2020-04-20 17:16:50.236   MAIN   INF   [operation]: 
+2020-04-20 17:16:50.236   MAIN   INF   [workplace]: 
+2020-04-20 17:16:50.237   MAIN   INF   [start]    : 1
+2020-04-20 17:16:50.237   MAIN   INF   [end]      : 0
+2020-04-20 17:16:50.237   MAIN   INF   [transfer] : 0
+2020-04-20 17:16:50.237   MAIN   INF   Checking user
+2020-04-20 17:17:05.240   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:17:05.240   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:17:14.927   MAIN   INF   Server running
+2020-04-20 17:17:16.320   MAIN   INF   Checking data input
+2020-04-20 17:17:16.320   MAIN   INF   [user]     : 123
+2020-04-20 17:17:16.320   MAIN   INF   [order]    : 
+2020-04-20 17:17:16.320   MAIN   INF   [operation]: 
+2020-04-20 17:17:16.321   MAIN   INF   [workplace]: 
+2020-04-20 17:17:16.321   MAIN   INF   [start]    : 0
+2020-04-20 17:17:16.321   MAIN   INF   [end]      : 0
+2020-04-20 17:17:16.321   MAIN   INF   [transfer] : 0
+2020-04-20 17:17:16.321   MAIN   INF   Checking user
+2020-04-20 17:18:00.879   MAIN   INF   Server running
+2020-04-20 17:18:04.442   MAIN   INF   Checking data input
+2020-04-20 17:18:04.443   MAIN   INF   [user]     : 123
+2020-04-20 17:18:04.443   MAIN   INF   [order]    : 
+2020-04-20 17:18:04.443   MAIN   INF   [operation]: 
+2020-04-20 17:18:04.443   MAIN   INF   [workplace]: 
+2020-04-20 17:18:04.443   MAIN   INF   [start]    : 0
+2020-04-20 17:18:04.444   MAIN   INF   [end]      : 0
+2020-04-20 17:18:04.444   MAIN   INF   [transfer] : 0
+2020-04-20 17:18:04.444   MAIN   INF   Checking user
+2020-04-20 17:18:18.127   MAIN   INF   Server running
+2020-04-20 17:18:19.838   MAIN   INF   Checking data input
+2020-04-20 17:18:19.839   MAIN   INF   [user]     : 123
+2020-04-20 17:18:19.839   MAIN   INF   [order]    : 
+2020-04-20 17:18:19.839   MAIN   INF   [operation]: 
+2020-04-20 17:18:19.839   MAIN   INF   [workplace]: 
+2020-04-20 17:18:19.839   MAIN   INF   [start]    : 0
+2020-04-20 17:18:19.839   MAIN   INF   [end]      : 0
+2020-04-20 17:18:19.840   MAIN   INF   [transfer] : 0
+2020-04-20 17:18:19.840   MAIN   INF   Checking user
+2020-04-20 17:18:37.419   MAIN   INF   Server running
+2020-04-20 17:18:37.873   MAIN   INF   Displaying main screen
+2020-04-20 17:18:37.873   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:18:38.918   MAIN   INF   Checking data input
+2020-04-20 17:18:38.918   MAIN   INF   [user]     : 
+2020-04-20 17:18:38.919   MAIN   INF   [order]    : 
+2020-04-20 17:18:38.919   MAIN   INF   [operation]: 
+2020-04-20 17:18:38.919   MAIN   INF   [workplace]: 
+2020-04-20 17:18:38.919   MAIN   INF   [start]    : 1
+2020-04-20 17:18:38.919   MAIN   INF   [end]      : 0
+2020-04-20 17:18:38.919   MAIN   INF   [transfer] : 0
+2020-04-20 17:18:38.919   MAIN   INF   Checking user
+2020-04-20 17:18:53.923   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:18:53.924   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:22:03.158   MAIN   INF   Server running
+2020-04-20 17:22:04.371   MAIN   INF   Displaying main screen
+2020-04-20 17:22:04.372   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:22:05.548   MAIN   INF   Checking data input
+2020-04-20 17:22:05.548   MAIN   INF   startorder
+2020-04-20 17:22:05.548   MAIN   INF   [user]     : 
+2020-04-20 17:22:05.548   MAIN   INF   [order]    : 
+2020-04-20 17:22:05.549   MAIN   INF   [operation]: 
+2020-04-20 17:22:05.549   MAIN   INF   [workplace]: 
+2020-04-20 17:22:05.549   MAIN   INF   [start]    : 1
+2020-04-20 17:22:05.549   MAIN   INF   [end]      : 0
+2020-04-20 17:22:05.549   MAIN   INF   [transfer] : 0
+2020-04-20 17:22:05.549   MAIN   INF   Checking user
+2020-04-20 17:22:12.065   MAIN   INF   Displaying main screen
+2020-04-20 17:22:12.065   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:22:13.168   MAIN   INF   Checking data input
+2020-04-20 17:22:13.169   MAIN   INF   endorder
+2020-04-20 17:22:13.169   MAIN   INF   [user]     : 
+2020-04-20 17:22:13.169   MAIN   INF   [order]    : 
+2020-04-20 17:22:13.169   MAIN   INF   [operation]: 
+2020-04-20 17:22:13.169   MAIN   INF   [workplace]: 
+2020-04-20 17:22:13.169   MAIN   INF   [start]    : 0
+2020-04-20 17:22:13.169   MAIN   INF   [end]      : 1
+2020-04-20 17:22:13.169   MAIN   INF   [transfer] : 0
+2020-04-20 17:22:13.169   MAIN   INF   Checking user
+2020-04-20 17:26:20.473   MAIN   INF   Server running
+2020-04-20 17:26:24.649   MAIN   INF   Displaying main screen
+2020-04-20 17:26:24.650   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:26:25.885   MAIN   INF   Checking data input
+2020-04-20 17:26:25.885   MAIN   INF   [user]     : 
+2020-04-20 17:26:25.885   MAIN   INF   [order]    : 
+2020-04-20 17:26:25.886   MAIN   INF   [operation]: 
+2020-04-20 17:26:25.886   MAIN   INF   [workplace]: 
+2020-04-20 17:26:25.886   MAIN   INF   [start]    : 1
+2020-04-20 17:26:25.886   MAIN   INF   [end]      : 0
+2020-04-20 17:26:25.886   MAIN   INF   [transfer] : 0
+2020-04-20 17:26:25.886   MAIN   INF   Checking user
+2020-04-20 17:26:40.891   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:26:40.891   MAIN   INF   Starting order
+2020-04-20 17:26:40.892   MAIN   INF   startorder
+2020-04-20 17:26:40.892   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:27:50.468   MAIN   INF   Server running
+2020-04-20 17:27:51.557   MAIN   INF   Displaying main screen
+2020-04-20 17:27:51.557   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:27:52.658   MAIN   INF   Checking data input
+2020-04-20 17:27:52.658   MAIN   INF   [user]     : 
+2020-04-20 17:27:52.658   MAIN   INF   [order]    : 
+2020-04-20 17:27:52.658   MAIN   INF   [operation]: 
+2020-04-20 17:27:52.659   MAIN   INF   [workplace]: 
+2020-04-20 17:27:52.659   MAIN   INF   [start]    : 0
+2020-04-20 17:27:52.659   MAIN   INF   [end]      : 1
+2020-04-20 17:27:52.659   MAIN   INF   [transfer] : 0
+2020-04-20 17:27:52.659   MAIN   INF   Checking user
+2020-04-20 17:28:07.660   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:28:07.660   MAIN   INF   Ending order
+2020-04-20 17:28:07.661   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:28:41.933   MAIN   INF   Server running
+2020-04-20 17:28:43.461   MAIN   INF   Displaying main screen
+2020-04-20 17:28:43.461   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:28:44.983   MAIN   INF   Checking data input
+2020-04-20 17:28:44.983   MAIN   INF   [user]     : 
+2020-04-20 17:28:44.983   MAIN   INF   [order]    : 
+2020-04-20 17:28:44.984   MAIN   INF   [operation]: 
+2020-04-20 17:28:44.984   MAIN   INF   [workplace]: 
+2020-04-20 17:28:44.984   MAIN   INF   [start]    : 0
+2020-04-20 17:28:44.984   MAIN   INF   [end]      : 0
+2020-04-20 17:28:44.984   MAIN   INF   [transfer] : 1
+2020-04-20 17:28:44.984   MAIN   INF   Checking user
+2020-04-20 17:30:30.752   MAIN   INF   Server running
+2020-04-20 17:30:31.742   MAIN   INF   Displaying main screen
+2020-04-20 17:30:31.743   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:30:32.832   MAIN   INF   Checking data input
+2020-04-20 17:30:32.832   MAIN   INF   [user]     : 
+2020-04-20 17:30:32.832   MAIN   INF   [order]    : 
+2020-04-20 17:30:32.832   MAIN   INF   [operation]: 
+2020-04-20 17:30:32.833   MAIN   INF   [workplace]: 
+2020-04-20 17:30:32.833   MAIN   INF   [start]    : 0
+2020-04-20 17:30:32.833   MAIN   INF   [end]      : 0
+2020-04-20 17:30:32.833   MAIN   INF   [transfer] : 1
+2020-04-20 17:30:32.833   MAIN   INF   Checking user
+2020-04-20 17:30:47.838   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:30:47.839   MAIN   INF   Transferring order
+2020-04-20 17:30:47.839   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:30:52.667   MAIN   INF   Server running
+2020-04-20 17:30:56.204   MAIN   INF   Displaying main screen
+2020-04-20 17:30:56.205   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:30:57.440   MAIN   INF   Checking data input
+2020-04-20 17:30:57.440   MAIN   INF   [user]     : 
+2020-04-20 17:30:57.440   MAIN   INF   [order]    : 
+2020-04-20 17:30:57.441   MAIN   INF   [operation]: 
+2020-04-20 17:30:57.441   MAIN   INF   [workplace]: 
+2020-04-20 17:30:57.441   MAIN   INF   [start]    : 1
+2020-04-20 17:30:57.441   MAIN   INF   [end]      : 0
+2020-04-20 17:30:57.441   MAIN   INF   [transfer] : 0
+2020-04-20 17:30:57.441   MAIN   INF   Checking user
+2020-04-20 17:31:12.442   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:31:12.442   MAIN   INF   Starting order
+2020-04-20 17:31:12.442   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:31:23.851   MAIN   INF   Displaying main screen
+2020-04-20 17:31:23.852   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 17:31:25.059   MAIN   INF   Checking data input
+2020-04-20 17:31:25.060   MAIN   INF   [user]     : 
+2020-04-20 17:31:25.060   MAIN   INF   [order]    : 
+2020-04-20 17:31:25.060   MAIN   INF   [operation]: 
+2020-04-20 17:31:25.060   MAIN   INF   [workplace]: 
+2020-04-20 17:31:25.060   MAIN   INF   [start]    : 0
+2020-04-20 17:31:25.060   MAIN   INF   [end]      : 1
+2020-04-20 17:31:25.060   MAIN   INF   [transfer] : 0
+2020-04-20 17:31:25.060   MAIN   INF   Checking user
+2020-04-20 17:31:40.061   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
+2020-04-20 17:31:40.061   MAIN   INF   Ending order
+2020-04-20 17:31:40.061   MAIN   INF   No workplaces, adding null workplace

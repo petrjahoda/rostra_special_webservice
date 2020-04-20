@@ -47,10 +47,16 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 	orderId := r.Form["orderid"]
 	operationId := r.Form["operationid"]
 	workplaceId := r.Form["workplaceid"]
+	startorder := r.Form["startorder"]
+	endorder := r.Form["endorder"]
+	transferorder := r.Form["transferorder"]
 	LogInfo("MAIN", "[user]     : "+userId[0])
 	LogInfo("MAIN", "[order]    : "+orderId[0])
 	LogInfo("MAIN", "[operation]: "+operationId[0])
 	LogInfo("MAIN", "[workplace]: "+workplaceId[0])
+	LogInfo("MAIN", "[start]    : "+strconv.Itoa(len(startorder)))
+	LogInfo("MAIN", "[end]      : "+strconv.Itoa(len(endorder)))
+	LogInfo("MAIN", "[transfer] : "+strconv.Itoa(len(transferorder)))
 	data := RostraMainPage{
 		Version:             "version: " + version,
 		Username:            "Zadejte prosím své číslo",
@@ -92,12 +98,31 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 			data.Workplaces = append(data.Workplaces, workplace)
 		}
 	}
+	if StartOrderButtonPressed(startorder) {
+		LogInfo("MAIN", "Starting order")
+	} else if EndOrderButtonPressed(endorder) {
+		LogInfo("MAIN", "Ending order")
+	} else if TransferOrderButtonPressed(transferorder) {
+		LogInfo("MAIN", "Transferring order")
+	}
 	if len(data.Workplaces) == 0 {
 		LogInfo("MAIN", "No workplaces, adding null workplace")
 		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 		data.Workplaces = append(data.Workplaces, workplace)
 	}
 	_ = tmpl.Execute(writer, data)
+}
+
+func TransferOrderButtonPressed(transferorder []string) bool {
+	return len(transferorder) == 1
+}
+
+func EndOrderButtonPressed(endorder []string) bool {
+	return len(endorder) == 1
+}
+
+func StartOrderButtonPressed(startorder []string) bool {
+	return len(startorder) == 1
 }
 
 func CheckOrderInZapsi(userId []string, orderId []string, operationid []string, workplaceId []string) bool {
@@ -269,7 +294,6 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) SytelineUser {
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
 	}
-	//TODO: CheckUserInZapsi(userId, jmeno)
 	return sytelineUser
 }
 
@@ -289,21 +313,21 @@ func RostraMainScreen(writer http.ResponseWriter, r *http.Request, params httpro
 	LogInfo("MAIN", "Displaying main screen")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := RostraMainPage{
-		Version:             "version: " + version,
-		Username:            "Zadejte prosím své číslo",
-		UsernameValue:       "",
-		Order:               "",
-		OrderValue:          "",
-		Operation:           "",
-		OperationValue:      "",
-		Workplace:           "",
-		OrderDisabled:       "disabled",
-		OperationDisabled:   "disabled",
-		WorkplaceDisabled:   "disabled",
-		UserFocus:           "autofocus",
-		StartOrderButton:    "disabled",
-		EndOrderButton:      "disabled",
-		TransferOrderButton: "disabled",
+		Version:           "version: " + version,
+		Username:          "Zadejte prosím své číslo",
+		UsernameValue:     "",
+		Order:             "",
+		OrderValue:        "",
+		Operation:         "",
+		OperationValue:    "",
+		Workplace:         "",
+		OrderDisabled:     "disabled",
+		OperationDisabled: "disabled",
+		WorkplaceDisabled: "disabled",
+		UserFocus:         "autofocus",
+		//StartOrderButton:    "disabled",
+		//EndOrderButton:      "disabled",
+		//TransferOrderButton: "disabled",
 	}
 	if len(data.Workplaces) == 0 {
 		LogInfo("MAIN", "No workplaces, adding null workplace")

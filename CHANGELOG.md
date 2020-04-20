@@ -20,6 +20,7 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 - added structs for user, order, operation and workplaces
 - fully working user input with checking in syteline
 - updated rostra.html file 
+- checking which button was pressed
 
 
 ## [2020.2.1.16] - 2020-04-16
