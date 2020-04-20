@@ -14,12 +14,8 @@ func main() {
 	CreateConfigIfNotExists()
 	LoadSettingsFromConfigFile()
 	router := httprouter.New()
-	//router.GET("/rostra_main_screen", RostraMainScreen)
-
 	router.GET("/", RostraMainScreen)
-	router.GET("/reset", RostraMainScreen)
 	router.GET("/data_input", DataInput)
-
 	router.GET("/js/metro.min.js", metrojs)
 	router.GET("/css/metro-all.css", metrocss)
 	router.GET("/mif/metro.ttf", metrottf)

@@ -7,14 +7,41 @@ import (
 	"time"
 )
 
-type Lcd struct {
-	OID       int    `gorm:"column:OID"`
-	Name      string `gorm:"column:Name"`
-	IPAddress string `gorm:"column:IPAddress"`
+type SytelineUser struct {
+	JePlatny string
+	Jmeno    string
 }
 
-func (Lcd) TableName() string {
-	return "lcd"
+type SytelineOrder struct {
+	CisloVp                string
+	SuffixVp               string
+	PolozkaVp              string
+	PopisPolVp             string
+	priznak_seriova_vyroba string
+}
+
+type SytelineOperation struct {
+	pracoviste          string
+	pracoviste_popis    string
+	uvolneno_op         string
+	priznak_mn_2        string
+	mn_2_ks             string
+	priznak_mn_3        string
+	mn_3_ks             string
+	jen_prenos_mnozstvi string
+	priznak_nasobnost   string
+	nasobnost           string
+	parovy_dil          string
+	seznamm_par_dilu    string
+}
+
+type SytelineWorkplace struct {
+	Zapsi_zdroj           string
+	priznak_mn_1          string
+	vice_vp               string
+	SL_prac               string
+	auto_prevod_mnozstvi  string
+	mnozstvi_auto_prevodu string
 }
 
 type TerminalInputOrder struct {
