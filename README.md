@@ -8,8 +8,8 @@
 ## Description
 Go webservice that enables users to start and end their work
 
-- [ ] show running orders in table THUR
-- [ ] write back to syteline FRID
-- [ ] add conditions
+- [ ] write back to syteline THUR
+- [ ] add conditions FRID
+- [ ] show running orders in table
 
 www.zapsi.eu © 2020

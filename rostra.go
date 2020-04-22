@@ -159,8 +159,8 @@ func EndOrderInZapsi(orderId []string, operationId []string, userId []string, wo
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
 	if terminalInputOrder.OID > 0 {
 		LogInfo("MAIN", "Closing order "+strconv.Itoa(terminalInputOrder.OID))
-		db.Model(&terminalInputOrder).UpdateColumn(TerminalInputOrder{DTE: sql.NullTime{Time: time.Now(), Valid: true}})
-		db.Model(&terminalInputOrder).UpdateColumn(TerminalInputOrder{Interval: float32(time.Now().Sub(terminalInputOrder.DTS))})
+		db.Model(&terminalInputOrder).Where("OID = ?", terminalInputOrder.OID).UpdateColumn(TerminalInputOrder{DTE: sql.NullTime{Time: time.Now(), Valid: true}})
+		db.Model(&terminalInputOrder).Where("OID = ?", terminalInputOrder.OID).UpdateColumn(TerminalInputOrder{Interval: float32(time.Now().Sub(terminalInputOrder.DTS))})
 	}
 }
 
