@@ -636,3 +636,17 @@
 2020-04-20 17:31:40.061   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: i/o timeout
 2020-04-20 17:31:40.061   MAIN   INF   Ending order
 2020-04-20 17:31:40.061   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 19:33:36.626   MAIN   INF   Server running
+2020-04-20 19:33:40.450   MAIN   INF   Displaying main screen
+2020-04-20 19:33:40.450   MAIN   INF   No workplaces, adding null workplace
+2020-04-20 19:33:42.282   MAIN   INF   Checking data input
+2020-04-20 19:33:42.283   MAIN   INF   [user]     : 123
+2020-04-20 19:33:42.283   MAIN   INF   [order]    : 
+2020-04-20 19:33:42.283   MAIN   INF   [operation]: 
+2020-04-20 19:33:42.283   MAIN   INF   [workplace]: 
+2020-04-20 19:33:42.283   MAIN   INF   [start]    : 0
+2020-04-20 19:33:42.283   MAIN   INF   [end]      : 0
+2020-04-20 19:33:42.283   MAIN   INF   [transfer] : 0
+2020-04-20 19:33:42.283   MAIN   INF   Checking user
+2020-04-20 19:33:48.768   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: network is unreachable
+2020-04-20 19:33:48.770   MAIN   INF   No workplaces, adding null workplace

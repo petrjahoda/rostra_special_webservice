@@ -1,12 +1,22 @@
 module rompa_lcd_webservice
 
-go 1.13
+go 1.14
 
 require (
-	github.com/davidscholberg/go-durationfmt v0.0.0-20170122144659-64843a2083d3
-	github.com/goodsign/monday v0.0.0-20191126124755-cfd2449ea3c7
-	github.com/gookit/color v1.2.0
-	github.com/jinzhu/gorm v1.9.11
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/denisenkom/go-mssqldb v0.0.0-20200206145737-bbfc9a55622e // indirect
+	github.com/go-sql-driver/mysql v1.5.0 // indirect
+	github.com/gookit/color v1.2.4
+	github.com/jinzhu/gorm v1.9.12
+	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/julienschmidt/httprouter v1.3.0
-	github.com/julienschmidt/sse v0.0.0-20190921213156-72db694fe9e6
+	github.com/kardianos/service v1.0.0
+	github.com/kr/text v0.2.0 // indirect
+	github.com/lib/pq v1.3.0 // indirect
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
+	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/stretchr/testify v1.5.1 // indirect
+	golang.org/x/crypto v0.0.0-20200420201142-3c4aac89819a // indirect
+	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
+	gopkg.in/yaml.v2 v2.2.8 // indirect
 )

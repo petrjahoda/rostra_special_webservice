@@ -2,14 +2,26 @@ package main
 
 import (
 	"github.com/julienschmidt/httprouter"
+	"github.com/kardianos/service"
 	"net/http"
 	"time"
 )
 
-const version = "2020.2.1.20"
+const version = "2020.2.1.22"
+const programName = "Zapsi Service"
+const programDescription = "Downloads data from Zapsi devices"
+
 const deleteLogsAfter = 240 * time.Hour
 
-func main() {
+type program struct{}
+
+func (p *program) Start(s service.Service) error {
+	LogInfo("MAIN", "Starting "+programName+" on "+s.Platform())
+	go p.run()
+	return nil
+}
+
+func (p *program) run() {
 	LogDirectoryFileCheck("MAIN")
 	CreateConfigIfNotExists()
 	LoadSettingsFromConfigFile()
@@ -23,14 +35,36 @@ func main() {
 	_ = http.ListenAndServe(":80", router)
 }
 
-func metrojs(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func main() {
+	serviceConfig := &service.Config{
+		Name:        programName,
+		DisplayName: programName,
+		Description: programDescription,
+	}
+	prg := &program{}
+	s, err := service.New(prg, serviceConfig)
+	if err != nil {
+		LogError("MAIN", err.Error())
+	}
+	err = s.Run()
+	if err != nil {
+		LogError("MAIN", "Problem starting "+serviceConfig.Name)
+	}
+}
+
+func (p *program) Stop(s service.Service) error {
+	LogInfo("MAIN", "Stopped on platform "+s.Platform())
+	return nil
+}
+
+func metrojs(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	http.ServeFile(writer, request, "js/metro.min.js")
 }
 
-func metrocss(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func metrocss(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	http.ServeFile(writer, request, "css/metro-all.css")
 }
 
-func metrottf(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func metrottf(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	http.ServeFile(writer, request, "mif/metro.ttf")
 }

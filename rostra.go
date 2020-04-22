@@ -1,12 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/jinzhu/gorm"
 	"github.com/julienschmidt/httprouter"
 	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type RostraMainPage struct {
@@ -39,7 +41,7 @@ const (
 	checkWorkplace
 )
 
-func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	LogInfo("MAIN", "Checking data input")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	_ = r.ParseForm()
@@ -50,13 +52,7 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 	startorder := r.Form["startorder"]
 	endorder := r.Form["endorder"]
 	transferorder := r.Form["transferorder"]
-	LogInfo("MAIN", "[user]     : "+userId[0])
-	LogInfo("MAIN", "[order]    : "+orderId[0])
-	LogInfo("MAIN", "[operation]: "+operationId[0])
-	LogInfo("MAIN", "[workplace]: "+workplaceId[0])
-	LogInfo("MAIN", "[start]    : "+strconv.Itoa(len(startorder)))
-	LogInfo("MAIN", "[end]      : "+strconv.Itoa(len(endorder)))
-	LogInfo("MAIN", "[transfer] : "+strconv.Itoa(len(transferorder)))
+	LogInfo("MAIN", "[user:"+userId[0]+"] [order:"+orderId[0]+"] [operation:"+operationId[0]+"] [workplace:"+workplaceId[0]+"]")
 	data := RostraMainPage{
 		Version:             "version: " + version,
 		Username:            "Zadejte prosím své číslo",
@@ -71,40 +67,69 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 		EndOrderButton:      "disabled",
 		TransferOrderButton: "disabled",
 	}
-	inputStep := CheckInputStep(orderId, operationId, workplaceId)
-	switch inputStep {
-	case checkUser:
-		CheckUserInSyteline(userId, &data)
-	case checkOrder:
-		CheckOrderInSyteline(userId, orderId, &data)
-	case checkOperation:
-		CheckOperationInSyteline(userId, orderId, operationId, &data)
-	case checkWorkplace:
-		orderExists := CheckOrderInZapsi(userId, orderId, operationId, workplaceId)
-		if orderExists {
-			data.EndOrderButton = ""
-			data.TransferOrderButton = ""
-			data.UsernameValue = userId[0]
-			data.OrderValue = orderId[0]
-			data.OperationValue = operationId[0]
-			workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
-			data.Workplaces = append(data.Workplaces, workplace)
-		} else {
-			data.StartOrderButton = ""
-			data.UsernameValue = userId[0]
-			data.OrderValue = orderId[0]
-			data.OperationValue = operationId[0]
-			workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
-			data.Workplaces = append(data.Workplaces, workplace)
+
+	if len(startorder) == 1 {
+		LogInfo("MAIN", "Starting order")
+		sytelineOrder := CheckOrderInSyteline(userId, orderId, &data)
+		sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, &data)
+		CreateProductInZapsiIfNotExists(sytelineOrder)
+		zapsiOrder := CreateOrderInZapsiIfNotExists(sytelineOrder, operationId, sytelineOperation, workplaceId)
+		StartTerminalOrderInZapsi(userId, zapsiOrder, sytelineOperation, workplaceId)
+		data.Username = "Zadejte prosím své číslo"
+		data.Order = ""
+		data.OrderValue = ""
+		data.Operation = ""
+		data.OperationValue = ""
+		data.UsernameValue = ""
+		data.UserDisabled = ""
+		data.OrderDisabled = "disabled"
+		data.OperationDisabled = "disabled"
+		data.WorkplaceDisabled = "disabled"
+		data.Workplaces = []SytelineWorkplace{}
+		data.UserFocus = "autofocus"
+	} else if len(endorder) == 1 {
+		LogInfo("MAIN", "Ending order")
+		EndOrderInZapsi(orderId, operationId, userId, workplaceId)
+		data.Username = "Zadejte prosím své číslo"
+		data.UsernameValue = ""
+		data.UserDisabled = ""
+		data.UserFocus = "autofocus"
+		//TODO: EndOrderInSyteline(sytelineUser, sytelineOrder, sytelineOperation, workplaceId)
+	} else if len(transferorder) == 1 {
+		LogInfo("MAIN", "Transferring order")
+		//TODO: TransferOrderDataToSyteline(sytelineUser, sytelineOrder, sytelineOperation, workplaceId)
+	} else {
+		inputStep := CheckInputStep(orderId, operationId, workplaceId)
+		switch inputStep {
+		case checkUser:
+			CheckUserInSyteline(userId, &data)
+		case checkOrder:
+			CheckOrderInSyteline(userId, orderId, &data)
+		case checkOperation:
+			CheckOperationInSyteline(userId, orderId, operationId, &data)
+		case checkWorkplace:
+			orderExists := CheckOrderInZapsi(userId, orderId, operationId, workplaceId)
+			if orderExists {
+				LogInfo("MAIN", "Order in Zapsi already exists")
+				data.EndOrderButton = ""
+				data.TransferOrderButton = ""
+				data.UsernameValue = userId[0]
+				data.OrderValue = orderId[0]
+				data.OperationValue = operationId[0]
+				workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
+				data.Workplaces = append(data.Workplaces, workplace)
+			} else {
+				LogInfo("MAIN", "Order in Zapsi does not exist")
+				data.StartOrderButton = ""
+				data.UsernameValue = userId[0]
+				data.OrderValue = orderId[0]
+				data.OperationValue = operationId[0]
+				workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
+				data.Workplaces = append(data.Workplaces, workplace)
+			}
 		}
 	}
-	if StartOrderButtonPressed(startorder) {
-		LogInfo("MAIN", "Starting order")
-	} else if EndOrderButtonPressed(endorder) {
-		LogInfo("MAIN", "Ending order")
-	} else if TransferOrderButtonPressed(transferorder) {
-		LogInfo("MAIN", "Transferring order")
-	}
+
 	if len(data.Workplaces) == 0 {
 		LogInfo("MAIN", "No workplaces, adding null workplace")
 		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
@@ -113,27 +138,177 @@ func DataInput(writer http.ResponseWriter, r *http.Request, params httprouter.Pa
 	_ = tmpl.Execute(writer, data)
 }
 
-func TransferOrderButtonPressed(transferorder []string) bool {
-	return len(transferorder) == 1
+func EndOrderInZapsi(orderId []string, operationId []string, userId []string, workplaceId []string) {
+	order, suffix := ParseOrder(orderId[0])
+	orderName := order + "." + suffix + "-" + operationId[0]
+	var zapsiUser User
+	var zapsiOrder Order
+	var zapsiWorkplace Workplace
+	var terminalInputOrder TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return
+	}
+	defer db.Close()
+	db.Where("Login = ?", userId[0]).Find(&zapsiUser)
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
+	if terminalInputOrder.OID > 0 {
+		LogInfo("MAIN", "Closing order "+strconv.Itoa(terminalInputOrder.OID))
+		db.Model(&terminalInputOrder).UpdateColumn(TerminalInputOrder{DTE: sql.NullTime{Time: time.Now(), Valid: true}})
+		db.Model(&terminalInputOrder).UpdateColumn(TerminalInputOrder{Interval: float32(time.Now().Sub(terminalInputOrder.DTS))})
+	}
 }
 
-func EndOrderButtonPressed(endorder []string) bool {
-	return len(endorder) == 1
+func StartTerminalOrderInZapsi(userId []string, order Order, operation SytelineOperation, workplaceId []string) {
+	var zapsiUser User
+	var zapsiWorkplace Workplace
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return
+	}
+	defer db.Close()
+	db.Where("Login = ?", userId[0]).Find(&zapsiUser)
+	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
+	var terminalInputOrder TerminalInputOrder
+	defer db.Close()
+	parsedCavity, err := strconv.Atoi(operation.nasobnost)
+	if err != nil {
+		LogError("MAIN", "Problem parsing cavity: "+operation.nasobnost)
+	}
+	terminalInputOrder.DTS = time.Now()
+	terminalInputOrder.OrderID = order.OID
+	terminalInputOrder.UserID = zapsiUser.OID
+	terminalInputOrder.DeviceID = zapsiWorkplace.DeviceID
+	terminalInputOrder.Interval = 0
+	terminalInputOrder.Count = 0
+	terminalInputOrder.Fail = 0
+	terminalInputOrder.AverageCycle = 0.0
+	terminalInputOrder.WorkerCount = 1
+	terminalInputOrder.WorkplaceModeID = 1
+	terminalInputOrder.Cavity = parsedCavity
+	db.Create(&terminalInputOrder)
 }
 
-func StartOrderButtonPressed(startorder []string) bool {
-	return len(startorder) == 1
+func CreateProductInZapsiIfNotExists(order SytelineOrder) {
+	var zapsiProduct Product
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return
+	}
+	defer db.Close()
+	db.Where("Name = ?", order.PolozkaVp).Find(&zapsiProduct)
+	if zapsiProduct.OID > 0 {
+		LogInfo("MAIN", "Product "+order.PolozkaVp+" already exists")
+		return
+	}
+	LogInfo("MAIN", "Product "+order.PolozkaVp+" does not exist, creating product")
+	zapsiProduct.Name = order.PolozkaVp
+	zapsiProduct.Barcode = order.PolozkaVp
+	zapsiProduct.Cycle = 1
+	zapsiProduct.IdleFromTime = 1
+	zapsiProduct.ProductGroupID = 1
+	zapsiProduct.ProductStatusID = 1
+	db.Create(&zapsiProduct)
+}
+
+func CreateOrderInZapsiIfNotExists(order SytelineOrder, operationId []string, operation SytelineOperation, workplaceId []string) Order {
+	var zapsiOrder Order
+	var zapsiProduct Product
+	var zapsiWorkplace Workplace
+	zapsiOrderName := order.CisloVp + "." + order.SuffixVp + "-" + operationId[0]
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return zapsiOrder
+	}
+	defer db.Close()
+	db.Where("Name = ?", zapsiOrderName).Find(&zapsiOrder)
+	if zapsiOrder.OID > 0 {
+		LogInfo("MAIN", "Order "+zapsiOrder.Name+" already exists")
+		return zapsiOrder
+	}
+	LogInfo("MAIN", "Order "+zapsiOrder.Name+" does not exist, creating order")
+	db.Where("Name = ?", order.PolozkaVp).Find(&zapsiProduct)
+	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
+	countRequestedConverted, err := strconv.ParseFloat(operation.mn_2_ks, 32)
+	if err != nil {
+		LogError("MAIN", "Problem parsing count for order: "+operation.mn_2_ks)
+	}
+	zapsiOrder.Name = zapsiOrderName
+	zapsiOrder.Barcode = zapsiOrderName
+	zapsiOrder.ProductID = zapsiProduct.OID
+	zapsiOrder.OrderStatusID = 1
+	zapsiOrder.CountRequested = int(countRequestedConverted)
+	zapsiOrder.WorkplaceID = zapsiWorkplace.OID
+	db.Create(&zapsiOrder)
+	return zapsiOrder
+}
+
+func CreateUserInZapsiIfNotExists(user SytelineUser) {
+	splittedUserName := strings.Split(user.Jmeno, ",")
+	var zapsiUser User
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return
+	}
+	defer db.Close()
+	db.Where("Name LIKE ?", splittedUserName[0]).Where("FirstName LIKE ?", splittedUserName[1]).Find(&zapsiUser)
+	if zapsiUser.OID > 0 {
+		LogInfo("MAIN", "User "+user.Jmeno+"already exists")
+		return
+	}
+	LogInfo("MAIN", "User "+user.Jmeno+" does not exist, creating user "+user.Jmeno)
+	zapsiUser.Login = user.Jmeno
+	zapsiUser.Name = splittedUserName[0]
+	zapsiUser.FirstName = splittedUserName[1]
+	zapsiUser.UserRoleID = "1"
+	zapsiUser.UserTypeID = "1"
+	db.Create(&zapsiUser)
 }
 
 func CheckOrderInZapsi(userId []string, orderId []string, operationid []string, workplaceId []string) bool {
-	//TODO: check order here
+	order, suffix := ParseOrder(orderId[0])
+	orderName := order + "." + suffix + "-" + operationid[0]
+	var zapsiUser User
+	var zapsiOrder Order
+	var zapsiWorkplace Workplace
+	var terminalInputOrder TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return false
+	}
+	defer db.Close()
+	db.Where("Login = ?", userId[0]).Find(&zapsiUser)
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
+	if terminalInputOrder.OID > 0 {
+		return true
+	}
 	return false
 }
 
 func CheckOperationInSyteline(userId []string, orderId []string, operationId []string, data *RostraMainPage) (SytelineOperation, []SytelineWorkplace) {
 	order, suffix := ParseOrder(orderId[0])
 	LogInfo("MAIN", "Checking operation")
-	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
+	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineOperation SytelineOperation
 	var sytelineWorkplaces []SytelineWorkplace
 	if err != nil {
@@ -204,14 +379,6 @@ func CheckOperationInSyteline(userId []string, orderId []string, operationId []s
 	return sytelineOperation, sytelineWorkplaces
 }
 
-func AddWorkplaces(workplaces []SytelineWorkplace) string {
-	var workplacesData string
-	for _, workplace := range workplaces {
-		workplacesData += workplace.Zapsi_zdroj + ","
-	}
-	return workplacesData
-}
-
 func ParseOrder(orderId string) (string, string) {
 	if strings.Contains(orderId, "-") {
 		splittedOrder := strings.Split(orderId, "-")
@@ -226,7 +393,7 @@ func ParseOrder(orderId string) (string, string) {
 func CheckOrderInSyteline(userId []string, orderId []string, data *RostraMainPage) SytelineOrder {
 	order, suffix := ParseOrder(orderId[0])
 	LogInfo("MAIN", "Checking order")
-	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
+	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineOrder SytelineOrder
 	if err != nil {
 		LogError("MAIN", "Error opening db: "+err.Error())
@@ -268,7 +435,7 @@ func CheckOrderInSyteline(userId []string, orderId []string, data *RostraMainPag
 
 func CheckUserInSyteline(userId []string, data *RostraMainPage) SytelineUser {
 	LogInfo("MAIN", "Checking user")
-	db, err := gorm.Open("mssql", "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test")
+	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineUser SytelineUser
 	if err != nil {
 		LogError("MAIN", "Error opening db: "+err.Error())
@@ -293,7 +460,9 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) SytelineUser {
 		data.Username = "Číslo nenalezeno, zadejte prosím znovu"
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
+		return sytelineUser
 	}
+	CreateUserInZapsiIfNotExists(sytelineUser)
 	return sytelineUser
 }
 
@@ -306,28 +475,27 @@ func CheckInputStep(orderId []string, operationId []string, workplaceId []string
 		return checkOperation
 	}
 	return checkWorkplace
-
 }
 
-func RostraMainScreen(writer http.ResponseWriter, r *http.Request, params httprouter.Params) {
+func RostraMainScreen(writer http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	LogInfo("MAIN", "Displaying main screen")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := RostraMainPage{
-		Version:           "version: " + version,
-		Username:          "Zadejte prosím své číslo",
-		UsernameValue:     "",
-		Order:             "",
-		OrderValue:        "",
-		Operation:         "",
-		OperationValue:    "",
-		Workplace:         "",
-		OrderDisabled:     "disabled",
-		OperationDisabled: "disabled",
-		WorkplaceDisabled: "disabled",
-		UserFocus:         "autofocus",
-		//StartOrderButton:    "disabled",
-		//EndOrderButton:      "disabled",
-		//TransferOrderButton: "disabled",
+		Version:             "version: " + version,
+		Username:            "Zadejte prosím své číslo",
+		UsernameValue:       "",
+		Order:               "",
+		OrderValue:          "",
+		Operation:           "",
+		OperationValue:      "",
+		Workplace:           "",
+		OrderDisabled:       "disabled",
+		OperationDisabled:   "disabled",
+		WorkplaceDisabled:   "disabled",
+		StartOrderButton:    "disabled",
+		EndOrderButton:      "disabled",
+		TransferOrderButton: "disabled",
+		UserFocus:           "autofocus",
 	}
 	if len(data.Workplaces) == 0 {
 		LogInfo("MAIN", "No workplaces, adding null workplace")

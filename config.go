@@ -14,14 +14,16 @@ var DatabaseName string
 var DatabasePort string
 var DatabaseLogin string
 var DatabasePassword string
+var SytelineConnection string
 
 type Config struct {
-	DatabaseType string
-	IpAddress    string
-	DatabaseName string
-	Port         string
-	Login        string
-	Password     string
+	DatabaseType       string
+	IpAddress          string
+	DatabaseName       string
+	Port               string
+	Login              string
+	Password           string
+	SytelineConnection string
 }
 
 func CreateConfigIfNotExists() {
@@ -39,12 +41,13 @@ func CreateConfigIfNotExists() {
 		} else {
 			LogInfo("MAIN", "Directory for config file created")
 			data := Config{
-				DatabaseType: "mysql",
-				IpAddress:    "zapsidatabase",
-				DatabaseName: "zapsi2",
-				Port:         "3306",
-				Login:        "zapsi_uzivatel",
-				Password:     "zapsi",
+				DatabaseType:       "mysql",
+				IpAddress:          "zapsidatabase",
+				DatabaseName:       "zapsi2",
+				Port:               "3306",
+				Login:              "zapsi_uzivatel",
+				Password:           "zapsi",
+				SytelineConnection: "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test",
 			}
 			file, _ := json.MarshalIndent(data, "", "  ")
 			writingError := ioutil.WriteFile(configFullPath, file, 0666)
@@ -93,4 +96,5 @@ func LoadSettingsFromConfigFile() {
 	DatabasePort = ConfigFile.Port
 	DatabaseLogin = ConfigFile.Login
 	DatabasePassword = ConfigFile.Password
+	SytelineConnection = ConfigFile.SytelineConnection
 }

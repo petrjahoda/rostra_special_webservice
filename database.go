@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	_ "github.com/jinzhu/gorm/dialects/mssql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -45,37 +46,34 @@ type SytelineWorkplace struct {
 }
 
 type TerminalInputOrder struct {
-	OID      int       `gorm:"column:OID"`
-	DTS      time.Time `gorm:"column:DTS"`
-	DTE      time.Time `gorm:"column:DTE; default:null"`
-	Interval float32   `gorm:"column:Interval"`
-	OrderID  int       `gorm:"column:OrderID"`
-	UserID   int       `gorm:"column:UserID"`
-	DeviceID int       `gorm:"column:DeviceID"`
+	OID             int           `gorm:"column:OID"`
+	DTS             time.Time     `gorm:"column:DTS"`
+	DTE             sql.NullTime  `gorm:"column:DTE; default:null"`
+	OrderID         int           `gorm:"column:OrderID"`
+	UserID          int           `gorm:"column:UserID"`
+	DeviceID        int           `gorm:"column:DeviceID"`
+	Interval        float32       `gorm:"column:Interval"`
+	Count           int           `gorm:"column:Count"`
+	Fail            int           `gorm:"column:Fail"`
+	AverageCycle    float32       `gorm:"column:AverageCycle"`
+	WorkerCount     int           `gorm:"column:WorkerCount"`
+	WorkplaceModeID int           `gorm:"column:WorkplaceModeID"`
+	Note            string        `gorm:"column:Note"`
+	WorkshiftID     sql.NullInt32 `gorm:"column:WorkshiftID"`
+	Cavity          int           `gorm:"column:Cavity"`
 }
 
 func (TerminalInputOrder) TableName() string {
 	return "terminal_input_order"
 }
 
-type TerminalInputIdle struct {
-	OID      int       `gorm:"column:OID"`
-	DTS      time.Time `gorm:"column:DTS"`
-	DTE      time.Time `gorm:"column:DTE; default:null"`
-	IdleID   int       `gorm:"column:IdleID"`
-	UserID   int       `gorm:"column:UserID"`
-	Interval float32   `gorm:"column:Interval"`
-	DeviceID int       `gorm:"column:DeviceID"`
-}
-
-func (TerminalInputIdle) TableName() string {
-	return "terminal_input_idle"
-}
-
 type User struct {
-	OID   int    `gorm:"column:OID"`
-	Login string `gorm:"column:Login"`
-	Name  string `gorm:"column:Name"`
+	OID        int    `gorm:"column:OID"`
+	Login      string `gorm:"column:Login"`
+	Name       string `gorm:"column:Name"`
+	FirstName  string `gorm:"column:FirstName"`
+	UserTypeID string `gorm:"column:UserTypeID"`
+	UserRoleID string `gorm:"column:UserRoleID"`
 }
 
 func (User) TableName() string {
@@ -83,13 +81,33 @@ func (User) TableName() string {
 }
 
 type Order struct {
-	OID     int    `gorm:"column:OID"`
-	Name    string `gorm:"column:Name"`
-	Barcode string `gorm:"column:Barcode"`
+	OID            int    `gorm:"column:OID"`
+	Name           string `gorm:"column:Name"`
+	Barcode        string `gorm:"column:Barcode"`
+	ProductID      int    `gorm:"column:ProductID"`
+	OrderStatusID  int    `gorm:"column:OrderStatusID"`
+	CountRequested int    `gorm:"column:CountRequested"`
+	WorkplaceID    int    `gorm:"column:WorkplaceID"`
+	Cavity         int    `gorm:"column:Cavity"`
 }
 
 func (Order) TableName() string {
 	return "order"
+}
+
+type Product struct {
+	OID             int     `gorm:"column:OID"`
+	Name            string  `gorm:"column:Name"`
+	Barcode         string  `gorm:"column:Barcode"`
+	Cycle           float32 `gorm:"column:Cycle"`
+	IdleFromTime    int     `gorm:"column:IdleFromTime"`
+	ProductStatusID int     `gorm:"column:ProductStatusID"`
+	Deleted         int     `gorm:"column:Deleted"`
+	ProductGroupID  int     `gorm:"column:ProductGroupID"`
+}
+
+func (Product) TableName() string {
+	return "product"
 }
 
 type Workplace struct {
@@ -101,17 +119,6 @@ type Workplace struct {
 
 func (Workplace) TableName() string {
 	return "workplace"
-}
-
-type WorkplaceState struct {
-	OID         int       `gorm:"column:OID"`
-	StateID     int       `gorm:"column:StateID"`
-	WorkplaceID int       `gorm:"column:WorkplaceID"`
-	DTS         time.Time `gorm:"column:DTS"`
-}
-
-func (WorkplaceState) TableName() string {
-	return "workplace_state"
 }
 
 func CheckDatabaseType() (string, string) {

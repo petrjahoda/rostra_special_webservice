@@ -1,0 +1,26 @@
+2020-04-21 21:17:19.221   MAIN   INF   Server running
+2020-04-21 21:17:23.841   MAIN   INF   Displaying main screen
+2020-04-21 21:17:23.841   MAIN   INF   No workplaces, adding null workplace
+2020-04-21 21:17:25.779   MAIN   INF   Checking data input
+2020-04-21 21:17:25.779   MAIN   INF   [user]     : 122
+2020-04-21 21:17:25.779   MAIN   INF   [order]    : 
+2020-04-21 21:17:25.779   MAIN   INF   [operation]: 
+2020-04-21 21:17:25.779   MAIN   INF   [workplace]: 
+2020-04-21 21:17:25.779   MAIN   INF   [start]    : 0
+2020-04-21 21:17:25.779   MAIN   INF   [end]      : 0
+2020-04-21 21:17:25.779   MAIN   INF   [transfer] : 0
+2020-04-21 21:17:25.779   MAIN   INF   Checking user
+2020-04-21 21:17:25.899   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-04-21 21:17:25.900   MAIN   INF   No workplaces, adding null workplace
+2020-04-21 21:17:32.749   MAIN   INF   Checking data input
+2020-04-21 21:17:32.749   MAIN   INF   [user]     : 1111
+2020-04-21 21:17:32.749   MAIN   INF   [order]    : 
+2020-04-21 21:17:32.749   MAIN   INF   [operation]: 
+2020-04-21 21:17:32.750   MAIN   INF   [workplace]: 
+2020-04-21 21:17:32.750   MAIN   INF   [start]    : 0
+2020-04-21 21:17:32.750   MAIN   INF   [end]      : 0
+2020-04-21 21:17:32.750   MAIN   INF   [transfer] : 0
+2020-04-21 21:17:32.750   MAIN   INF   Checking user
+2020-04-21 21:17:32.877   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-04-21 21:17:32.878   MAIN   INF   No workplaces, adding null workplace
+2020-04-21 21:18:02.452   MAIN   INF   Server running

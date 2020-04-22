@@ -14,6 +14,13 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.1.22] - 2020-04-22
+
+### Added
+- software as service
+- creating user, order and product in zapsi... if not present
+- starting and ending terminalInputOrder in zapsi
+
 ## [2020.2.1.20] - 2020-04-20
 
 ### Added
