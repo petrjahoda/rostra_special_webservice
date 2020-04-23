@@ -94,10 +94,10 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		data.UsernameValue = ""
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
-		//TODO: EndOrderInSyteline(sytelineUser, sytelineOrder, sytelineOperation, workplaceId)
+		//TODO: Transfer order end to syteline
 	} else if len(transferorder) == 1 {
 		LogInfo("MAIN", "Transferring order")
-		//TODO: TransferOrderDataToSyteline(sytelineUser, sytelineOrder, sytelineOperation, workplaceId)
+		//TODO: Transfer order data to syteline
 	} else {
 		inputStep := CheckInputStep(orderId, operationId, workplaceId)
 		switch inputStep {
@@ -157,14 +157,24 @@ func EndOrderInZapsi(orderId []string, operationId []string, userId []string, wo
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
 	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
+	//TODO: Get OK and NOK pcs and  count average cycle
 	if terminalInputOrder.OID > 0 {
 		LogInfo("MAIN", "Closing order "+strconv.Itoa(terminalInputOrder.OID))
 		db.Model(&terminalInputOrder).Where("OID = ?", terminalInputOrder.OID).UpdateColumn(TerminalInputOrder{DTE: sql.NullTime{Time: time.Now(), Valid: true}})
-		db.Model(&terminalInputOrder).Where("OID = ?", terminalInputOrder.OID).UpdateColumn(TerminalInputOrder{Interval: float32(time.Now().Sub(terminalInputOrder.DTS))})
+		db.Model(&terminalInputOrder).Where("OID = ?", terminalInputOrder.OID).UpdateColumn(TerminalInputOrder{Interval: float32(time.Now().Sub(terminalInputOrder.DTS).Seconds())})
 	}
 }
 
 func StartTerminalOrderInZapsi(userId []string, order Order, operation SytelineOperation, workplaceId []string) {
+	trimmedUserName := strings.TrimSpace(userId[0])
+	var splittedUserName []string
+	if strings.Contains(trimmedUserName, ",") {
+		splittedUserName = strings.Split(trimmedUserName, ",")
+	} else {
+		LogError("MAIN", "Bad username format: "+userId[0])
+		splittedUserName = append(splittedUserName, trimmedUserName)
+		splittedUserName = append(splittedUserName, trimmedUserName)
+	}
 	var zapsiUser User
 	var zapsiWorkplace Workplace
 	connectionString, dialect := CheckDatabaseType()
@@ -174,7 +184,7 @@ func StartTerminalOrderInZapsi(userId []string, order Order, operation SytelineO
 		return
 	}
 	defer db.Close()
-	db.Where("Login = ?", userId[0]).Find(&zapsiUser)
+	db.Where("Name = ?", splittedUserName[0]).Where("FirstName = ?", splittedUserName[1]).Find(&zapsiUser)
 	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
 	var terminalInputOrder TerminalInputOrder
 	defer db.Close()
@@ -256,8 +266,16 @@ func CreateOrderInZapsiIfNotExists(order SytelineOrder, operationId []string, op
 	return zapsiOrder
 }
 
-func CreateUserInZapsiIfNotExists(user SytelineUser) {
-	splittedUserName := strings.Split(user.Jmeno, ",")
+func CreateUserInZapsiIfNotExists(user SytelineUser, userId []string) {
+	trimmedUserName := strings.TrimSpace(user.Jmeno)
+	var splittedUserName []string
+	if strings.Contains(trimmedUserName, ",") {
+		splittedUserName = strings.Split(trimmedUserName, ",")
+	} else {
+		LogError("MAIN", "Bad username format: "+user.Jmeno)
+		splittedUserName = append(splittedUserName, trimmedUserName)
+		splittedUserName = append(splittedUserName, trimmedUserName)
+	}
 	var zapsiUser User
 	connectionString, dialect := CheckDatabaseType()
 	db, err := gorm.Open(dialect, connectionString)
@@ -272,7 +290,7 @@ func CreateUserInZapsiIfNotExists(user SytelineUser) {
 		return
 	}
 	LogInfo("MAIN", "User "+user.Jmeno+" does not exist, creating user "+user.Jmeno)
-	zapsiUser.Login = user.Jmeno
+	zapsiUser.Login = userId[0]
 	zapsiUser.Name = splittedUserName[0]
 	zapsiUser.FirstName = splittedUserName[1]
 	zapsiUser.UserRoleID = "1"
@@ -281,6 +299,15 @@ func CreateUserInZapsiIfNotExists(user SytelineUser) {
 }
 
 func CheckOrderInZapsi(userId []string, orderId []string, operationid []string, workplaceId []string) bool {
+	trimmedUserName := strings.TrimSpace(userId[0])
+	var splittedUserName []string
+	if strings.Contains(trimmedUserName, ",") {
+		splittedUserName = strings.Split(trimmedUserName, ",")
+	} else {
+		LogError("MAIN", "Bad username format: "+userId[0])
+		splittedUserName = append(splittedUserName, trimmedUserName)
+		splittedUserName = append(splittedUserName, trimmedUserName)
+	}
 	order, suffix := ParseOrder(orderId[0])
 	orderName := order + "." + suffix + "-" + operationid[0]
 	var zapsiUser User
@@ -295,7 +322,7 @@ func CheckOrderInZapsi(userId []string, orderId []string, operationid []string, 
 		return false
 	}
 	defer db.Close()
-	db.Where("Login = ?", userId[0]).Find(&zapsiUser)
+	db.Where("Name = ?", splittedUserName[0]).Where("FirstName = ?", splittedUserName[1]).Find(&zapsiUser)
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
 	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
@@ -462,7 +489,7 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) SytelineUser {
 		data.UserFocus = "autofocus"
 		return sytelineUser
 	}
-	CreateUserInZapsiIfNotExists(sytelineUser)
+	CreateUserInZapsiIfNotExists(sytelineUser, userId)
 	return sytelineUser
 }
 

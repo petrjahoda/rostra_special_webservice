@@ -14,6 +14,12 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.1.23] - 2020-04-23
+
+### Added
+- better username handling
+- saving user syteline number as user login to zapsi
+
 ## [2020.2.1.22] - 2020-04-22
 
 ### Added
