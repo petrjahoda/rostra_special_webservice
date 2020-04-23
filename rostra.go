@@ -74,7 +74,7 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, &data)
 		CreateProductInZapsiIfNotExists(sytelineOrder)
 		zapsiOrder := CreateOrderInZapsiIfNotExists(sytelineOrder, operationId, sytelineOperation, workplaceId)
-		StartTerminalOrderInZapsi(userId, zapsiOrder, sytelineOperation, workplaceId)
+		CreateTerminalOrderInZapsi(userId, zapsiOrder, sytelineOperation, workplaceId)
 		data.Username = "Zadejte prosím své číslo"
 		data.Order = ""
 		data.OrderValue = ""
@@ -165,7 +165,7 @@ func EndOrderInZapsi(orderId []string, operationId []string, userId []string, wo
 	}
 }
 
-func StartTerminalOrderInZapsi(userId []string, order Order, operation SytelineOperation, workplaceId []string) {
+func CreateTerminalOrderInZapsi(userId []string, order Order, operation SytelineOperation, workplaceId []string) {
 	trimmedUserName := strings.TrimSpace(userId[0])
 	var splittedUserName []string
 	if strings.Contains(trimmedUserName, ",") {
