@@ -108,25 +108,7 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		case checkOperation:
 			CheckOperationInSyteline(userId, orderId, operationId, &data)
 		case checkWorkplace:
-			orderExists := CheckOrderInZapsi(userId, orderId, operationId, workplaceId)
-			if orderExists {
-				LogInfo("MAIN", "Order in Zapsi already exists")
-				data.EndOrderButton = ""
-				data.TransferOrderButton = ""
-				data.UsernameValue = userId[0]
-				data.OrderValue = orderId[0]
-				data.OperationValue = operationId[0]
-				workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
-				data.Workplaces = append(data.Workplaces, workplace)
-			} else {
-				LogInfo("MAIN", "Order in Zapsi does not exist")
-				data.StartOrderButton = ""
-				data.UsernameValue = userId[0]
-				data.OrderValue = orderId[0]
-				data.OperationValue = operationId[0]
-				workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
-				data.Workplaces = append(data.Workplaces, workplace)
-			}
+			MakeControls(workplaceId, userId, orderId, operationId, &data)
 		}
 	}
 
@@ -136,6 +118,26 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		data.Workplaces = append(data.Workplaces, workplace)
 	}
 	_ = tmpl.Execute(writer, data)
+}
+
+func CheckAnyOrderInZapsi(workplaceId []string) bool {
+	var zapsiWorkplace Workplace
+	var terminalInputOrder TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return false
+	}
+	defer db.Close()
+	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Find(&terminalInputOrder)
+	if terminalInputOrder.OID > 0 {
+		return true
+	}
+	return false
+
 }
 
 func EndOrderInZapsi(orderId []string, operationId []string, userId []string, workplaceId []string) {
@@ -166,7 +168,7 @@ func EndOrderInZapsi(orderId []string, operationId []string, userId []string, wo
 }
 
 func CreateTerminalOrderInZapsi(userId []string, order Order, operation SytelineOperation, workplaceId []string) {
-	trimmedUserName := strings.TrimSpace(userId[0])
+	trimmedUserName := strings.ReplaceAll(userId[0], " ", "")
 	var splittedUserName []string
 	if strings.Contains(trimmedUserName, ",") {
 		splittedUserName = strings.Split(trimmedUserName, ",")
@@ -267,7 +269,7 @@ func CreateOrderInZapsiIfNotExists(order SytelineOrder, operationId []string, op
 }
 
 func CreateUserInZapsiIfNotExists(user SytelineUser, userId []string) {
-	trimmedUserName := strings.TrimSpace(user.Jmeno)
+	trimmedUserName := strings.ReplaceAll(user.Jmeno, " ", "")
 	var splittedUserName []string
 	if strings.Contains(trimmedUserName, ",") {
 		splittedUserName = strings.Split(trimmedUserName, ",")
@@ -298,8 +300,8 @@ func CreateUserInZapsiIfNotExists(user SytelineUser, userId []string) {
 	db.Create(&zapsiUser)
 }
 
-func CheckOrderInZapsi(userId []string, orderId []string, operationid []string, workplaceId []string) bool {
-	trimmedUserName := strings.TrimSpace(userId[0])
+func CheckThisOrderInZapsi(userId []string, orderId []string, operationid []string, workplaceId []string) bool {
+	trimmedUserName := strings.ReplaceAll(userId[0], " ", "")
 	var splittedUserName []string
 	if strings.Contains(trimmedUserName, ",") {
 		splittedUserName = strings.Split(trimmedUserName, ",")
