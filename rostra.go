@@ -32,6 +32,7 @@ type RostraMainPage struct {
 	StartOrderButton    string
 	EndOrderButton      string
 	TransferOrderButton string
+	Message             string
 }
 
 const (
@@ -70,10 +71,11 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 	if len(startorder) == 1 {
 		LogInfo("MAIN", "Starting order")
+		data.Message = "Starting order"
 		sytelineOrder := CheckOrderInSyteline(userId, orderId, &data)
 		sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, &data)
 		CreateProductInZapsiIfNotExists(sytelineOrder)
-		zapsiOrder := CreateOrderInZapsiIfNotExists(sytelineOrder, operationId, sytelineOperation, workplaceId)
+		zapsiOrder := CreateOrderInZapsiIfNotExists(sytelineOrder, orderId, operationId, sytelineOperation, workplaceId)
 		CreateTerminalOrderInZapsi(userId, zapsiOrder, sytelineOperation, workplaceId)
 		data.Username = "Zadejte prosím své číslo"
 		data.Order = ""
@@ -89,14 +91,22 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		data.UserFocus = "autofocus"
 	} else if len(endorder) == 1 {
 		LogInfo("MAIN", "Ending order")
+		data.Message = "Ending order"
 		EndOrderInZapsi(orderId, operationId, userId, workplaceId)
 		data.Username = "Zadejte prosím své číslo"
 		data.UsernameValue = ""
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
+		//TODO: Make second controls
 		//TODO: Transfer order end to syteline
 	} else if len(transferorder) == 1 {
 		LogInfo("MAIN", "Transferring order")
+		data.Message = "Transferring order"
+		data.Username = "Zadejte prosím své číslo"
+		data.UsernameValue = ""
+		data.UserDisabled = ""
+		data.UserFocus = "autofocus"
+		//TODO: Make second controls
 		//TODO: Transfer order data to syteline
 	} else {
 		inputStep := CheckInputStep(orderId, operationId, workplaceId)
@@ -108,7 +118,7 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		case checkOperation:
 			CheckOperationInSyteline(userId, orderId, operationId, &data)
 		case checkWorkplace:
-			MakeControls(workplaceId, userId, orderId, operationId, &data)
+			MakeFirstControls(workplaceId, userId, orderId, operationId, &data)
 		}
 	}
 
@@ -141,6 +151,15 @@ func CheckAnyOrderInZapsi(workplaceId []string) bool {
 }
 
 func EndOrderInZapsi(orderId []string, operationId []string, userId []string, workplaceId []string) {
+	trimmedUserName := strings.ReplaceAll(userId[0], " ", "")
+	var splittedUserName []string
+	if strings.Contains(trimmedUserName, ",") {
+		splittedUserName = strings.Split(trimmedUserName, ",")
+	} else {
+		LogError("MAIN", "Bad username format: "+userId[0])
+		splittedUserName = append(splittedUserName, trimmedUserName)
+		splittedUserName = append(splittedUserName, trimmedUserName)
+	}
 	order, suffix := ParseOrder(orderId[0])
 	orderName := order + "." + suffix + "-" + operationId[0]
 	var zapsiUser User
@@ -149,13 +168,12 @@ func EndOrderInZapsi(orderId []string, operationId []string, userId []string, wo
 	var terminalInputOrder TerminalInputOrder
 	connectionString, dialect := CheckDatabaseType()
 	db, err := gorm.Open(dialect, connectionString)
-
 	if err != nil {
 		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
 		return
 	}
 	defer db.Close()
-	db.Where("Login = ?", userId[0]).Find(&zapsiUser)
+	db.Where("Name = ?", splittedUserName[0]).Where("FirstName = ?", splittedUserName[1]).Find(&zapsiUser)
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
 	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
@@ -233,11 +251,13 @@ func CreateProductInZapsiIfNotExists(order SytelineOrder) {
 	db.Create(&zapsiProduct)
 }
 
-func CreateOrderInZapsiIfNotExists(order SytelineOrder, operationId []string, operation SytelineOperation, workplaceId []string) Order {
+func CreateOrderInZapsiIfNotExists(sytelineOrder SytelineOrder, orderId []string, operationId []string, operation SytelineOperation, workplaceId []string) Order {
 	var zapsiOrder Order
+	var newOrder Order
 	var zapsiProduct Product
 	var zapsiWorkplace Workplace
-	zapsiOrderName := order.CisloVp + "." + order.SuffixVp + "-" + operationId[0]
+	order, suffix := ParseOrder(orderId[0])
+	zapsiOrderName := order + "." + suffix + "-" + operationId[0]
 	connectionString, dialect := CheckDatabaseType()
 	db, err := gorm.Open(dialect, connectionString)
 
@@ -251,20 +271,21 @@ func CreateOrderInZapsiIfNotExists(order SytelineOrder, operationId []string, op
 		LogInfo("MAIN", "Order "+zapsiOrder.Name+" already exists")
 		return zapsiOrder
 	}
-	LogInfo("MAIN", "Order "+zapsiOrder.Name+" does not exist, creating order")
-	db.Where("Name = ?", order.PolozkaVp).Find(&zapsiProduct)
+	LogInfo("MAIN", "Order "+zapsiOrder.Name+" does not exist, creating order in zapsi")
+	db.Where("Name = ?", sytelineOrder.PolozkaVp).Find(&zapsiProduct)
 	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
 	countRequestedConverted, err := strconv.ParseFloat(operation.mn_2_ks, 32)
 	if err != nil {
-		LogError("MAIN", "Problem parsing count for order: "+operation.mn_2_ks)
+		LogError("MAIN", "Problem parsing count for sytelineOrder: "+operation.mn_2_ks)
 	}
-	zapsiOrder.Name = zapsiOrderName
-	zapsiOrder.Barcode = zapsiOrderName
-	zapsiOrder.ProductID = zapsiProduct.OID
-	zapsiOrder.OrderStatusID = 1
-	zapsiOrder.CountRequested = int(countRequestedConverted)
-	zapsiOrder.WorkplaceID = zapsiWorkplace.OID
-	db.Create(&zapsiOrder)
+	newOrder.Name = zapsiOrderName
+	newOrder.Barcode = zapsiOrderName
+	newOrder.ProductID = zapsiProduct.OID
+	newOrder.OrderStatusID = 1
+	newOrder.CountRequested = int(countRequestedConverted)
+	newOrder.WorkplaceID = zapsiWorkplace.OID
+	db.Create(&newOrder)
+	db.Where("Name = ?", zapsiOrderName).Find(&zapsiOrder)
 	return zapsiOrder
 }
 
@@ -363,14 +384,16 @@ func CheckOperationInSyteline(userId []string, orderId []string, operationId []s
 		}
 	}
 	if len(sytelineOperation.pracoviste) > 0 {
+		LogInfo("MAIN", "Operation found: "+operationId[0])
+		data.Message = "Operation found: " + operationId[0]
 		data.Operation = operationId[0]
 		data.UsernameValue = userId[0]
 		data.OrderValue = orderId[0]
 		data.OperationValue = operationId[0]
 		data.WorkplaceDisabled = ""
-		LogInfo("MAIN", "Operation found: "+data.Operation)
 	} else {
-		LogInfo("MAIN", "Operation not found for "+orderId[0])
+		LogInfo("MAIN", "Operation not found for "+operationId[0])
+		data.Message = "Operation not found for " + operationId[0]
 		data.UsernameValue = userId[0]
 		data.OrderValue = orderId[0]
 		data.Operation = "Operace nenalezena, zadejte prosím znovu"
@@ -446,14 +469,16 @@ func CheckOrderInSyteline(userId []string, orderId []string, data *RostraMainPag
 		}
 	}
 	if len(sytelineOrder.CisloVp) > 0 {
+		LogInfo("MAIN", "Order found: "+orderId[0])
+		data.Message = "Order found: " + orderId[0]
 		data.Order = orderId[0]
 		data.OrderValue = orderId[0]
 		data.UsernameValue = userId[0]
 		data.OperationFocus = "autofocus"
 		data.OperationDisabled = ""
-		LogInfo("MAIN", "Order found: "+data.OrderValue)
 	} else {
 		LogInfo("MAIN", "Order not found for "+orderId[0]+" for command "+command)
+		data.Message = "Order not found for " + orderId[0] + " for command " + command
 		data.UsernameValue = userId[0]
 		data.Order = "Číslo nenalezeno, nebo je neplatné, zadejte prosím znovu"
 		data.OrderDisabled = ""
@@ -478,14 +503,16 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) SytelineUser {
 	row := db.Raw(command).Row()
 	err = row.Scan(&sytelineUser.JePlatny, &sytelineUser.Jmeno)
 	if sytelineUser.JePlatny == "1" {
+		LogInfo("MAIN", "User found: "+userId[0])
+		data.Message = "User found: " + userId[0]
 		data.Username = sytelineUser.Jmeno
 		data.UsernameValue = sytelineUser.Jmeno
 		data.OrderDisabled = ""
 		data.OrderFocus = "autofocus"
 		data.Order = "Zadejte prosím číslo zakázky"
-		LogInfo("MAIN", "User found: "+data.UsernameValue)
 	} else {
-		LogInfo("MAIN", "User not found for "+userId[0])
+		LogInfo("MAIN", "User not found: "+userId[0])
+		data.Message = "User not found for " + userId[0]
 		data.Username = "Číslo nenalezeno, zadejte prosím znovu"
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"

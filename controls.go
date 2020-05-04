@@ -5,43 +5,54 @@ import (
 	"strings"
 )
 
-func MakeControls(workplaceId []string, userId []string, orderId []string, operationId []string, data *RostraMainPage) {
+func MakeFirstControls(workplaceId []string, userId []string, orderId []string, operationId []string, data *RostraMainPage) {
 	anyOrderExists := CheckAnyOrderInZapsi(workplaceId)
 	if anyOrderExists {
 		LogInfo("MAIN", "Some open order in Zapsi already exists")
+		data.Message = "Some open order in Zapsi already exists"
 		thisOrderIsOpen := CheckThisOrderInZapsi(userId, orderId, operationId, workplaceId)
 		if thisOrderIsOpen {
 			LogInfo("MAIN", "This order in Zapsi already exists, enabling end and transfer button")
+			data.Message = "This order in Zapsi already exists, enabling end and transfer button"
 			EnableTransferAndEndButton(workplaceId, userId, orderId, operationId, data)
 		} else {
 			LogInfo("MAIN", "This order in Zapsi not exists, checking for vice_vp")
+			data.Message = "This order in Zapsi not exists, checking for vice_vp"
 			sytelineOperation, sytelineWorkplaces := CheckOperationInSyteline(userId, orderId, operationId, data)
 			for _, workplace := range sytelineWorkplaces {
 				if workplace.Zapsi_zdroj == workplaceId[0] {
 					if workplace.vice_vp == "1" {
-						LogInfo("MAIN", workplace.Zapsi_zdroj+"has parameter vice_vp == 1, enabling start button")
+						LogInfo("MAIN", workplace.Zapsi_zdroj+" has parameter vice_vp == 1, enabling start button")
+						data.Message = workplace.Zapsi_zdroj + " has parameter vice_vp == 1, enabling start button"
 						EnableStartButton(workplaceId, userId, orderId, operationId, data)
 						break
 					} else {
-						LogInfo("MAIN", workplace.Zapsi_zdroj+"without parameter vice_vp == 1")
+						LogInfo("MAIN", workplace.Zapsi_zdroj+" without parameter vice_vp == 1")
+						data.Message = workplace.Zapsi_zdroj + " without parameter vice_vp == 1"
 						if sytelineOperation.parovy_dil == "1" {
-							LogInfo("MAIN", workplace.Zapsi_zdroj+"has parameter parovy_dil == 1")
+							LogInfo("MAIN", workplace.Zapsi_zdroj+" has parameter parovy_dil == 1")
+							data.Message = workplace.Zapsi_zdroj + " has parameter parovy_dil == 1"
 							if len(sytelineOperation.seznamm_par_dilu) > 1 {
 								productName := GetProductNameForOpenOrder(workplaceId)
-								LogInfo("MAIN", workplace.Zapsi_zdroj+"has parameter seznamm_par_dilu > 1")
+								LogInfo("MAIN", workplace.Zapsi_zdroj+" has parameter seznamm_par_dilu > 1")
+								data.Message = workplace.Zapsi_zdroj + " has parameter seznamm_par_dilu > 1"
 								if strings.Contains(sytelineOperation.seznamm_par_dilu, productName) {
 									LogInfo("MAIN", "Products are matching, enabling start button")
+									data.Message = "Products are matching, enabling start button"
 									EnableStartButton(workplaceId, userId, orderId, operationId, data)
 								} else {
-									LogInfo("MAIN", "Products not matching")
+									LogInfo("MAIN", "Products not matching: ["+sytelineOperation.seznamm_par_dilu+"] ["+productName+"]")
+									data.Message = "Products not matching: [" + sytelineOperation.seznamm_par_dilu + "] [" + productName + "]"
 									EnableWorkplaceSelect(userId, orderId, operationId, data)
 								}
 							} else {
-								LogInfo("MAIN", workplace.Zapsi_zdroj+"has parameter seznamm_par_dilu == 0")
+								LogInfo("MAIN", workplace.Zapsi_zdroj+" has parameter seznamm_par_dilu == 0")
+								data.Message = workplace.Zapsi_zdroj + " has parameter seznamm_par_dilu == 0"
 								EnableWorkplaceSelect(userId, orderId, operationId, data)
 							}
 						} else {
-							LogInfo("MAIN", workplace.Zapsi_zdroj+"without parameter parovy_dil == 1")
+							LogInfo("MAIN", workplace.Zapsi_zdroj+" without parameter parovy_dil == 1")
+							data.Message = workplace.Zapsi_zdroj + " without parameter parovy_dil == 1"
 							EnableWorkplaceSelect(userId, orderId, operationId, data)
 						}
 						break
@@ -51,14 +62,16 @@ func MakeControls(workplaceId []string, userId []string, orderId []string, opera
 		}
 	} else {
 		LogInfo("MAIN", "No open order in Zapsi exists")
+		data.Message = "No open order in Zapsi exists"
 		sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, data)
 		if sytelineOperation.jen_prenos_mnozstvi == "1" {
 			LogInfo("MAIN", "Operation has only data transfer, enabling transfer button")
+			data.Message = "Operation has only data transfer, enabling transfer button"
 			EnableTransferButton(workplaceId, userId, orderId, operationId, data)
 		} else {
 			LogInfo("MAIN", "Enabling start button")
+			data.Message = "Enabling start button"
 			EnableStartButton(workplaceId, userId, orderId, operationId, data)
-
 		}
 	}
 }

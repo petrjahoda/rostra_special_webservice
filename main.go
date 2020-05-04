@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const version = "2020.2.1.29"
+const version = "2020.2.2.4"
 const programName = "Zapsi Service"
 const programDescription = "Downloads data from Zapsi devices"
 

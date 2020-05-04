@@ -14,6 +14,14 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.2.4] - 2020-05-04
+
+### Fixed
+- proper handling first controls
+
+### Added
+- message parametr to displaying information from program to page
+
 ## [2020.2.1.29] - 2020-04-29
 
 ### Added
