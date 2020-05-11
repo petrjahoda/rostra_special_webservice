@@ -14,7 +14,8 @@ func MakeFirstControls(workplaceId []string, userId []string, orderId []string, 
 		if thisOrderIsOpen {
 			LogInfo("MAIN", "This order in Zapsi already exists, enabling end and transfer button")
 			data.Message = "This order in Zapsi already exists, enabling end and transfer button"
-			EnableTransferAndEndButton(workplaceId, userId, orderId, operationId, data)
+			EnableOkAndNokInput(workplaceId, userId, orderId, operationId, data)
+			//EnableTransferAndEndButton(workplaceId, userId, orderId, operationId, data)
 		} else {
 			LogInfo("MAIN", "This order in Zapsi not exists, checking for vice_vp")
 			data.Message = "This order in Zapsi not exists, checking for vice_vp"
@@ -67,6 +68,7 @@ func MakeFirstControls(workplaceId []string, userId []string, orderId []string, 
 		if sytelineOperation.jen_prenos_mnozstvi == "1" {
 			LogInfo("MAIN", "Operation has only data transfer, enabling transfer button")
 			data.Message = "Operation has only data transfer, enabling transfer button"
+			EnableOkAndNokInput(workplaceId, userId, orderId, operationId, data)
 			EnableTransferButton(workplaceId, userId, orderId, operationId, data)
 		} else {
 			LogInfo("MAIN", "Enabling start button")
@@ -74,6 +76,36 @@ func MakeFirstControls(workplaceId []string, userId []string, orderId []string, 
 			EnableStartButton(workplaceId, userId, orderId, operationId, data)
 		}
 	}
+}
+
+func EnableOkAndNokInput(workplaceId []string, userId []string, orderId []string, operationId []string, data *RostraMainPage) {
+	var nokTypes []SytelineNok
+	db, err := gorm.Open("mssql", SytelineConnection)
+	defer db.Close()
+
+	command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports_test].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	rows, err := db.Raw(command).Rows()
+	if err != nil {
+		LogError("MAIN", "Error: "+err.Error())
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var nokType SytelineNok
+		err = rows.Scan(&nokType.Kod, &nokType.Nazev)
+		nokTypes = append(nokTypes, nokType)
+		if err != nil {
+			LogError("MAIN", "Error: "+err.Error())
+		}
+	}
+	data.NokTypes = nokTypes
+	data.OkDisabled = ""
+	data.NokDisabled = ""
+	data.OkFocus = "autofocus"
+	data.UsernameValue = userId[0]
+	data.OrderValue = orderId[0]
+	data.OperationValue = operationId[0]
+	workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
+	data.Workplaces = append(data.Workplaces, workplace)
 }
 
 func GetProductNameForOpenOrder(workplaceId []string) string {

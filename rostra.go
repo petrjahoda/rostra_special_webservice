@@ -33,6 +33,14 @@ type RostraMainPage struct {
 	EndOrderButton      string
 	TransferOrderButton string
 	Message             string
+	Ok                  string
+	OkDisabled          string
+	OkFocus             string
+	Nok                 string
+	NokTypes            []SytelineNok
+	NokDisabled         string
+	NokFocus            string
+	RadioDisabled       string
 }
 
 const (
@@ -40,6 +48,9 @@ const (
 	checkOrder
 	checkOperation
 	checkWorkplace
+	checkOk
+	checkNok
+	checkBoth
 )
 
 func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -53,6 +64,9 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	startorder := r.Form["startorder"]
 	endorder := r.Form["endorder"]
 	transferorder := r.Form["transferorder"]
+	noktype := r.Form["noktype"]
+	nok := r.Form["nok"]
+	ok := r.Form["ok"]
 	LogInfo("MAIN", "[user:"+userId[0]+"] [order:"+orderId[0]+"] [operation:"+operationId[0]+"] [workplace:"+workplaceId[0]+"]")
 	data := RostraMainPage{
 		Version:             "version: " + version,
@@ -60,13 +74,18 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		Order:               "",
 		Operation:           "",
 		Workplace:           "",
+		Ok:                  "",
+		Nok:                 "",
 		UserDisabled:        "disabled",
 		OrderDisabled:       "disabled",
 		OperationDisabled:   "disabled",
 		WorkplaceDisabled:   "disabled",
+		OkDisabled:          "disabled",
+		NokDisabled:         "disabled",
 		StartOrderButton:    "disabled",
 		EndOrderButton:      "disabled",
 		TransferOrderButton: "disabled",
+		RadioDisabled:       "disabled",
 	}
 
 	if len(startorder) == 1 {
@@ -97,7 +116,6 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		data.UsernameValue = ""
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
-		//TODO: Make second controls
 		//TODO: Transfer order end to syteline
 	} else if len(transferorder) == 1 {
 		LogInfo("MAIN", "Transferring order")
@@ -106,10 +124,9 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		data.UsernameValue = ""
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
-		//TODO: Make second controls
 		//TODO: Transfer order data to syteline
 	} else {
-		inputStep := CheckInputStep(orderId, operationId, workplaceId)
+		inputStep := CheckInputStep(ok, nok, orderId, operationId, workplaceId)
 		switch inputStep {
 		case checkUser:
 			CheckUserInSyteline(userId, &data)
@@ -119,6 +136,15 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 			CheckOperationInSyteline(userId, orderId, operationId, &data)
 		case checkWorkplace:
 			MakeFirstControls(workplaceId, userId, orderId, operationId, &data)
+		case checkBoth:
+			LogInfo("MAIN", "Checking Both"+noktype[0])
+			//CheckBoth(ok, nok, noktype,workplaceId, userId, orderId, operationId, &data)
+		case checkOk:
+			LogInfo("MAIN", "Checking OK")
+			//CheckOk(ok, workplaceId, userId, orderId, operationId, &data)
+		case checkNok:
+			LogInfo("MAIN", "Checking NOK")
+			//CheckNok(nok, noktype,workplaceId, userId, orderId, operationId, &data)
 		}
 	}
 
@@ -126,6 +152,11 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		LogInfo("MAIN", "No workplaces, adding null workplace")
 		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 		data.Workplaces = append(data.Workplaces, workplace)
+	}
+	if len(data.NokTypes) == 0 {
+		LogInfo("MAIN", "No workplaces, adding null workplace")
+		nokType := SytelineNok{Kod: "", Nazev: ""}
+		data.NokTypes = append(data.NokTypes, nokType)
 	}
 	_ = tmpl.Execute(writer, data)
 }
@@ -522,8 +553,14 @@ func CheckUserInSyteline(userId []string, data *RostraMainPage) SytelineUser {
 	return sytelineUser
 }
 
-func CheckInputStep(orderId []string, operationId []string, workplaceId []string) interface{} {
-	if orderId[0] == "" && operationId[0] == "" && workplaceId[0] == "" {
+func CheckInputStep(ok []string, nok []string, orderId []string, operationId []string, workplaceId []string) interface{} {
+	if len(ok[0]) > 0 && len(nok[0]) > 0 {
+		return checkBoth
+	} else if len(ok[0]) > 0 {
+		return checkOk
+	} else if len(nok[0]) > 0 {
+		return checkNok
+	} else if orderId[0] == "" && operationId[0] == "" && workplaceId[0] == "" {
 		return checkUser
 	} else if operationId[0] == "" && workplaceId[0] == "" {
 		return checkOrder
@@ -537,26 +574,39 @@ func RostraMainScreen(writer http.ResponseWriter, _ *http.Request, _ httprouter.
 	LogInfo("MAIN", "Displaying main screen")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := RostraMainPage{
-		Version:             "version: " + version,
-		Username:            "Zadejte prosím své číslo",
-		UsernameValue:       "",
-		Order:               "",
-		OrderValue:          "",
-		Operation:           "",
-		OperationValue:      "",
-		Workplace:           "",
-		OrderDisabled:       "disabled",
-		OperationDisabled:   "disabled",
-		WorkplaceDisabled:   "disabled",
+		Version:        "version: " + version,
+		Username:       "Zadejte prosím své číslo",
+		UsernameValue:  "",
+		Order:          "",
+		OrderValue:     "",
+		Operation:      "",
+		OperationValue: "",
+		Workplace:      "",
+		Ok:             "",
+		Nok:            "",
+
+		OrderDisabled:     "disabled",
+		OperationDisabled: "disabled",
+		WorkplaceDisabled: "disabled",
+		OkDisabled:        "disabled",
+		NokDisabled:       "disabled",
+
 		StartOrderButton:    "disabled",
 		EndOrderButton:      "disabled",
 		TransferOrderButton: "disabled",
 		UserFocus:           "autofocus",
+		RadioDisabled:       "disabled",
 	}
 	if len(data.Workplaces) == 0 {
 		LogInfo("MAIN", "No workplaces, adding null workplace")
 		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 		data.Workplaces = append(data.Workplaces, workplace)
+	}
+
+	if len(data.NokTypes) == 0 {
+		LogInfo("MAIN", "No noktypes, adding null noktype")
+		nokType := SytelineNok{Kod: "", Nazev: ""}
+		data.NokTypes = append(data.NokTypes, nokType)
 	}
 	_ = tmpl.Execute(writer, data)
 }

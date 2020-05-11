@@ -14,6 +14,15 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.2.11] - 2020-05-11
+
+### Added
+- radio button for clovek-stroj-serizeni
+- proper handling and checking ok and nok pcs
+
+### Removed
+- radio button for ok and nok pcs
+
 ## [2020.2.2.4] - 2020-05-04
 
 ### Fixed

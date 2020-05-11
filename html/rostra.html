@@ -19,7 +19,8 @@
                                       placeholder="{{.Username}}" name="userid" data-default-value="{{.UsernameValue}}">
             </div>
             <div class="cell-3">
-                <input style="width: 100%" class="button primary {{.UserDisabled}}" type="submit" value="Potvrdit"/>
+                <input style="width: 100%" class="button primary {{.UserDisabled}}" type="submit"
+                       value="Potvrdit"/>
             </div>
         </div>
         <div class="row {{.OrderDisabled}}" style="padding: 5px">
@@ -28,7 +29,8 @@
                                        placeholder="{{.Order}}" name="orderid" data-default-value="{{.OrderValue}}">
             </div>
             <div class="cell-3">
-                <input style="width: 100%" class="button primary {{.OrderDisabled}}" type="submit" value="Potvrdit"/>
+                <input style="width: 100%" class="button primary {{.OrderDisabled}}" type="submit"
+                       value="Potvrdit"/>
             </div>
         </div>
         <div class="row {{.OperationDisabled}}" style="padding: 5px">
@@ -52,10 +54,54 @@
                 </select>
             </div>
             <div class="cell-3">
-                <input style="width: 100%" class="button primary {{.WorkplaceDisabled}}" type="submit"
+                <input style="width: 100%" class="button primary {{.WorkplaceDisabled}}"
+                       type="submit" value="Potvrdit"/>
+            </div>
+        </div>
+
+        <div class="row {{.NokDisabled}}" style="padding: 5px">
+            <div class="cell-5">
+                <select {{.NokFocus}} data-role="select" data-prepend="<span class='mif-list'></span>"
+                                      placeholder="{{.Nok}}" name="noktype">
+                    {{range .NokTypes}}
+                        <option>{{.Nazev}}</option>
+                    {{end}}
+                </select>
+            </div>
+            <div class="cell-4">
+                <input {{.NokFocus}} type="text" data-role="input" data-prepend="<span class='mif-cross'></span>"
+                                     placeholder="{{.Nok}}" name="nok">
+            </div>
+        </div>
+
+
+        <div class="row {{.OkDisabled}}" style="padding: 5px">
+            <div class="cell-5">
+            </div>
+            <div class="cell-4">
+                <input {{.OkFocus}} type="text" data-role="input"
+                                    data-prepend="<span class='mif-checkmark'></span>"
+                                    placeholder="{{.Ok}}" name="ok"
+                                    data-default-value="{{.Ok}}">
+            </div>
+            <div class="cell-3">
+                <input style="width: 100%" class="button primary {{.OkDisabled}}" name="checkok" type="submit"
                        value="Potvrdit"/>
             </div>
         </div>
+
+        <div class="row">
+            <div class="cell-4">
+                <input {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="clovek">Člověk
+            </div>
+            <div class="cell-4">
+                <input {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="stroj">Stroj
+            </div>
+            <div class="cell-4">
+                <input {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="serizeni">Seřízení
+            </div>
+        </div>
+        <br>
         <br>
         <div class="row" style="margin: auto">
             <div class="cell-4">

@@ -45,6 +45,11 @@ type SytelineWorkplace struct {
 	mnozstvi_auto_prevodu string
 }
 
+type SytelineNok struct {
+	Kod   string
+	Nazev string
+}
+
 type TerminalInputOrder struct {
 	OID             int           `gorm:"column:OID"`
 	DTS             time.Time     `gorm:"column:DTS"`
