@@ -70,7 +70,7 @@
             </div>
             <div class="cell-4">
                 <input {{.NokFocus}} type="text" data-role="input" data-prepend="<span class='mif-cross'></span>"
-                                     placeholder="{{.Nok}}" name="nok">
+                                     placeholder="{{.Nok}}" name="nok" data-default-value="{{.NokValue}}">
             </div>
         </div>
 
@@ -81,8 +81,7 @@
             <div class="cell-4">
                 <input {{.OkFocus}} type="text" data-role="input"
                                     data-prepend="<span class='mif-checkmark'></span>"
-                                    placeholder="{{.Ok}}" name="ok"
-                                    data-default-value="{{.Ok}}">
+                                    placeholder="{{.Ok}}" name="ok" data-default-value="{{.OkValue}}">
             </div>
             <div class="cell-3">
                 <input style="width: 100%" class="button primary {{.OkDisabled}}" name="checkok" type="submit"
@@ -90,15 +89,15 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" {{.RadioDisabled}}>
             <div class="cell-4">
-                <input {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="clovek">Člověk
+                <input  {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="clovek">Člověk
             </div>
             <div class="cell-4">
-                <input {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="stroj">Stroj
+                <input  {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="stroj">Stroj
             </div>
             <div class="cell-4">
-                <input {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="serizeni">Seřízení
+                <input  {{.RadioDisabled}} name="syteline" type="radio" data-role="radio" value="serizeni">Seřízení
             </div>
         </div>
         <br>

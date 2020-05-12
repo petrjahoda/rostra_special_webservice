@@ -69,7 +69,7 @@ func MakeFirstControls(workplaceId []string, userId []string, orderId []string, 
 			LogInfo("MAIN", "Operation has only data transfer, enabling transfer button")
 			data.Message = "Operation has only data transfer, enabling transfer button"
 			EnableOkAndNokInput(workplaceId, userId, orderId, operationId, data)
-			EnableTransferButton(workplaceId, userId, orderId, operationId, data)
+			//EnableTransferButton(workplaceId, userId, orderId, operationId, data)
 		} else {
 			LogInfo("MAIN", "Enabling start button")
 			data.Message = "Enabling start button"
@@ -166,11 +166,19 @@ func EnableWorkplaceSelect(userId []string, orderId []string, operationId []stri
 	data.WorkplaceFocus = "autofocus"
 }
 
-func EnableTransferButton(workplaceId []string, userId []string, orderId []string, operationId []string, data *RostraMainPage) {
+func EnableTransferButton(workplaceId []string, userId []string, orderId []string, operationId []string, data *RostraMainPage, ok []string, nok []string, noktype []string) {
+	LogInfo("MAIN", "Operation has only data transfer, enabling transfer button")
 	data.TransferOrderButton = ""
 	data.UsernameValue = userId[0]
 	data.OrderValue = orderId[0]
 	data.OperationValue = operationId[0]
+	data.Ok = ok[0]
+	data.Nok = nok[0]
+	data.OkValue = ok[0]
+	data.NokValue = nok[0]
+	data.RadioDisabled = ""
+	nokType := SytelineNok{Nazev: noktype[0]}
+	data.NokTypes = append(data.NokTypes, nokType)
 	workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 	data.Workplaces = append(data.Workplaces, workplace)
 }
@@ -184,12 +192,20 @@ func EnableStartButton(workplaceId []string, userId []string, orderId []string, 
 	data.Workplaces = append(data.Workplaces, workplace)
 }
 
-func EnableTransferAndEndButton(workplaceId []string, userId []string, orderId []string, operationId []string, data *RostraMainPage) {
+func EnableTransferAndEndButton(workplaceId []string, userId []string, orderId []string, operationId []string, data *RostraMainPage, ok []string, nok []string, noktype []string) {
+	LogInfo("MAIN", "This order in Zapsi already exists, enabling end and transfer button")
 	data.EndOrderButton = ""
 	data.TransferOrderButton = ""
 	data.UsernameValue = userId[0]
 	data.OrderValue = orderId[0]
 	data.OperationValue = operationId[0]
+	data.Ok = ok[0]
+	data.Nok = nok[0]
+	data.OkValue = ok[0]
+	data.NokValue = nok[0]
+	data.RadioDisabled = ""
+	nokType := SytelineNok{Nazev: noktype[0]}
+	data.NokTypes = append(data.NokTypes, nokType)
 	workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 	data.Workplaces = append(data.Workplaces, workplace)
 }

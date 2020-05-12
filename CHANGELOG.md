@@ -14,6 +14,16 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.2.12] - 2020-05-12
+
+### Added
+- saving NOK fails to Zapsi
+- mn1, mn2, mn3 controls
+
+### Changed
+- better handling enabling and disabling buttons, inputs, etc.
+
+
 ## [2020.2.2.11] - 2020-05-11
 
 ### Added

@@ -20,6 +20,8 @@ type RostraMainPage struct {
 	UsernameValue       string
 	OrderValue          string
 	OperationValue      string
+	OkValue             string
+	NokValue            string
 	Workplaces          []SytelineWorkplace
 	UserDisabled        string
 	OrderDisabled       string
@@ -67,6 +69,7 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	noktype := r.Form["noktype"]
 	nok := r.Form["nok"]
 	ok := r.Form["ok"]
+	LogInfo("MAIN", "[OK:NOK]  ["+ok[0]+":"+nok[0]+"]")
 	LogInfo("MAIN", "[user:"+userId[0]+"] [order:"+orderId[0]+"] [operation:"+operationId[0]+"] [workplace:"+workplaceId[0]+"]")
 	data := RostraMainPage{
 		Version:             "version: " + version,
@@ -76,6 +79,8 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		Workplace:           "",
 		Ok:                  "",
 		Nok:                 "",
+		OkValue:             "",
+		NokValue:            "",
 		UserDisabled:        "disabled",
 		OrderDisabled:       "disabled",
 		OperationDisabled:   "disabled",
@@ -87,44 +92,74 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		TransferOrderButton: "disabled",
 		RadioDisabled:       "disabled",
 	}
-
 	if len(startorder) == 1 {
-		LogInfo("MAIN", "Starting order")
-		data.Message = "Starting order"
-		sytelineOrder := CheckOrderInSyteline(userId, orderId, &data)
-		sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, &data)
-		CreateProductInZapsiIfNotExists(sytelineOrder)
-		zapsiOrder := CreateOrderInZapsiIfNotExists(sytelineOrder, orderId, operationId, sytelineOperation, workplaceId)
-		CreateTerminalOrderInZapsi(userId, zapsiOrder, sytelineOperation, workplaceId)
-		data.Username = "Zadejte prosím své číslo"
-		data.Order = ""
-		data.OrderValue = ""
-		data.Operation = ""
-		data.OperationValue = ""
-		data.UsernameValue = ""
-		data.UserDisabled = ""
-		data.OrderDisabled = "disabled"
-		data.OperationDisabled = "disabled"
-		data.WorkplaceDisabled = "disabled"
-		data.Workplaces = []SytelineWorkplace{}
-		data.UserFocus = "autofocus"
+		StartOrderInZapsi(&data, userId, orderId, operationId, workplaceId)
 	} else if len(endorder) == 1 {
 		LogInfo("MAIN", "Ending order")
 		data.Message = "Ending order"
-		EndOrderInZapsi(orderId, operationId, userId, workplaceId)
+		if len(nok) > 0 && len(ok) > 0 {
+			SaveNokIntoZapsi(nok, noktype, workplaceId, userId)
+			EndOrderInZapsi(orderId, operationId, userId, workplaceId)
+			SaveNokIntoSyteline(nok, noktype)
+			SaveOkIntoSyteline(ok)
+		} else if len(nok) > 0 {
+			SaveNokIntoZapsi(nok, noktype, workplaceId, userId)
+			SaveNokIntoSyteline(nok, noktype)
+		} else if len(ok) > 0 {
+			SaveOkIntoSyteline(ok)
+		}
 		data.Username = "Zadejte prosím své číslo"
 		data.UsernameValue = ""
 		data.UserDisabled = ""
 		data.UserFocus = "autofocus"
-		//TODO: Transfer order end to syteline
+
 	} else if len(transferorder) == 1 {
 		LogInfo("MAIN", "Transferring order")
 		data.Message = "Transferring order"
-		data.Username = "Zadejte prosím své číslo"
-		data.UsernameValue = ""
-		data.UserDisabled = ""
-		data.UserFocus = "autofocus"
-		//TODO: Transfer order data to syteline
+		if len(nok) > 0 && len(ok) > 0 {
+			LogInfo("MAIN", "Saving both")
+			SaveNokIntoZapsi(nok, noktype, workplaceId, userId)
+			SaveNokIntoSyteline(nok, noktype)
+			SaveOkIntoSyteline(ok)
+		} else if len(nok) > 0 {
+			LogInfo("MAIN", "Saving just nok")
+			SaveNokIntoZapsi(nok, noktype, workplaceId, userId)
+			SaveNokIntoSyteline(nok, noktype)
+		} else if len(ok) > 0 {
+			LogInfo("MAIN", "Saving just ok")
+			SaveOkIntoSyteline(ok)
+		}
+		data.EndOrderButton = "disabled"
+		data.TransferOrderButton = "disabled"
+		data.UsernameValue = userId[0]
+		data.OrderValue = orderId[0]
+		data.OperationValue = operationId[0]
+		var nokTypes []SytelineNok
+		db, err := gorm.Open("mssql", SytelineConnection)
+
+		command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports_test].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+		rows, err := db.Raw(command).Rows()
+		if err != nil {
+			LogError("MAIN", "Error: "+err.Error())
+		}
+		defer rows.Close()
+		for rows.Next() {
+			var nokType SytelineNok
+			err = rows.Scan(&nokType.Kod, &nokType.Nazev)
+			nokTypes = append(nokTypes, nokType)
+			if err != nil {
+				LogError("MAIN", "Error: "+err.Error())
+			}
+		}
+		db.Close()
+		data.NokTypes = nokTypes
+		workplace := SytelineWorkplace{Zapsi_zdroj: workplaceId[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
+		data.Workplaces = append(data.Workplaces, workplace)
+		data.Ok = ""
+		data.Nok = ""
+		data.OkFocus = "autofocus"
+		data.OkDisabled = ""
+		data.NokDisabled = ""
 	} else {
 		inputStep := CheckInputStep(ok, nok, orderId, operationId, workplaceId)
 		switch inputStep {
@@ -137,14 +172,12 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		case checkWorkplace:
 			MakeFirstControls(workplaceId, userId, orderId, operationId, &data)
 		case checkBoth:
-			LogInfo("MAIN", "Checking Both"+noktype[0])
-			//CheckBoth(ok, nok, noktype,workplaceId, userId, orderId, operationId, &data)
+			CheckOk(userId, orderId, operationId, &data, workplaceId, ok, nok, noktype)
+			CheckNok(userId, orderId, operationId, &data, workplaceId, ok, nok, noktype)
 		case checkOk:
-			LogInfo("MAIN", "Checking OK")
-			//CheckOk(ok, workplaceId, userId, orderId, operationId, &data)
+			CheckOk(userId, orderId, operationId, &data, workplaceId, ok, nok, noktype)
 		case checkNok:
-			LogInfo("MAIN", "Checking NOK")
-			//CheckNok(nok, noktype,workplaceId, userId, orderId, operationId, &data)
+			CheckNok(userId, orderId, operationId, &data, workplaceId, ok, nok, noktype)
 		}
 	}
 
@@ -159,6 +192,255 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 		data.NokTypes = append(data.NokTypes, nokType)
 	}
 	_ = tmpl.Execute(writer, data)
+}
+
+func SaveNokIntoZapsi(nok []string, noktype []string, workplaceId []string, userId []string) {
+	CreateFailInZapsiIfNotExists(noktype)
+	SaveTerminalInputFail(nok, noktype, workplaceId, userId)
+}
+
+func SaveTerminalInputFail(nok []string, noktype []string, workplaceId []string, userId []string) {
+	trimmedUserName := strings.ReplaceAll(userId[0], " ", "")
+	var splittedUserName []string
+	if strings.Contains(trimmedUserName, ",") {
+		splittedUserName = strings.Split(trimmedUserName, ",")
+	} else {
+		LogError("MAIN", "Bad username format: "+userId[0])
+		splittedUserName = append(splittedUserName, trimmedUserName)
+		splittedUserName = append(splittedUserName, trimmedUserName)
+	}
+	var zapsiFail Fail
+	var terminalInputFail TerminalInputFail
+	var zapsiWorkplace Workplace
+	var zapsiUser User
+
+	pcs, err := strconv.Atoi(nok[0])
+	if err != nil {
+		LogError("MAIN", "Problem parsing Nok amount when saving terminal input fail")
+		return
+	}
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return
+	}
+	defer db.Close()
+	db.Where("Name = ?", noktype[0]).Find(&zapsiFail)
+	db.Where("Code = ?", workplaceId[0]).Find(&zapsiWorkplace)
+	db.Where("Name = ?", splittedUserName[0]).Where("FirstName = ?", splittedUserName[1]).Find(&zapsiUser)
+	terminalInputFail.FailID = zapsiFail.OID
+	terminalInputFail.DeviceID = zapsiWorkplace.DeviceID
+	terminalInputFail.UserID = zapsiUser.OID
+	terminalInputFail.DT = time.Now()
+	for i := 0; i < pcs; i++ {
+		db.Save(&terminalInputFail)
+	}
+	return
+}
+
+func CreateFailInZapsiIfNotExists(noktype []string) {
+	var zapsiFail Fail
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return
+	}
+	defer db.Close()
+	db.Where("Name = ?", noktype[0]).Find(&zapsiFail)
+	if zapsiFail.OID > 0 {
+		LogInfo("MAIN", "Fail "+noktype[0]+" already exists")
+		return
+	}
+	LogInfo("MAIN", "Fail "+noktype[0]+" does not exist, creating fail")
+	zapsiFail.Name = noktype[0]
+	zapsiFail.FailTypeID = 100
+	db.Create(&zapsiFail)
+	var newZapsiFail Fail
+	db.Where("Name = ?", noktype[0]).Find(&newZapsiFail)
+	return
+}
+
+func SaveOkIntoSyteline(ok []string) {
+
+}
+
+func SaveNokIntoSyteline(nok []string, noktype []string) {
+	LogInfo("MAIN", "Saving NOK to Syteline")
+	//quantity, err := strconv.Atoi(nok[0])
+	//if err != nil {
+	//	LogError("MAIN", "Problem parsing count when saving to Syteline")
+	//}
+	db, err := gorm.Open("mssql", SytelineConnection)
+	if err != nil {
+		LogError("MAIN", "Error opening db: "+err.Error())
+		return
+	}
+	defer db.Close()
+	db.Exec("set nocount, ansi_nulls, quoted_identifier, arithabort, xact_abort on \nbegin tran\n" +
+		" \ninsert into zapsi_trans" +
+		"\n( trans_date , emp_num , trans_type , job , suffix , oper_num , wc , qty_complete , qty_scrapped , lot , start_date_time , end_date_time , complete_op , shift , reason_code , time_divisor)" +
+		"\nvalues" +
+		"\n( '20200430' , N' 500001' , 5 , N'3VP0014981' , 0, 10, N'HLIQ12' , 100.0 , 0.0 , '3VP0014981' , NULL , NULL , 0 , NULL , NULL  , NULL)" +
+		"\nif @@error <> 0\nbegin\n  rollback\n  raiserror (N'Chyba zápisu do zapsi_trans', 16, 1)" +
+		"\n \nend\nelse\nbegin\n  commit\nend")
+}
+
+func CheckNok(userId []string, orderId []string, operationId []string, data *RostraMainPage, workplaceId []string, ok []string, nok []string, noktype []string) {
+	LogInfo("MAIN", "Checking NOK: ["+ok[0]+":"+nok[0]+"]")
+	sytelineOperation, sytelineWorkplaces := CheckOperationInSyteline(userId, orderId, operationId, data)
+	mn1 := CheckForMn1(workplaceId, sytelineWorkplaces)
+	mn2 := sytelineOperation.priznak_mn_2 == "1"
+	mn3 := sytelineOperation.priznak_mn_3 == "1"
+	LogInfo("MAIN", "Priznak mn_1: "+strconv.FormatBool(mn1))
+	LogInfo("MAIN", "Priznak mn_2: "+strconv.FormatBool(mn2))
+	LogInfo("MAIN", "Priznak mn_3: "+strconv.FormatBool(mn3))
+	checkedOk, operatorAmountLessThanInZapsi := CheckIfOperatorAmountLessThanInZapsi(nok, userId, orderId, operationId, workplaceId)
+	LogInfo("MAIN", "Operator inserted less amount than in Zapsi: "+strconv.FormatBool(operatorAmountLessThanInZapsi))
+	if checkedOk {
+		if mn1 && !operatorAmountLessThanInZapsi {
+			LogInfo("MAIN", "Mn1 and more amount than in Zapsi, displaying error")
+			//TODO: displayError
+		}
+		if mn2 && !operatorAmountLessThanInZapsi {
+			LogInfo("MAIN", "Mn2 and more amount than in Zapsi, displaying error")
+			//TODO: displayError
+		}
+		if mn3 && !operatorAmountLessThanInZapsi {
+			LogInfo("MAIN", "Mn3 and more amount than in Zapsi, displaying error")
+			//TODO: displayError
+		}
+		anyOrderExists := CheckAnyOrderInZapsi(workplaceId)
+		if anyOrderExists {
+			thisOrderIsOpen := CheckThisOrderInZapsi(userId, orderId, operationId, workplaceId)
+			if thisOrderIsOpen {
+				EnableTransferAndEndButton(workplaceId, userId, orderId, operationId, data, ok, nok, noktype)
+			}
+		} else {
+			sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, data)
+			if sytelineOperation.jen_prenos_mnozstvi == "1" {
+
+				EnableTransferButton(workplaceId, userId, orderId, operationId, data, ok, nok, noktype)
+			}
+		}
+	} else {
+		LogError("MAIN", "Problem checking data from Zapsi")
+	}
+}
+
+func CheckOk(userId []string, orderId []string, operationId []string, data *RostraMainPage, workplaceId []string, ok []string, nok []string, noktype []string) {
+	LogInfo("MAIN", "Checking OK")
+	sytelineOperation, sytelineWorkplaces := CheckOperationInSyteline(userId, orderId, operationId, data)
+	mn1 := CheckForMn1(workplaceId, sytelineWorkplaces)
+	mn2 := sytelineOperation.priznak_mn_2 == "1"
+	mn3 := sytelineOperation.priznak_mn_3 == "1"
+	LogInfo("MAIN", "Priznak mn_1: "+strconv.FormatBool(mn1))
+	LogInfo("MAIN", "Priznak mn_2: "+strconv.FormatBool(mn2))
+	LogInfo("MAIN", "Priznak mn_3: "+strconv.FormatBool(mn3))
+	checkedOk, operatorAmountLessThanInZapsi := CheckIfOperatorAmountLessThanInZapsi(ok, userId, orderId, operationId, workplaceId)
+	LogInfo("MAIN", "Operator inserted less amount than in Zapsi: "+strconv.FormatBool(operatorAmountLessThanInZapsi))
+	if checkedOk {
+		if mn1 && !operatorAmountLessThanInZapsi {
+			LogInfo("MAIN", "Mn1 and more amount than in Zapsi, displaying error")
+			//TODO: displayError
+		}
+		if mn2 && !operatorAmountLessThanInZapsi {
+			LogInfo("MAIN", "Mn2 and more amount than in Zapsi, displaying error")
+			//TODO: displayError
+		}
+		if mn3 && !operatorAmountLessThanInZapsi {
+			LogInfo("MAIN", "Mn3 and more amount than in Zapsi, displaying error")
+			//TODO: displayError
+		}
+		anyOrderExists := CheckAnyOrderInZapsi(workplaceId)
+		if anyOrderExists {
+			thisOrderIsOpen := CheckThisOrderInZapsi(userId, orderId, operationId, workplaceId)
+			if thisOrderIsOpen {
+				EnableTransferAndEndButton(workplaceId, userId, orderId, operationId, data, ok, nok, noktype)
+			}
+		} else {
+			sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, data)
+			if sytelineOperation.jen_prenos_mnozstvi == "1" {
+				EnableTransferButton(workplaceId, userId, orderId, operationId, data, ok, nok, noktype)
+			}
+		}
+	} else {
+		LogError("MAIN", "Problem checking data from Zapsi")
+	}
+}
+
+func CheckIfOperatorAmountLessThanInZapsi(userAmount []string, userId []string, orderId []string, operationId []string, workplaceId []string) (bool, bool) {
+	trimmedUserName := strings.ReplaceAll(userId[0], " ", "")
+	var splittedUserName []string
+	if strings.Contains(trimmedUserName, ",") {
+		splittedUserName = strings.Split(trimmedUserName, ",")
+	} else {
+		LogError("MAIN", "Bad username format: "+userId[0])
+		splittedUserName = append(splittedUserName, trimmedUserName)
+		splittedUserName = append(splittedUserName, trimmedUserName)
+	}
+	order, suffix := ParseOrder(orderId[0])
+	orderName := order + "." + suffix + "-" + operationId[0]
+	var zapsiUser User
+	var zapsiOrder Order
+	var zapsiWorkplace Workplace
+	var terminalInputOrder TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return false, false
+	}
+	defer db.Close()
+	db.Where("Name = ?", splittedUserName[0]).Where("FirstName = ?", splittedUserName[1]).Find(&zapsiUser)
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
+	okAmount, err := strconv.Atoi(userAmount[0])
+	if err != nil {
+		LogError("MAIN", "Problem parsing data from user")
+		return false, false
+	}
+	if okAmount < terminalInputOrder.Count {
+		return true, true
+	}
+	return true, false
+}
+
+func CheckForMn1(workplaceId []string, workplaces []SytelineWorkplace) bool {
+	for _, workplace := range workplaces {
+		if workplace.Zapsi_zdroj == workplaceId[0] {
+			if workplace.priznak_mn_1 == "1" {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func StartOrderInZapsi(data *RostraMainPage, userId []string, orderId []string, operationId []string, workplaceId []string) {
+	LogInfo("MAIN", "Starting order")
+	data.Message = "Starting order"
+	sytelineOrder := CheckOrderInSyteline(userId, orderId, data)
+	sytelineOperation, _ := CheckOperationInSyteline(userId, orderId, operationId, data)
+	CreateProductInZapsiIfNotExists(sytelineOrder)
+	zapsiOrder := CreateOrderInZapsiIfNotExists(sytelineOrder, orderId, operationId, sytelineOperation, workplaceId)
+	CreateTerminalOrderInZapsi(userId, zapsiOrder, sytelineOperation, workplaceId)
+	data.Username = "Zadejte prosím své číslo"
+	data.Order = ""
+	data.OrderValue = ""
+	data.Operation = ""
+	data.OperationValue = ""
+	data.UsernameValue = ""
+	data.UserDisabled = ""
+	data.OrderDisabled = "disabled"
+	data.OperationDisabled = "disabled"
+	data.WorkplaceDisabled = "disabled"
+	data.Workplaces = []SytelineWorkplace{}
+	data.UserFocus = "autofocus"
 }
 
 func CheckAnyOrderInZapsi(workplaceId []string) bool {
@@ -206,7 +488,7 @@ func EndOrderInZapsi(orderId []string, operationId []string, userId []string, wo
 	defer db.Close()
 	db.Where("Name = ?", splittedUserName[0]).Where("FirstName = ?", splittedUserName[1]).Find(&zapsiUser)
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
-	db.Where("Code = ?", workplaceId).Find(&zapsiWorkplace)
+	db.Where("Code = ?", workplaceId[0]).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
 	//TODO: Get OK and NOK pcs and  count average cycle
 	if terminalInputOrder.OID > 0 {
@@ -584,6 +866,8 @@ func RostraMainScreen(writer http.ResponseWriter, _ *http.Request, _ httprouter.
 		Workplace:      "",
 		Ok:             "",
 		Nok:            "",
+		OkValue:        "",
+		NokValue:       "",
 
 		OrderDisabled:     "disabled",
 		OperationDisabled: "disabled",
