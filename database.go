@@ -50,27 +50,6 @@ type SytelineNok struct {
 	Nazev string
 }
 
-type ZapsiTrans struct {
-	trans_date      time.Time
-	emp_num         string
-	trans_type      int
-	job             string
-	suffix          int
-	oper_num        int
-	wc              string
-	qty_complete    float32
-	qty_scrapped    float32
-	lot             string
-	start_date_time time.Time
-	end_date_time   time.Time
-	complete_op     int
-	reason_code     string
-}
-
-func (ZapsiTrans) TableName() string {
-	return "zapsi_trans"
-}
-
 type TerminalInputOrder struct {
 	OID             int           `gorm:"column:OID"`
 	DTS             time.Time     `gorm:"column:DTS"`

@@ -1,0 +1,83 @@
+2020-06-08 09:42:34.963   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:42:34.964   MAIN   ERR   Bad username format: 
+2020-06-08 09:42:34.966   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:43:02.403   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:43:02.403   MAIN   ERR   Bad username format: 
+2020-06-08 09:43:02.404   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:43:33.078   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:43:33.079   MAIN   ERR   Bad username format: 
+2020-06-08 09:43:33.079   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:44:44.213   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:44:44.213   MAIN   ERR   Bad username format: 
+2020-06-08 09:44:44.214   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:45:39.985   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:45:39.986   MAIN   ERR   Bad username format: 
+2020-06-08 09:45:39.987   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:47:11.298   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:47:14.746   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:32.477   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:34.364   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:35.572   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:58:36.545   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:37.522   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:45.474   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:46.352   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:47.264   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:48.155   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:49.081   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:58:49.962   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:59:18.338   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:19.574   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:46.645   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:47.817   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:48.816   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:01:11.051   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:01:11.052   MAIN   ERR   Bad username format: 
+2020-06-08 10:01:11.052   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:01:12.524   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:01:12.524   MAIN   ERR   Bad username format: 
+2020-06-08 10:01:12.525   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:01:59.271   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:01:59.271   MAIN   ERR   Bad username format: 
+2020-06-08 10:01:59.272   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:02:00.396   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:00.396   MAIN   ERR   Bad username format: 
+2020-06-08 10:02:00.396   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:02:15.231   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:16.247   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:17.225   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:18.565   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:40.815   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:02:42.365   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:03:21.272   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:04:03.856   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:04:22.017   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:05:02.267   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:05:25.150   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:05:41.424   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:04.776   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:22.230   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:34.111   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:56.532   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:07:08.237   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:07:17.335   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:08:43.266   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:09:03.073   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:09:10.827   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:09:38.971   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:10:21.839   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:10:43.348   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:10:57.502   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:13.944   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:30.595   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:50.888   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:59.841   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:12:15.615   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:12:39.713   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:13:06.628   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:13:09.022   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:15:49.205   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:16:47.654   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:18:07.615   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:19:34.016   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:21:35.453   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host

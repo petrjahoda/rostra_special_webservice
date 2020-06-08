@@ -1,8 +1,9 @@
 {
   "DatabaseType": "mysql",
-  "IpAddress": "localhost",
+  "IpAddress": "zapsidatabase",
   "DatabaseName": "zapsi2",
   "Port": "3306",
   "Login": "zapsi_uzivatel",
-  "Password": "zapsi"
+  "Password": "zapsi",
+  "SytelineConnection": "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test"
 }

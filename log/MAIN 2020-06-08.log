@@ -1,0 +1,782 @@
+2020-06-08 09:38:09.339   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:38:09.340   MAIN   INF   Server running
+2020-06-08 09:38:15.145   MAIN   INF   Displaying main screen
+2020-06-08 09:38:15.145   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:38:15.146   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:38:17.600   MAIN   INF   Checking data input
+2020-06-08 09:38:17.601   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:38:17.601   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:38:17.603   MAIN   INF   Checking data input
+2020-06-08 09:38:17.603   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:38:17.603   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:38:17.604   MAIN   INF   Checking data input
+2020-06-08 09:38:17.604   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:38:17.604   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:38:17.606   MAIN   INF   Checking data input
+2020-06-08 09:38:17.606   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:38:17.606   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:38:17.608   MAIN   INF   Checking data input
+2020-06-08 09:38:17.608   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:38:17.608   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:38:17.610   MAIN   INF   Checking data input
+2020-06-08 09:38:17.610   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:38:17.610   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:39:08.019   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:39:09.745   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:39:09.745   MAIN   INF   Server running
+2020-06-08 09:39:12.793   MAIN   INF   Checking data input
+2020-06-08 09:39:12.793   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:39:12.793   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:39:12.795   MAIN   INF   Checking data input
+2020-06-08 09:39:12.795   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:39:12.795   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:39:12.797   MAIN   INF   Checking data input
+2020-06-08 09:39:12.798   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:39:12.798   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:39:16.913   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:40:54.136   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:40:54.136   MAIN   INF   Server running
+2020-06-08 09:40:55.812   MAIN   INF   Checking data input
+2020-06-08 09:40:55.813   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:40:55.813   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:40:55.814   MAIN   INF   Checking data input
+2020-06-08 09:40:55.815   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:40:55.815   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:40:55.817   MAIN   INF   Checking data input
+2020-06-08 09:40:55.818   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:40:55.818   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:41:17.600   MAIN   INF   Checking data input
+2020-06-08 09:41:17.600   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:17.600   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:41:17.602   MAIN   INF   Checking data input
+2020-06-08 09:41:17.602   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:17.603   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:41:17.604   MAIN   INF   Checking data input
+2020-06-08 09:41:17.604   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:17.605   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:41:18.836   MAIN   INF   Checking data input
+2020-06-08 09:41:18.836   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:18.836   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:41:18.838   MAIN   INF   Checking data input
+2020-06-08 09:41:18.838   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:18.838   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:41:18.840   MAIN   INF   Checking data input
+2020-06-08 09:41:18.840   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:18.840   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:41:19.398   MAIN   INF   Displaying main screen
+2020-06-08 09:41:19.398   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:41:19.398   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:41:30.776   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:41:32.332   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:41:32.333   MAIN   INF   Server running
+2020-06-08 09:41:33.763   MAIN   INF   Displaying main screen
+2020-06-08 09:41:33.763   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:41:33.763   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:41:35.105   MAIN   INF   Checking data input
+2020-06-08 09:41:35.106   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:35.106   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:41:35.108   MAIN   INF   Checking data input
+2020-06-08 09:41:35.108   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:35.108   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:41:35.110   MAIN   INF   Checking data input
+2020-06-08 09:41:35.110   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:35.110   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:41:35.112   MAIN   INF   Checking data input
+2020-06-08 09:41:35.112   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:41:35.112   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:42:14.073   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:42:15.661   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:42:15.662   MAIN   INF   Server running
+2020-06-08 09:42:17.593   MAIN   INF   Checking data input
+2020-06-08 09:42:17.593   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:42:17.593   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:42:17.595   MAIN   INF   Checking data input
+2020-06-08 09:42:17.596   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:42:17.596   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:42:17.599   MAIN   INF   Checking data input
+2020-06-08 09:42:17.599   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:42:17.599   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:42:30.146   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:42:31.743   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:42:31.744   MAIN   INF   Server running
+2020-06-08 09:42:33.095   MAIN   INF   Checking data input
+2020-06-08 09:42:33.095   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:42:33.096   MAIN   INF   [user:] [order:] [operation:] [workplace:]
+2020-06-08 09:42:33.096   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:42:33.096   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:42:33.337   MAIN   INF   Displaying main screen
+2020-06-08 09:42:33.339   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:42:33.339   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:42:34.943   MAIN   INF   Checking data input
+2020-06-08 09:42:34.944   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:42:34.944   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:42:34.944   MAIN   INF   Checking user
+2020-06-08 09:42:34.944   MAIN   INF   Checking user
+2020-06-08 09:42:34.944   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:42:34.944   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:42:34.962   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:42:34.964   MAIN   INF   User not found: 232
+2020-06-08 09:42:34.964   MAIN   ERR   Bad username format: 
+2020-06-08 09:42:34.965   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:42:34.966   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:42:34.966   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:42:51.867   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:42:58.145   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:42:58.145   MAIN   INF   Server running
+2020-06-08 09:43:00.837   MAIN   INF   Displaying main screen
+2020-06-08 09:43:00.838   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:43:00.838   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:43:02.398   MAIN   INF   Checking data input
+2020-06-08 09:43:02.398   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:43:02.398   MAIN   INF   [user:232] [order:] [operation:] [workplace:]
+2020-06-08 09:43:02.399   MAIN   INF   Checking user
+2020-06-08 09:43:02.399   MAIN   INF   Checking user
+2020-06-08 09:43:02.400   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:43:02.400   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:43:02.403   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:43:02.403   MAIN   INF   User not found: 232
+2020-06-08 09:43:02.403   MAIN   ERR   Bad username format: 
+2020-06-08 09:43:02.404   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:43:02.404   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:43:02.404   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:43:26.956   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:43:28.499   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:43:28.499   MAIN   INF   Server running
+2020-06-08 09:43:32.134   MAIN   INF   Displaying main screen
+2020-06-08 09:43:32.135   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:43:32.135   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:43:33.073   MAIN   INF   Checking data input
+2020-06-08 09:43:33.075   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:43:33.075   MAIN   INF   [user:12] [order:] [operation:] [workplace:]
+2020-06-08 09:43:33.075   MAIN   INF   Checking user
+2020-06-08 09:43:33.075   MAIN   INF   Checking user
+2020-06-08 09:43:33.075   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:43:33.076   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:43:33.078   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:43:33.079   MAIN   INF   User not found: 12
+2020-06-08 09:43:33.079   MAIN   ERR   Bad username format: 
+2020-06-08 09:43:33.079   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:43:33.080   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:43:33.080   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:44:08.061   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:44:39.104   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:44:39.104   MAIN   INF   Server running
+2020-06-08 09:44:42.809   MAIN   INF   Displaying main screen
+2020-06-08 09:44:42.810   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:44:42.810   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:44:44.208   MAIN   INF   Checking data input
+2020-06-08 09:44:44.208   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:44:44.208   MAIN   INF   [user:23] [order:] [operation:] [workplace:]
+2020-06-08 09:44:44.208   MAIN   INF   Checking user
+2020-06-08 09:44:44.209   MAIN   INF   Checking user
+2020-06-08 09:44:44.210   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:44:44.210   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:44:44.212   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:44:44.213   MAIN   INF   User not found: 23
+2020-06-08 09:44:44.213   MAIN   ERR   Bad username format: 
+2020-06-08 09:44:44.214   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:45:35.757   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:45:37.313   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:45:37.314   MAIN   INF   Server running
+2020-06-08 09:45:39.980   MAIN   INF   Checking data input
+2020-06-08 09:45:39.981   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:45:39.981   MAIN   INF   [user:23] [order:] [operation:] [workplace:]
+2020-06-08 09:45:39.981   MAIN   INF   Checking user
+2020-06-08 09:45:39.981   MAIN   INF   Checking user
+2020-06-08 09:45:39.982   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:45:39.982   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:45:39.985   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:45:39.986   MAIN   INF   User not found: 23
+2020-06-08 09:45:39.986   MAIN   ERR   Bad username format: 
+2020-06-08 09:45:39.987   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 09:45:39.987   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:45:39.987   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:45:44.521   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:47:07.641   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:47:07.641   MAIN   INF   Server running
+2020-06-08 09:47:10.295   MAIN   INF   Displaying main screen
+2020-06-08 09:47:10.296   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:47:10.296   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:47:11.293   MAIN   INF   Checking data input
+2020-06-08 09:47:11.293   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:47:11.294   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 09:47:11.294   MAIN   INF   Checking user
+2020-06-08 09:47:11.294   MAIN   INF   Checking user
+2020-06-08 09:47:11.295   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:47:11.295   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:47:11.298   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:47:14.744   MAIN   INF   Checking data input
+2020-06-08 09:47:14.744   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:47:14.744   MAIN   INF   [user:234] [order:] [operation:] [workplace:]
+2020-06-08 09:47:14.744   MAIN   INF   Checking user
+2020-06-08 09:47:14.744   MAIN   INF   Checking user
+2020-06-08 09:47:14.745   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:47:14.745   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:47:14.746   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:53:02.475   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:53:10.427   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:53:10.427   MAIN   INF   Server running
+2020-06-08 09:53:13.650   MAIN   INF   Checking data input
+2020-06-08 09:53:13.652   MAIN   INF   Checking data input
+2020-06-08 09:53:13.654   MAIN   INF   Checking data input
+2020-06-08 09:53:32.963   MAIN   INF   Displaying main screen
+2020-06-08 09:53:32.964   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:53:32.964   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:53:34.457   MAIN   INF   Checking data input
+2020-06-08 09:53:34.457   MAIN   INF   Checking data input
+2020-06-08 09:53:34.458   MAIN   INF   Checking data input
+2020-06-08 09:53:34.460   MAIN   INF   Checking data input
+2020-06-08 09:53:34.461   MAIN   INF   Checking data input
+2020-06-08 09:53:34.463   MAIN   INF   Checking data input
+2020-06-08 09:53:56.797   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:53:58.798   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:53:58.799   MAIN   INF   Server running
+2020-06-08 09:54:02.354   MAIN   INF   Displaying main screen
+2020-06-08 09:54:02.354   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:54:02.354   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:54:03.679   MAIN   INF   Checking data input
+2020-06-08 09:54:03.680   MAIN   INF   Checking data input
+2020-06-08 09:54:03.681   MAIN   INF   Checking data input
+2020-06-08 09:54:03.683   MAIN   INF   Checking data input
+2020-06-08 09:54:03.684   MAIN   INF   Checking data input
+2020-06-08 09:54:03.686   MAIN   INF   Checking data input
+2020-06-08 09:54:47.779   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:54:49.486   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:54:49.487   MAIN   INF   Server running
+2020-06-08 09:54:52.229   MAIN   INF   Displaying main screen
+2020-06-08 09:54:52.229   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:54:52.229   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:54:53.290   MAIN   INF   Checking data input
+2020-06-08 09:54:53.290   MAIN   INF   Checking data input
+2020-06-08 09:54:53.291   MAIN   INF   Checking data input
+2020-06-08 09:54:53.292   MAIN   INF   Checking data input
+2020-06-08 09:54:53.294   MAIN   INF   Checking data input
+2020-06-08 09:54:53.295   MAIN   INF   Checking data input
+2020-06-08 09:55:34.205   MAIN   INF   Displaying main screen
+2020-06-08 09:55:34.205   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:55:34.205   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:55:40.494   MAIN   INF   Checking data input
+2020-06-08 09:55:40.494   MAIN   INF   Checking data input
+2020-06-08 09:55:40.495   MAIN   INF   Checking data input
+2020-06-08 09:55:40.497   MAIN   INF   Checking data input
+2020-06-08 09:55:40.499   MAIN   INF   Checking data input
+2020-06-08 09:55:40.500   MAIN   INF   Checking data input
+2020-06-08 09:55:53.218   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:55:54.946   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:55:54.947   MAIN   INF   Server running
+2020-06-08 09:55:57.203   MAIN   INF   Checking data input
+2020-06-08 09:55:57.205   MAIN   INF   Checking data input
+2020-06-08 09:55:57.207   MAIN   INF   Checking data input
+2020-06-08 09:56:59.279   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:57:00.971   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:57:00.971   MAIN   INF   Server running
+2020-06-08 09:57:02.256   MAIN   INF   Checking data input
+2020-06-08 09:57:02.258   MAIN   INF   Checking data input
+2020-06-08 09:57:02.260   MAIN   INF   Checking data input
+2020-06-08 09:57:18.979   MAIN   INF   Displaying main screen
+2020-06-08 09:57:18.979   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:57:18.979   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:57:20.791   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:57:22.142   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:57:22.142   MAIN   INF   Server running
+2020-06-08 09:58:25.471   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:58:27.000   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:58:27.000   MAIN   INF   Server running
+2020-06-08 09:58:29.738   MAIN   INF   Checking data input
+2020-06-08 09:58:29.738   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:29.738   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 09:58:29.738   MAIN   INF   Checking user
+2020-06-08 09:58:29.739   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:29.739   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:29.739   MAIN   INF   User found: 123
+2020-06-08 09:58:32.472   MAIN   INF   Checking data input
+2020-06-08 09:58:32.472   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:32.472   MAIN   INF   [user:Petr Jahoda] [order:123] [operation:] [workplace:]
+2020-06-08 09:58:32.472   MAIN   INF   Checking order
+2020-06-08 09:58:32.473   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:32.474   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:32.477   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:34.362   MAIN   INF   Checking data input
+2020-06-08 09:58:34.362   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:34.363   MAIN   INF   [user:Petr Jahoda] [order:222] [operation:] [workplace:]
+2020-06-08 09:58:34.363   MAIN   INF   Checking order
+2020-06-08 09:58:34.363   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:34.363   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:34.364   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:35.570   MAIN   INF   Checking data input
+2020-06-08 09:58:35.570   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:35.570   MAIN   INF   [user:Petr Jahoda] [order:222] [operation:] [workplace:]
+2020-06-08 09:58:35.570   MAIN   INF   Checking order
+2020-06-08 09:58:35.571   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:35.571   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:35.571   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:58:36.543   MAIN   INF   Checking data input
+2020-06-08 09:58:36.543   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:36.544   MAIN   INF   [user:Petr Jahoda] [order:333] [operation:] [workplace:]
+2020-06-08 09:58:36.544   MAIN   INF   Checking order
+2020-06-08 09:58:36.544   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:36.544   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:36.545   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:37.520   MAIN   INF   Checking data input
+2020-06-08 09:58:37.520   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:37.520   MAIN   INF   [user:Petr Jahoda] [order:333] [operation:] [workplace:]
+2020-06-08 09:58:37.521   MAIN   INF   Checking order
+2020-06-08 09:58:37.521   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:37.521   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:37.522   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:45.473   MAIN   INF   Checking data input
+2020-06-08 09:58:45.473   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:45.473   MAIN   INF   [user:Petr Jahoda] [order:433] [operation:] [workplace:]
+2020-06-08 09:58:45.473   MAIN   INF   Checking order
+2020-06-08 09:58:45.473   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:45.473   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:45.474   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:46.350   MAIN   INF   Checking data input
+2020-06-08 09:58:46.350   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:46.351   MAIN   INF   [user:Petr Jahoda] [order:4343] [operation:] [workplace:]
+2020-06-08 09:58:46.351   MAIN   INF   Checking order
+2020-06-08 09:58:46.351   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:46.351   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:46.352   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:47.263   MAIN   INF   Checking data input
+2020-06-08 09:58:47.263   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:47.263   MAIN   INF   [user:Petr Jahoda] [order:43434] [operation:] [workplace:]
+2020-06-08 09:58:47.263   MAIN   INF   Checking order
+2020-06-08 09:58:47.264   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:47.264   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:47.264   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:48.153   MAIN   INF   Checking data input
+2020-06-08 09:58:48.153   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:48.154   MAIN   INF   [user:Petr Jahoda] [order:4343] [operation:] [workplace:]
+2020-06-08 09:58:48.154   MAIN   INF   Checking order
+2020-06-08 09:58:48.154   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:48.154   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:48.155   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:58:49.078   MAIN   INF   Checking data input
+2020-06-08 09:58:49.078   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:49.078   MAIN   INF   [user:Petr Jahoda] [order:4343] [operation:] [workplace:]
+2020-06-08 09:58:49.078   MAIN   INF   Checking order
+2020-06-08 09:58:49.079   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:49.079   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:49.081   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:58:49.961   MAIN   INF   Checking data input
+2020-06-08 09:58:49.961   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:58:49.961   MAIN   INF   [user:Petr Jahoda] [order:433] [operation:] [workplace:]
+2020-06-08 09:58:49.961   MAIN   INF   Checking order
+2020-06-08 09:58:49.962   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:58:49.962   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:58:49.962   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 09:59:15.034   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:59:16.629   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:59:16.630   MAIN   INF   Server running
+2020-06-08 09:59:17.147   MAIN   INF   Displaying main screen
+2020-06-08 09:59:17.148   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:59:17.148   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:59:18.334   MAIN   INF   Checking data input
+2020-06-08 09:59:18.334   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:59:18.334   MAIN   INF   [user:12] [order:] [operation:] [workplace:]
+2020-06-08 09:59:18.334   MAIN   INF   Checking user
+2020-06-08 09:59:18.335   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:59:18.335   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:59:18.338   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:19.573   MAIN   INF   Checking data input
+2020-06-08 09:59:19.573   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:59:19.573   MAIN   INF   [user:1221] [order:] [operation:] [workplace:]
+2020-06-08 09:59:19.573   MAIN   INF   Checking user
+2020-06-08 09:59:19.573   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:59:19.573   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:59:19.574   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:43.077   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 09:59:44.654   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 09:59:44.655   MAIN   INF   Server running
+2020-06-08 09:59:45.440   MAIN   INF   Displaying main screen
+2020-06-08 09:59:45.441   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:59:45.441   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:59:46.641   MAIN   INF   Checking data input
+2020-06-08 09:59:46.641   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:59:46.642   MAIN   INF   [user:12] [order:] [operation:] [workplace:]
+2020-06-08 09:59:46.642   MAIN   INF   Checking user
+2020-06-08 09:59:46.642   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:59:46.642   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:59:46.645   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:47.815   MAIN   INF   Checking data input
+2020-06-08 09:59:47.816   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:59:47.816   MAIN   INF   [user:2323] [order:] [operation:] [workplace:]
+2020-06-08 09:59:47.816   MAIN   INF   Checking user
+2020-06-08 09:59:47.816   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:59:47.816   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:59:47.817   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 09:59:48.815   MAIN   INF   Checking data input
+2020-06-08 09:59:48.815   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 09:59:48.815   MAIN   INF   [user:2323] [order:] [operation:] [workplace:]
+2020-06-08 09:59:48.815   MAIN   INF   Checking user
+2020-06-08 09:59:48.816   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 09:59:48.816   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 09:59:48.816   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:01:07.432   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:01:09.110   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:01:09.111   MAIN   INF   Server running
+2020-06-08 10:01:11.047   MAIN   INF   Checking data input
+2020-06-08 10:01:11.047   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:01:11.047   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:01:11.047   MAIN   INF   Checking user
+2020-06-08 10:01:11.048   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:01:11.048   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:01:11.051   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:01:11.051   MAIN   INF   User not found: 123
+2020-06-08 10:01:11.051   MAIN   ERR   Bad username format: 
+2020-06-08 10:01:11.052   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:01:12.522   MAIN   INF   Checking data input
+2020-06-08 10:01:12.522   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:01:12.523   MAIN   INF   [user:1223] [order:] [operation:] [workplace:]
+2020-06-08 10:01:12.523   MAIN   INF   Checking user
+2020-06-08 10:01:12.523   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:01:12.523   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:01:12.524   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:01:12.524   MAIN   INF   User not found: 1223
+2020-06-08 10:01:12.524   MAIN   ERR   Bad username format: 
+2020-06-08 10:01:12.525   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:01:56.135   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:01:57.684   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:01:57.685   MAIN   INF   Server running
+2020-06-08 10:01:59.267   MAIN   INF   Checking data input
+2020-06-08 10:01:59.267   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:01:59.267   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:01:59.267   MAIN   INF   Checking user
+2020-06-08 10:01:59.268   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:01:59.268   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:01:59.271   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:01:59.271   MAIN   INF   User not found: 123
+2020-06-08 10:01:59.271   MAIN   ERR   Bad username format: 
+2020-06-08 10:01:59.272   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:02:00.393   MAIN   INF   Checking data input
+2020-06-08 10:02:00.393   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:02:00.393   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:02:00.393   MAIN   INF   Checking user
+2020-06-08 10:02:00.395   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:02:00.395   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:02:00.395   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:00.396   MAIN   INF   User not found: 123
+2020-06-08 10:02:00.396   MAIN   ERR   Bad username format: 
+2020-06-08 10:02:00.396   MAIN   ERR   Problem opening zapsi2 database: dial tcp [::1]:3306: connect: connection refused
+2020-06-08 10:02:13.034   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:02:14.723   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:02:14.724   MAIN   INF   Server running
+2020-06-08 10:02:15.227   MAIN   INF   Checking data input
+2020-06-08 10:02:15.228   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:02:15.228   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:02:15.228   MAIN   INF   Checking user
+2020-06-08 10:02:15.229   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:02:15.229   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:02:15.231   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:16.245   MAIN   INF   Checking data input
+2020-06-08 10:02:16.245   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:02:16.246   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:02:16.246   MAIN   INF   Checking user
+2020-06-08 10:02:16.246   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:02:16.246   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:02:16.247   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:17.223   MAIN   INF   Checking data input
+2020-06-08 10:02:17.223   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:02:17.224   MAIN   INF   [user:1212] [order:] [operation:] [workplace:]
+2020-06-08 10:02:17.224   MAIN   INF   Checking user
+2020-06-08 10:02:17.224   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:02:17.224   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:02:17.225   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:18.564   MAIN   INF   Checking data input
+2020-06-08 10:02:18.564   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:02:18.564   MAIN   INF   [user:1212] [order:] [operation:] [workplace:]
+2020-06-08 10:02:18.564   MAIN   INF   Checking user
+2020-06-08 10:02:18.565   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:02:18.565   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:02:18.565   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:02:37.400   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:02:38.847   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:02:38.847   MAIN   INF   Server running
+2020-06-08 10:02:40.811   MAIN   INF   Checking data input
+2020-06-08 10:02:40.811   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:02:40.812   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:02:40.812   MAIN   INF   Checking user
+2020-06-08 10:02:40.812   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:02:40.812   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:02:40.815   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:02:42.363   MAIN   INF   Checking data input
+2020-06-08 10:02:42.363   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:02:42.363   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:02:42.364   MAIN   INF   Checking user
+2020-06-08 10:02:42.365   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:02:42.365   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:02:42.365   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:03:17.502   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:03:19.116   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:03:19.116   MAIN   INF   Server running
+2020-06-08 10:03:21.268   MAIN   INF   Checking data input
+2020-06-08 10:03:21.268   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:03:21.268   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:03:21.269   MAIN   INF   Checking user
+2020-06-08 10:03:21.269   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:03:21.269   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:03:21.272   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:04:03.852   MAIN   INF   Checking data input
+2020-06-08 10:04:03.852   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:04:03.854   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:04:03.854   MAIN   INF   Checking user
+2020-06-08 10:04:03.855   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:04:03.855   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:04:03.856   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:04:22.015   MAIN   INF   Checking data input
+2020-06-08 10:04:22.015   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:04:22.015   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:04:22.015   MAIN   INF   Checking user
+2020-06-08 10:04:22.016   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:04:22.016   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:04:22.017   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:05:02.265   MAIN   INF   Checking data input
+2020-06-08 10:05:02.265   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:05:02.265   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:05:02.265   MAIN   INF   Checking user
+2020-06-08 10:05:02.266   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:05:02.266   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:05:02.266   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:05:25.148   MAIN   INF   Checking data input
+2020-06-08 10:05:25.148   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:05:25.149   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:05:25.149   MAIN   INF   Checking user
+2020-06-08 10:05:25.149   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:05:25.149   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:05:25.150   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp 127.0.0.1:1433: connect: connection refused
+2020-06-08 10:05:41.422   MAIN   INF   Checking data input
+2020-06-08 10:05:41.422   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:05:41.423   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:05:41.423   MAIN   INF   Checking user
+2020-06-08 10:05:41.423   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:05:41.423   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:05:41.424   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:04.774   MAIN   INF   Checking data input
+2020-06-08 10:06:04.774   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:06:04.774   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:06:04.774   MAIN   INF   Checking user
+2020-06-08 10:06:04.775   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:06:04.775   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:06:04.776   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:22.228   MAIN   INF   Checking data input
+2020-06-08 10:06:22.229   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:06:22.229   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:06:22.229   MAIN   INF   Checking user
+2020-06-08 10:06:22.229   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:06:22.229   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:06:22.230   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:34.109   MAIN   INF   Checking data input
+2020-06-08 10:06:34.109   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:06:34.110   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:06:34.110   MAIN   INF   Checking user
+2020-06-08 10:06:34.110   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:06:34.110   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:06:34.111   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:06:56.531   MAIN   INF   Checking data input
+2020-06-08 10:06:56.531   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:06:56.531   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:06:56.531   MAIN   INF   Checking user
+2020-06-08 10:06:56.532   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:06:56.532   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:06:56.532   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:07:08.236   MAIN   INF   Checking data input
+2020-06-08 10:07:08.236   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:07:08.236   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:07:08.236   MAIN   INF   Checking user
+2020-06-08 10:07:08.237   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:07:08.237   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:07:08.237   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:07:17.334   MAIN   INF   Checking data input
+2020-06-08 10:07:17.334   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:07:17.334   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:07:17.334   MAIN   INF   Checking user
+2020-06-08 10:07:17.335   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:07:17.335   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:07:17.335   MAIN   ERR   Error opening db: Unable to open tcp connection with host 'localhost:1433': dial tcp [::1]:1433: connect: connection refused
+2020-06-08 10:08:16.884   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:08:28.730   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:08:28.731   MAIN   WRN   Config file does not exist, creating
+2020-06-08 10:08:28.731   MAIN   INF   Directory for config file created
+2020-06-08 10:08:28.732   MAIN   INF   Writing data to JSON file
+2020-06-08 10:08:28.732   MAIN   INF   Data written to config file
+2020-06-08 10:08:28.732   MAIN   INF   Server running
+2020-06-08 10:08:32.450   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:08:40.795   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:08:40.796   MAIN   INF   Server running
+2020-06-08 10:08:43.140   MAIN   INF   Checking data input
+2020-06-08 10:08:43.141   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:08:43.141   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:08:43.141   MAIN   INF   Checking user
+2020-06-08 10:08:43.142   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:08:43.142   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:08:43.266   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:09:02.946   MAIN   INF   Checking data input
+2020-06-08 10:09:02.946   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:09:02.947   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:09:02.947   MAIN   INF   Checking user
+2020-06-08 10:09:02.947   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:09:02.947   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:09:03.073   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:09:10.705   MAIN   INF   Checking data input
+2020-06-08 10:09:10.705   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:09:10.705   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:09:10.705   MAIN   INF   Checking user
+2020-06-08 10:09:10.706   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:09:10.706   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:09:10.827   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:09:38.845   MAIN   INF   Checking data input
+2020-06-08 10:09:38.845   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:09:38.845   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:09:38.845   MAIN   INF   Checking user
+2020-06-08 10:09:38.846   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:09:38.846   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:09:38.971   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:10:21.713   MAIN   INF   Checking data input
+2020-06-08 10:10:21.713   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:10:21.713   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:10:21.713   MAIN   INF   Checking user
+2020-06-08 10:10:21.714   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:10:21.714   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:10:21.839   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:10:43.105   MAIN   INF   Checking data input
+2020-06-08 10:10:43.105   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:10:43.105   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:10:43.105   MAIN   INF   Checking user
+2020-06-08 10:10:43.106   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:10:43.106   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:10:43.348   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:10:57.377   MAIN   INF   Checking data input
+2020-06-08 10:10:57.377   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:10:57.377   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:10:57.378   MAIN   INF   Checking user
+2020-06-08 10:10:57.378   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:10:57.378   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:10:57.502   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:13.817   MAIN   INF   Checking data input
+2020-06-08 10:11:13.817   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:11:13.818   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:11:13.818   MAIN   INF   Checking user
+2020-06-08 10:11:13.818   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:11:13.818   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:11:13.944   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:29.467   MAIN   INF   Checking data input
+2020-06-08 10:11:29.467   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:11:29.468   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:11:29.468   MAIN   INF   Checking user
+2020-06-08 10:11:29.468   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:11:29.468   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:11:30.595   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:50.762   MAIN   INF   Checking data input
+2020-06-08 10:11:50.763   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:11:50.763   MAIN   INF   [user:1233] [order:] [operation:] [workplace:]
+2020-06-08 10:11:50.763   MAIN   INF   Checking user
+2020-06-08 10:11:50.763   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:11:50.763   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:11:50.888   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:11:59.715   MAIN   INF   Checking data input
+2020-06-08 10:11:59.715   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:11:59.716   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:11:59.716   MAIN   INF   Checking user
+2020-06-08 10:11:59.716   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:11:59.716   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:11:59.841   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:12:15.490   MAIN   INF   Checking data input
+2020-06-08 10:12:15.490   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:12:15.490   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:12:15.490   MAIN   INF   Checking user
+2020-06-08 10:12:15.490   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:12:15.490   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:12:15.614   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:12:38.378   MAIN   INF   Displaying main screen
+2020-06-08 10:12:38.378   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:12:38.378   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:12:39.588   MAIN   INF   Checking data input
+2020-06-08 10:12:39.588   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:12:39.589   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:12:39.589   MAIN   INF   Checking user
+2020-06-08 10:12:39.589   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:12:39.589   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:12:39.713   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:13:05.559   MAIN   INF   Displaying main screen
+2020-06-08 10:13:05.560   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:13:05.560   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:13:06.502   MAIN   INF   Checking data input
+2020-06-08 10:13:06.502   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:13:06.503   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:13:06.503   MAIN   INF   Checking user
+2020-06-08 10:13:06.503   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:13:06.503   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:13:06.628   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:13:08.895   MAIN   INF   Checking data input
+2020-06-08 10:13:08.895   MAIN   INF   [OK:NOK]  [:]
+2020-06-08 10:13:08.895   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:13:08.895   MAIN   INF   Checking user
+2020-06-08 10:13:08.896   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:13:08.896   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:13:09.021   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:15:06.997   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:15:08.796   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:15:08.796   MAIN   INF   Server running
+2020-06-08 10:15:09.558   MAIN   INF   Checking data input
+2020-06-08 10:15:09.558   MAIN   INF   [OK:NOK:Type]  [::]
+2020-06-08 10:15:09.560   MAIN   INF   Checking data input
+2020-06-08 10:15:09.560   MAIN   INF   [OK:NOK:Type]  [::]
+2020-06-08 10:15:09.561   MAIN   INF   Checking data input
+2020-06-08 10:15:09.561   MAIN   INF   [OK:NOK:Type]  [::]
+2020-06-08 10:15:47.001   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:15:48.586   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:15:48.586   MAIN   INF   Server running
+2020-06-08 10:15:49.079   MAIN   INF   Checking data input
+2020-06-08 10:15:49.079   MAIN   INF   [OK:NOK:Type]  [::]
+2020-06-08 10:15:49.079   MAIN   INF   [user:123] [order:] [operation:] [workplace:] [radio:0]
+2020-06-08 10:15:49.079   MAIN   INF   Checking user
+2020-06-08 10:15:49.080   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:15:49.080   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:15:49.205   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:16:43.677   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:16:45.289   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:16:45.289   MAIN   INF   Server running
+2020-06-08 10:16:47.528   MAIN   INF   Checking data input
+2020-06-08 10:16:47.528   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:16:47.529   MAIN   INF   [OK:NOK:Type]  [::]
+2020-06-08 10:16:47.529   MAIN   INF   [radio:0]
+2020-06-08 10:16:47.529   MAIN   INF   Checking user
+2020-06-08 10:16:47.529   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:16:47.529   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:16:47.653   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:18:02.515   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:18:04.338   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:18:04.338   MAIN   INF   Server running
+2020-06-08 10:18:07.491   MAIN   INF   Checking data input
+2020-06-08 10:18:07.491   MAIN   INF   [user:123] [order:] [operation:] [workplace:]
+2020-06-08 10:18:07.492   MAIN   INF   [OK:NOK:Type]  [::]
+2020-06-08 10:18:07.492   MAIN   INF   [radio:0]
+2020-06-08 10:18:07.492   MAIN   INF   [START:TRANSFER:END] [0:0:0]
+2020-06-08 10:18:07.492   MAIN   INF   Checking user
+2020-06-08 10:18:07.492   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:18:07.492   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:18:07.615   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:19:30.437   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:19:32.119   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:19:32.119   MAIN   INF   Server running
+2020-06-08 10:19:33.896   MAIN   INF   Checking data input
+2020-06-08 10:19:33.897   MAIN   INF   [USER:123] [ORDER:] [OPERATION:] [WORKPLACE:]
+2020-06-08 10:19:33.897   MAIN   INF   [OK:NOK:TYPE]  [::]
+2020-06-08 10:19:33.897   MAIN   INF   [RADIO:0]
+2020-06-08 10:19:33.897   MAIN   INF   [START:TRANSFER:END] [0:0:0]
+2020-06-08 10:19:33.897   MAIN   INF   Checking user
+2020-06-08 10:19:33.898   MAIN   INF   No noktypes, adding null noktype
+2020-06-08 10:19:33.898   MAIN   INF   No workplaces, adding null workplace
+2020-06-08 10:19:34.016   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:21:31.885   MAIN   INF   Stopped on platform darwin-launchd
+2020-06-08 10:21:33.569   MAIN   INF   Starting Zapsi Service on darwin-launchd
+2020-06-08 10:21:33.569   MAIN   INF   Server running
+2020-06-08 10:21:35.327   MAIN   INF   Checking data input
+2020-06-08 10:21:35.327   MAIN   INF   [USER:123] [ORDER:] [OPERATION:] [WORKPLACE:]
+2020-06-08 10:21:35.328   MAIN   INF   [OK:NOK:TYPE]  [::]
+2020-06-08 10:21:35.328   MAIN   INF   [RADIO:0]
+2020-06-08 10:21:35.328   MAIN   INF   [START:TRANSFER:END] [0:0:0]
+2020-06-08 10:21:35.328   MAIN   INF   Checking user
+2020-06-08 10:21:35.453   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
+2020-06-08 10:21:35.453   MAIN   INF   Displaying error page for user check
