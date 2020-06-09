@@ -16,29 +16,29 @@ func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []s
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	data.Message = "Starting controls"
-	var zapsiHasOpenOrder bool := CheckAnyOrderInZapsiForWorkplace(workplaceid)
+	var zapsiHasOpenOrder bool = CheckAnyOrderInZapsiForWorkplace(workplaceid)
 	if zapsiHasOpenOrder {
-		var openOrderIsSimilar bool := CheckIfOpenOrderIsSimilar(workplaceid, orderid, operationid, userid)
+		var openOrderIsSimilar bool = CheckIfOpenOrderIsSimilar(workplaceid, orderid, operationid, userid)
 		if openOrderIsSimilar {
 			// Zobraz vstup pro OK a NOK kusy
 		} else {
-			var jeViceVpEqualOne bool := CheckJeViceVpEqualOne(orderid, operationid)
+			var jeViceVpEqualOne bool = CheckJeViceVpEqualOne(orderid, operationid)
 			if jeViceVpEqualOne {
-				var jeTypZdrojeZapsiEqualZero bool := CheckJeTypZdrojeZapsiEqualZero(orderid, operationid)
+				var jeTypZdrojeZapsiEqualZero bool = CheckJeTypZdrojeZapsiEqualZero(orderid, operationid)
 				if jeTypZdrojeZapsiEqualZero {
 					// zobraz volbu clovek, zobraz tlacitko zahajeni
 				} else {
 					// zobraz clovek, stroj a serizeni a tlacitko zahajeni
 				}
 			} else {
-				var jeParovyDilEqualOne bool := CheckJeParovyDilEqualOne(orderid, operationid)
+				var jeParovyDilEqualOne bool = CheckJeParovyDilEqualOne(orderid, operationid)
 				if jeParovyDilEqualOne {
-					var seznamParDiluIsNotEmpty bool := CheckSeznamParDiluIsNotEmpty(orderid, operationid)
+					var seznamParDiluIsNotEmpty bool = CheckSeznamParDiluIsNotEmpty(orderid, operationid)
 					if seznamParDiluIsNotEmpty {
-						var zapsiProduct Product := CheckProductInZapsiIfNotExists(orderid, operationid)
-						var anyOpenOrderHasThisProduct bool := CheckIfAnyOpenOrderHasThisProduct(workplaceid, zapsiProduct)
+						var zapsiProduct Product = CheckProductInZapsiIfNotExists(orderid, operationid)
+						var anyOpenOrderHasThisProduct bool = CheckIfAnyOpenOrderHasThisProduct(workplaceid, zapsiProduct)
 						if anyOpenOrderHasThisProduct {
-							var typZdrojeZapsiEqualZero := CheckTypZdrojeZapsiEqualZero(orderid, operationid, workplaceid)
+							var typZdrojeZapsiEqualZero = CheckTypZdrojeZapsiEqualZero(orderid, operationid, workplaceid)
 							if typZdrojeZapsiEqualZero {
 								// zobraz volbu clovek, zobraz tlacitko zahajeni
 							} else {
@@ -57,11 +57,11 @@ func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []s
 			}
 		}
 	} else {
-		var jenPrenosMnozstviEqualOne bool := CheckJenPrenosMnozstviEqualOne(orderid, operationid)
+		var jenPrenosMnozstviEqualOne bool = CheckJenPrenosMnozstviEqualOne(orderid, operationid)
 		if jenPrenosMnozstviEqualOne {
 			// Zobraz vstup pro OK a NOK kusy
 		} else {
-			var jeTypZdrojeEqualZero bool := CheckJeTypZdrojeEqualZero(orderid, operationid, workplaceid)
+			var jeTypZdrojeEqualZero bool = CheckJeTypZdrojeEqualZero(orderid, operationid, workplaceid)
 			if jeTypZdrojeEqualZero {
 				// zobraz volbu clovek a tlacitko zahajeni
 			} else {
