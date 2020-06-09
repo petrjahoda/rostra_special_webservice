@@ -41,6 +41,7 @@ type SytelineWorkplace struct {
 	priznak_mn_1          string
 	vice_vp               string
 	SL_prac               string
+	typ_zdroje_zapsi      string
 	auto_prevod_mnozstvi  string
 	mnozstvi_auto_prevodu string
 }

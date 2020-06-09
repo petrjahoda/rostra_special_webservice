@@ -49,13 +49,14 @@ type RostraMainPage struct {
 }
 
 const (
-	checkUser int = iota
-	checkOrder
-	checkOperation
-	checkWorkplace
-	startOrder
-	transferOrder
-	endOrder
+	checkUserStep int = iota
+	checkOrderStep
+	checkOperationStep
+	checkWorkplaceStep
+	checkAmountStep
+	startOrderStep
+	transferOrderStep
+	endOrderStep
 )
 
 func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -76,23 +77,25 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	LogInfo("MAIN", "[OK:NOK:TYPE]  ["+ok[0]+":"+nok[0]+":"+noktype[0]+"]")
 	LogInfo("MAIN", "[RADIO:"+strconv.Itoa(len(radio))+"]")
 	LogInfo("MAIN", "[START:TRANSFER:END] ["+strconv.Itoa(len(startorder))+":"+strconv.Itoa(len(transferorder))+":"+strconv.Itoa(len(endorder))+"]")
-	inputStep := CheckInputStep(orderid, operationid, workplaceid, startorder, transferorder, endorder)
+	inputStep := CheckInputStep(orderid, operationid, workplaceid, startorder, transferorder, endorder, ok, nok)
 	switch inputStep {
-	case checkUser:
+	case checkUserStep:
 		CheckUserInSyteline(&writer, userid)
-	case checkOrder:
+	case checkOrderStep:
 		CheckOrderInSyteline(&writer, userid, orderid)
-	case checkOperation:
-		//CheckOperationInSyteline(userid, orderid, operationid)
-	case checkWorkplace:
-		//MakeFirstControls(workplaceid, userid, orderid, operationid)
-	case startOrder:
+	case checkOperationStep:
+		CheckOperationInSyteline(&writer, userid, orderid, operationid)
+	case checkWorkplaceStep:
+		FirstControls(&writer, workplaceid, userid, orderid, operationid)
+	case checkAmountStep:
+		//SecondControls(&writer, workplaceid, userid, orderid, operationid, ok, nok, noktype)
+	case startOrderStep:
 		//StartOrder(userid, orderid, operationid, workplaceid)
-	case transferOrder:
+	case transferOrderStep:
 		//CheckOk(userid, orderid, operationid, workplaceid, ok, nok, noktype)
 		//CheckNok(userid, orderid, operationid, workplaceid, ok, nok, noktype)
 		//TransferOrder(userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
-	case endOrder:
+	case endOrderStep:
 		//CheckOk(userid, orderid, operationid, workplaceid, ok, nok, noktype)
 		//CheckNok(userid, orderid, operationid, workplaceid, ok, nok, noktype)
 		//EndOrder(userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
@@ -612,97 +615,24 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 //	return false
 //}
 //
-//func CheckOperationInSyteline(userId []string, orderId []string, operationId []string) (SytelineOperation, []SytelineWorkplace) {
-//	order, suffix := ParseOrder(orderId[0])
-//	LogInfo("MAIN", "Checking operation")
-//	db, err := gorm.Open("mssql", SytelineConnection)
-//	var sytelineOperation SytelineOperation
-//	var sytelineWorkplaces []SytelineWorkplace
-//	if err != nil {
-//		LogError("MAIN", "Error opening db: "+err.Error())
-//		data.UsernameValue = userId[0]
-//		data.OrderValue = orderId[0]
-//		data.Operation = "Problém při komunikaci se Syteline, kontaktujte prosím IT"
-//		data.OperationDisabled = ""
-//		data.OperationFocus = "autofocus"
-//		return sytelineOperation, sytelineWorkplaces
-//	}
-//	defer db.Close()
-//	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationId[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
-//	rows, err := db.Raw(command).Rows()
-//	if err != nil {
-//		LogError("MAIN", "Error: "+err.Error())
-//	}
-//	defer rows.Close()
-//	for rows.Next() {
-//		err = rows.Scan(&sytelineOperation.pracoviste, &sytelineOperation.pracoviste_popis, &sytelineOperation.uvolneno_op, &sytelineOperation.priznak_mn_2, &sytelineOperation.mn_2_ks, &sytelineOperation.priznak_mn_3, &sytelineOperation.mn_3_ks, &sytelineOperation.jen_prenos_mnozstvi, &sytelineOperation.priznak_nasobnost, &sytelineOperation.nasobnost, &sytelineOperation.parovy_dil, &sytelineOperation.seznamm_par_dilu)
-//		if err != nil {
-//			LogError("MAIN", "Error: "+err.Error())
-//		}
-//	}
-//	if len(sytelineOperation.pracoviste) > 0 {
-//		LogInfo("MAIN", "Operation found: "+operationId[0])
-//		data.Message = "Operation found: " + operationId[0]
-//		data.Operation = operationId[0]
-//		data.UsernameValue = userId[0]
-//		data.OrderValue = orderId[0]
-//		data.OperationValue = operationId[0]
-//		data.WorkplaceDisabled = ""
-//	} else {
-//		LogInfo("MAIN", "Operation not found for "+operationId[0])
-//		data.Message = "Operation not found for " + operationId[0]
-//		data.UsernameValue = userId[0]
-//		data.OrderValue = orderId[0]
-//		data.Operation = "Operace nenalezena, zadejte prosím znovu"
-//		data.OperationDisabled = ""
-//		data.OperationFocus = "autofocus"
-//		return sytelineOperation, sytelineWorkplaces
-//	}
-//
-//	command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationId[0] + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
-//	workplaceRows, err := db.Raw(command).Rows()
-//	if err != nil {
-//		LogError("MAIN", "Error: "+err.Error())
-//	}
-//	defer workplaceRows.Close()
-//	for workplaceRows.Next() {
-//		var sytelineWorkplace SytelineWorkplace
-//		err = workplaceRows.Scan(&sytelineWorkplace.Zapsi_zdroj, &sytelineWorkplace.priznak_mn_1, &sytelineWorkplace.vice_vp, &sytelineWorkplace.SL_prac, &sytelineWorkplace.auto_prevod_mnozstvi, &sytelineWorkplace.mnozstvi_auto_prevodu)
-//		sytelineWorkplaces = append(sytelineWorkplaces, sytelineWorkplace)
-//		if err != nil {
-//			LogError("MAIN", "Error: "+err.Error())
-//		}
-//	}
-//	if len(sytelineWorkplaces) > 0 {
-//		data.Workplaces = sytelineWorkplaces
-//		LogInfo("MAIN", "Workplaces found: "+strconv.Itoa(len(sytelineWorkplaces)))
-//		data.WorkplaceFocus = "autofocus"
-//	} else {
-//		LogInfo("MAIN", "Workplaces not found for "+orderId[0])
-//		data.UsernameValue = userId[0]
-//		data.OrderValue = orderId[0]
-//		data.Operation = "Pracoviště nenalezeny, zadejte prosím znovu"
-//		data.OperationDisabled = ""
-//		data.OperationFocus = "autofocus"
-//	}
-//	return sytelineOperation, sytelineWorkplaces
-//}
 
-func CheckInputStep(orderId []string, operationId []string, workplaceId []string, startorder []string, transferorder []string, endorder []string) interface{} {
+func CheckInputStep(orderId []string, operationId []string, workplaceId []string, startorder []string, transferorder []string, endorder []string, ok []string, nok []string) interface{} {
 	if len(startorder) == 1 {
-		return startOrder
+		return startOrderStep
 	} else if len(transferorder) == 1 {
-		return transferOrder
+		return transferOrderStep
 	} else if len(endorder) == 1 {
-		return endOrder
-	} else if orderId[0] == "" && operationId[0] == "" && workplaceId[0] == "" {
-		return checkUser
-	} else if operationId[0] == "" && workplaceId[0] == "" {
-		return checkOrder
-	} else if workplaceId[0] == "" {
-		return checkOperation
+		return endOrderStep
+	} else if orderId[0] == "" && operationId[0] == "" && workplaceId[0] == "" && ok[0] == "" && nok[0] == "" {
+		return checkUserStep
+	} else if operationId[0] == "" && workplaceId[0] == "" && ok[0] == "" && nok[0] == "" {
+		return checkOrderStep
+	} else if workplaceId[0] == "" && ok[0] == "" && nok[0] == "" {
+		return checkOperationStep
+	} else if ok[0] == "" && nok[0] == "" {
+		return checkWorkplaceStep
 	}
-	return checkWorkplace
+	return checkAmountStep
 }
 
 func RostraMainScreen(writer http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
@@ -742,7 +672,7 @@ func CreateDefaultPage() RostraMainPage {
 		data.NokTypes = append(data.NokTypes, nokType)
 	}
 	if len(data.Workplaces) == 0 {
-		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
+		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", typ_zdroje_zapsi: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 		data.Workplaces = append(data.Workplaces, workplace)
 	}
 	return data

@@ -1,10 +1,77 @@
 package main
 
+import (
+	"html/template"
+	"net/http"
+)
+
 //
 //import (
 //	"github.com/jinzhu/gorm"
 //	"strings"
 //)
+
+func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []string, orderid []string, operationid []string) {
+	LogInfo("MAIN", "Starting controls")
+	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
+	data := CreateDefaultPage()
+	data.Message = "Starting controls"
+	var zapsiHasOpenOrder bool := CheckAnyOrderInZapsiForWorkplace(workplaceid)
+	if zapsiHasOpenOrder {
+		var openOrderIsSimilar bool := CheckIfOpenOrderIsSimilar(workplaceid, orderid, operationid, userid)
+		if openOrderIsSimilar {
+			// Zobraz vstup pro OK a NOK kusy
+		} else {
+			var jeViceVpEqualOne bool := CheckJeViceVpEqualOne(orderid, operationid)
+			if jeViceVpEqualOne {
+				var jeTypZdrojeZapsiEqualZero bool := CheckJeTypZdrojeZapsiEqualZero(orderid, operationid)
+				if jeTypZdrojeZapsiEqualZero {
+					// zobraz volbu clovek, zobraz tlacitko zahajeni
+				} else {
+					// zobraz clovek, stroj a serizeni a tlacitko zahajeni
+				}
+			} else {
+				var jeParovyDilEqualOne bool := CheckJeParovyDilEqualOne(orderid, operationid)
+				if jeParovyDilEqualOne {
+					var seznamParDiluIsNotEmpty bool := CheckSeznamParDiluIsNotEmpty(orderid, operationid)
+					if seznamParDiluIsNotEmpty {
+						var zapsiProduct Product := CheckProductInZapsiIfNotExists(orderid, operationid)
+						var anyOpenOrderHasThisProduct bool := CheckIfAnyOpenOrderHasThisProduct(workplaceid, zapsiProduct)
+						if anyOpenOrderHasThisProduct {
+							var typZdrojeZapsiEqualZero := CheckTypZdrojeZapsiEqualZero(orderid, operationid, workplaceid)
+							if typZdrojeZapsiEqualZero {
+								// zobraz volbu clovek, zobraz tlacitko zahajeni
+							} else {
+								//zobraz clovek, stroj a serizeni a tlacitko zahajeni
+							}
+						} else {
+							// vrat na vyber pracoviste s informaci o chybe
+						}
+
+					} else {
+						// vrat na vyber pracoviste s informaci o chybe
+					}
+				} else {
+					// vrat na vyber pracoviste s informaci o chybe
+				}
+			}
+		}
+	} else {
+		var jenPrenosMnozstviEqualOne bool := CheckJenPrenosMnozstviEqualOne(orderid, operationid)
+		if jenPrenosMnozstviEqualOne {
+			// Zobraz vstup pro OK a NOK kusy
+		} else {
+			var jeTypZdrojeEqualZero bool := CheckJeTypZdrojeEqualZero(orderid, operationid, workplaceid)
+			if jeTypZdrojeEqualZero {
+				// zobraz volbu clovek a tlacitko zahajeni
+			} else {
+				// zobraz clovek, stroj a serizeni a tlacitko zahajeni
+			}
+		}
+	}
+	_ = tmpl.Execute(*writer, data)
+}
+
 //
 //func MakeFirstControls(workplaceId []string, userId []string, orderId []string, operationId []string) {
 //	anyOrderExists := CheckAnyOrderInZapsi(workplaceId)
