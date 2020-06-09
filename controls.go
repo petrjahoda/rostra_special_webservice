@@ -16,10 +16,10 @@ func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []s
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	data.Message = "Starting controls"
-	var zapsiHasOpenOrder bool = CheckAnyOrderInZapsiForWorkplace(workplaceid)
-	if zapsiHasOpenOrder {
-		var openOrderIsSimilar bool = CheckIfOpenOrderIsSimilar(workplaceid, orderid, operationid, userid)
-		if openOrderIsSimilar {
+	var anyOpenOrderInZapsi bool = CheckAnyOpenOrderInZapsi(workplaceid)
+	if anyOpenOrderInZapsi {
+		var thisOpenOrderInZapsi bool = CheckThisOpenOrderInZapsi(workplaceid, orderid, operationid, userid)
+		if thisOpenOrderInZapsi {
 			// Zobraz vstup pro OK a NOK kusy
 		} else {
 			var jeViceVpEqualOne bool = CheckJeViceVpEqualOne(orderid, operationid)
@@ -47,7 +47,6 @@ func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []s
 						} else {
 							// vrat na vyber pracoviste s informaci o chybe
 						}
-
 					} else {
 						// vrat na vyber pracoviste s informaci o chybe
 					}
