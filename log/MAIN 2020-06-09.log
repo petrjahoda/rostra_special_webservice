@@ -146,3 +146,4 @@
 2020-06-09 13:28:57.400   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
 2020-06-09 13:28:57.401   MAIN   INF   Sending error page for user check
 2020-06-09 13:28:58.693   MAIN   INF   Displaying main screen
+2020-06-09 14:23:03.293   MAIN   INF   Stopped on platform darwin-launchd

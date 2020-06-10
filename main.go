@@ -7,10 +7,9 @@ import (
 	"time"
 )
 
-const version = "2020.2.3.9"
-const programName = "Zapsi Service"
-const programDescription = "Downloads data from Zapsi devices"
-
+const version = "2020.2.3.10"
+const programName = "Rostra Special Web Service"
+const programDescription = "Allow users to start and end orders"
 const deleteLogsAfter = 240 * time.Hour
 
 type program struct{}

@@ -8,6 +8,136 @@ import (
 	"strings"
 )
 
+func EndOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
+	// TODO: complete
+	return false
+}
+
+func TransferOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
+	// TODO: complete
+	return false
+}
+
+func StartOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
+	// TODO: complete
+	return false
+}
+
+func GetNokTypesFromSyteline() []SytelineNok {
+	var nokTypes []SytelineNok
+	db, err := gorm.Open("mssql", SytelineConnection)
+	command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports_test].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	rows, err := db.Raw(command).Rows()
+	if err != nil {
+		LogError("MAIN", "Error: "+err.Error())
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var nokType SytelineNok
+		err = rows.Scan(&nokType.Kod, &nokType.Nazev)
+		nokTypes = append(nokTypes, nokType)
+		if err != nil {
+			LogError("MAIN", "Error: "+err.Error())
+		}
+	}
+	db.Close()
+	return nokTypes
+}
+func GetWorkplaceFromSyteline(orderid []string, operationid []string, workplaceid []string) SytelineWorkplace {
+	LogInfo("MAIN", "Checking operation")
+	order, suffix := ParseOrder(orderid[0])
+	db, err := gorm.Open("mssql", SytelineConnection)
+	var sytelineOperation SytelineOperation
+	var sytelineWorkplace SytelineWorkplace
+	if err != nil {
+		LogError("MAIN", "Error opening db: "+err.Error())
+		return sytelineWorkplace
+	}
+	defer db.Close()
+	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationid[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	rows, err := db.Raw(command).Rows()
+	if err != nil {
+		LogError("MAIN", "Error: "+err.Error())
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&sytelineOperation.pracoviste, &sytelineOperation.pracoviste_popis, &sytelineOperation.uvolneno_op, &sytelineOperation.priznak_mn_2, &sytelineOperation.mn_2_ks, &sytelineOperation.priznak_mn_3, &sytelineOperation.mn_3_ks, &sytelineOperation.jen_prenos_mnozstvi, &sytelineOperation.priznak_nasobnost, &sytelineOperation.nasobnost, &sytelineOperation.parovy_dil, &sytelineOperation.seznamm_par_dilu)
+		if err != nil {
+			LogError("MAIN", "Error: "+err.Error())
+		}
+	}
+	if len(sytelineOperation.pracoviste) > 0 {
+		LogInfo("MAIN", "Operation found: "+operationid[0])
+		command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationid[0] + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
+		workplaceRows, err := db.Raw(command).Rows()
+		if err != nil {
+			LogError("MAIN", "Error: "+err.Error())
+		}
+		defer workplaceRows.Close()
+		for workplaceRows.Next() {
+			var sytelineWorkplaceScanned SytelineWorkplace
+			err = workplaceRows.Scan(&sytelineWorkplaceScanned.Zapsi_zdroj, &sytelineWorkplaceScanned.priznak_mn_1, &sytelineWorkplaceScanned.vice_vp, &sytelineWorkplaceScanned.SL_prac, &sytelineWorkplaceScanned.typ_zdroje_zapsi, &sytelineWorkplaceScanned.auto_prevod_mnozstvi, &sytelineWorkplaceScanned.mnozstvi_auto_prevodu)
+			if err != nil {
+				LogError("MAIN", "Error: "+err.Error())
+			}
+			if sytelineWorkplaceScanned.Zapsi_zdroj == workplaceid[0] {
+				sytelineWorkplace = sytelineWorkplaceScanned
+			}
+		}
+	}
+	return sytelineWorkplace
+}
+
+func GetOperationFromSyteline(orderid []string, operationid []string) SytelineOperation {
+	LogInfo("MAIN", "Getting operation from syteline")
+	order, suffix := ParseOrder(orderid[0])
+	db, err := gorm.Open("mssql", SytelineConnection)
+	var sytelineOperation SytelineOperation
+	if err != nil {
+		LogError("MAIN", "Error opening db: "+err.Error())
+		return sytelineOperation
+	}
+	defer db.Close()
+	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationid[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	rows, err := db.Raw(command).Rows()
+	if err != nil {
+		LogError("MAIN", "Error: "+err.Error())
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&sytelineOperation.pracoviste, &sytelineOperation.pracoviste_popis, &sytelineOperation.uvolneno_op, &sytelineOperation.priznak_mn_2, &sytelineOperation.mn_2_ks, &sytelineOperation.priznak_mn_3, &sytelineOperation.mn_3_ks, &sytelineOperation.jen_prenos_mnozstvi, &sytelineOperation.priznak_nasobnost, &sytelineOperation.nasobnost, &sytelineOperation.parovy_dil, &sytelineOperation.seznamm_par_dilu)
+		if err != nil {
+			LogError("MAIN", "Error: "+err.Error())
+		}
+	}
+	return sytelineOperation
+}
+
+func GetOrderFromSyteline(orderid []string) SytelineOrder {
+	LogInfo("MAIN", "Getting order from Syteline")
+	order, suffix := ParseOrder(orderid[0])
+	db, err := gorm.Open("mssql", SytelineConnection)
+	var sytelineOrder SytelineOrder
+	if err != nil {
+		LogError("MAIN", "Error opening db: "+err.Error())
+		return sytelineOrder
+	}
+	defer db.Close()
+	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	rows, err := db.Raw(command).Rows()
+	if err != nil {
+		LogError("MAIN", "Error: "+err.Error())
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err = rows.Scan(&sytelineOrder.CisloVp, &sytelineOrder.SuffixVp, &sytelineOrder.PolozkaVp, &sytelineOrder.PopisPolVp, &sytelineOrder.priznak_seriova_vyroba)
+		if err != nil {
+			LogError("MAIN", "Error: "+err.Error())
+		}
+	}
+	return sytelineOrder
+}
+
 func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orderId []string, operationId []string) {
 	LogInfo("MAIN", "Checking operation")
 	order, suffix := ParseOrder(orderId[0])
@@ -44,7 +174,6 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 		if len(sytelineOperation.pracoviste) > 0 {
 			LogInfo("MAIN", "Operation found: "+operationId[0])
 			command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationId[0] + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
-			LogInfo("MAIN", command)
 			workplaceRows, err := db.Raw(command).Rows()
 			if err != nil {
 				LogError("MAIN", "Error: "+err.Error())
@@ -96,15 +225,6 @@ func CheckOrderInSyteline(writer *http.ResponseWriter, userId []string, orderId 
 	LogInfo("MAIN", "Checking order")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
-	// DEBUG
-	//data.Order = orderId[0]
-	//data.OrderValue = orderId[0]
-	//data.UsernameValue = userId[0]
-	//data.OperationFocus = "autofocus"
-	//data.OperationDisabled = ""
-	//data.UserDisabled = "disabled"
-	//_ = tmpl.Execute(*writer, data)
-
 	order, suffix := ParseOrder(orderId[0])
 	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineOrder SytelineOrder
@@ -171,16 +291,6 @@ func CheckUserInSyteline(writer *http.ResponseWriter, userId []string) {
 	LogInfo("MAIN", "Checking user")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
-
-	// DEBUG
-	//data.Username = "1234;Petr Jahoda"
-	//data.UsernameValue = "1234;Petr Jahoda"
-	//data.UserDisabled = "disabled"
-	//data.OrderDisabled = ""
-	//data.OrderFocus = "autofocus"
-	//data.Order = "Zadejte prosím číslo zakázky"
-	//_ = tmpl.Execute(*writer, data)
-
 	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineUser SytelineUser
 	if err != nil {
@@ -198,6 +308,7 @@ func CheckUserInSyteline(writer *http.ResponseWriter, userId []string) {
 		err = row.Scan(&sytelineUser.JePlatny, &sytelineUser.Jmeno)
 		if sytelineUser.JePlatny == "1" {
 			LogInfo("MAIN", "User found: "+userId[0])
+			CreateUserInZapsiIfNotExists(sytelineUser, userId)
 			data.Username = userId[0] + ";" + sytelineUser.Jmeno
 			data.UsernameValue = userId[0] + ";" + sytelineUser.Jmeno
 			data.OrderDisabled = ""
@@ -211,40 +322,8 @@ func CheckUserInSyteline(writer *http.ResponseWriter, userId []string) {
 			data.UserDisabled = ""
 			data.UserFocus = "autofocus"
 		}
-		CreateUserInZapsiIfNotExists(sytelineUser, userId)
+
 		LogInfo("MAIN", "Sending page for user check")
 		_ = tmpl.Execute(*writer, data)
 	}
-}
-
-func CreateUserInZapsiIfNotExists(user SytelineUser, userId []string) {
-	trimmedUserName := strings.ReplaceAll(user.Jmeno, " ", "")
-	var userName []string
-	if strings.Contains(trimmedUserName, ",") {
-		userName = strings.Split(trimmedUserName, ",")
-	} else {
-		LogError("MAIN", "Bad username format: "+user.Jmeno)
-		userName = append(userName, trimmedUserName)
-		userName = append(userName, trimmedUserName)
-	}
-	var zapsiUser User
-	connectionString, dialect := CheckDatabaseType()
-	db, err := gorm.Open(dialect, connectionString)
-	if err != nil {
-		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
-		return
-	}
-	defer db.Close()
-	db.Where("Name LIKE ?", userName[0]).Where("FirstName LIKE ?", userName[1]).Find(&zapsiUser)
-	if zapsiUser.OID > 0 {
-		LogInfo("MAIN", "User "+user.Jmeno+"already exists")
-		return
-	}
-	LogInfo("MAIN", "User "+user.Jmeno+" does not exist, creating user "+user.Jmeno)
-	zapsiUser.Login = userId[0]
-	zapsiUser.Name = userName[0]
-	zapsiUser.FirstName = userName[1]
-	zapsiUser.UserRoleID = "1"
-	zapsiUser.UserTypeID = "1"
-	db.Create(&zapsiUser)
 }

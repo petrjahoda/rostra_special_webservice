@@ -14,6 +14,17 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.3.10] - 2020-06-10
+
+### Added
+- complete first controls
+- complete second controls
+- complete saving to zapsi
+
+### Changed
+- removed table
+- code formatted to more files 
+
 ## [2020.2.3.9] - 2020-06-9
 
 ### Added
