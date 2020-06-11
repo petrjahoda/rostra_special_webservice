@@ -92,18 +92,18 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	case checkAmountStep:
 		SecondControls(&writer, workplaceid, userid, orderid, operationid, ok, nok, noktype)
 	case startOrderStep:
-		StartOrder(&writer, userid, orderid, operationid, workplaceid, radio)
+		StartOrderButton(&writer, userid, orderid, operationid, workplaceid, radio)
 	case transferOrderStep:
-		TransferOrder(&writer, userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
+		TransferOrderButton(&writer, userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
 	case endOrderStep:
-		EndOrder(&writer, userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
+		EndOrderButton(&writer, userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
 	}
 }
 
-func EndOrder(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) {
+func EndOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) {
 	LogInfo("MAIN", "Ending order")
+	sytelineOrderEnded := EndOrderInSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
 	zapsiOrderEnded := EndOrderInZapsi(userid, orderid, operationid, workplaceid, ok, nok)
-	sytelineOrderEnded := EndOrderInSyteline(userid, orderid, operationid, workplaceid, radio)
 	SaveNokIntoZapsi(nok, noktype, workplaceid, userid)
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
@@ -114,21 +114,21 @@ func EndOrder(writer *http.ResponseWriter, userid []string, orderid []string, op
 	_ = tmpl.Execute(*writer, data)
 }
 
-func TransferOrder(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) {
+func TransferOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) {
 	LogInfo("MAIN", "Transferring order")
 	zapsiOrderCreated := StartAndCloseOrderInZapsi(userid, orderid, operationid, workplaceid, ok, nok)
-	sytelineOrderCreated := TransferOrderInSyteline(userid, orderid, operationid, workplaceid, radio)
+	sytelineOkAndNokTransferred := TransferOkAndNokToSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype)
 	SaveNokIntoZapsi(nok, noktype, workplaceid, userid)
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	LogInfo("MAIN", "Order in Zapsi transfered "+strconv.FormatBool(zapsiOrderCreated))
 	data.Message += "Order in zapsi transfered: " + strconv.FormatBool(zapsiOrderCreated) + "\n"
-	LogInfo("MAIN", "Order in Syteline transfered "+strconv.FormatBool(sytelineOrderCreated))
-	data.Message += "Order in syteline transfered: " + strconv.FormatBool(sytelineOrderCreated) + "\n"
+	LogInfo("MAIN", "Ok and NOK to Syteline transfered "+strconv.FormatBool(sytelineOkAndNokTransferred))
+	data.Message += "Ok and NOK to Syteline transfered: " + strconv.FormatBool(sytelineOkAndNokTransferred) + "\n"
 	_ = tmpl.Execute(*writer, data)
 }
 
-func StartOrder(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) {
+func StartOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) {
 	LogInfo("MAIN", "Starting order")
 	zapsiOrderCreated := StartOrderInZapsi(userid, orderid, operationid, workplaceid)
 	sytelineOrderCreated := StartOrderInSyteline(userid, orderid, operationid, workplaceid, radio)

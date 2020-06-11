@@ -108,27 +108,33 @@ func SaveTerminalInputFail(nok []string, noktype []string, workplaceid []string,
 }
 
 func CreateFailInZapsiIfNotExists(noktype []string) {
-	var zapsiFail Fail
-	connectionString, dialect := CheckDatabaseType()
-	db, err := gorm.Open(dialect, connectionString)
+	nokTypes := GetNokTypesFromSyteline()
+	for _, nokType := range nokTypes {
+		if nokType.Nazev == noktype[0] {
+			var zapsiFail Fail
+			connectionString, dialect := CheckDatabaseType()
+			db, err := gorm.Open(dialect, connectionString)
 
-	if err != nil {
-		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
-		return
+			if err != nil {
+				LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+				return
+			}
+			defer db.Close()
+			db.Where("Name = ?", noktype[0]).Find(&zapsiFail)
+			if zapsiFail.OID > 0 {
+				LogInfo("MAIN", "Fail "+noktype[0]+" already exists")
+				return
+			}
+			LogInfo("MAIN", "Fail "+noktype[0]+" does not exist, creating fail")
+			zapsiFail.Name = noktype[0]
+			zapsiFail.Barcode = nokType.Kod
+			zapsiFail.FailTypeID = 100
+			db.Create(&zapsiFail)
+			var newZapsiFail Fail
+			db.Where("Name = ?", noktype[0]).Find(&newZapsiFail)
+
+		}
 	}
-	defer db.Close()
-	db.Where("Name = ?", noktype[0]).Find(&zapsiFail)
-	if zapsiFail.OID > 0 {
-		LogInfo("MAIN", "Fail "+noktype[0]+" already exists")
-		return
-	}
-	LogInfo("MAIN", "Fail "+noktype[0]+" does not exist, creating fail")
-	zapsiFail.Name = noktype[0]
-	zapsiFail.FailTypeID = 100
-	db.Create(&zapsiFail)
-	var newZapsiFail Fail
-	db.Where("Name = ?", noktype[0]).Find(&newZapsiFail)
-	return
 }
 
 func CreateAndCloseTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOperation SytelineOperation, workplaceid []string, ok []string, nok []string) bool {
@@ -354,11 +360,6 @@ func CheckThisOpenOrderInZapsi(userid []string, orderid []string, operationid []
 		return false
 	}
 	defer db.Close()
-	println("Checking same order:")
-	println(userid[0])
-	println(orderid[0])
-	println(operationid[0])
-	println(workplaceid[0])
 	db.Where("Login = ?", userLogin).Find(&zapsiUser)
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
 	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)

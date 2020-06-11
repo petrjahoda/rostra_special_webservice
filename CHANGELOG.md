@@ -14,6 +14,11 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.3.11] - 2020-06-11
+
+### Added
+- complete saving to syteline
+
 ## [2020.2.3.10] - 2020-06-10
 
 ### Added

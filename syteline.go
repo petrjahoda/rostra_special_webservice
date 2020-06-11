@@ -1,26 +1,176 @@
 package main
 
 import (
+	"database/sql"
 	"github.com/jinzhu/gorm"
 	"html/template"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
-func EndOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
-	// TODO: complete
-	return false
+func EndOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) bool {
+	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceid)
+	sytelineOkAndNokTransferred := false
+	sytelineOrderClosed := false
+	if sytelineWorkplace.typ_zdroje_zapsi == "0" {
+		sytelineOkAndNokTransferred = TransferOkAndNokToSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype)
+		sytelineOrderClosed = CloseOrderRecordInSyteline("4", userid, orderid, operationid, workplaceid)
+	} else {
+		sytelineOkAndNokTransferred = TransferOkAndNokToSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype)
+		if radio[0] == "clovek" {
+			sytelineOrderClosed = CloseOrderRecordInSyteline("9", userid, orderid, operationid, workplaceid)
+			sytelineOrderClosed = CloseOrderRecordInSyteline("4", userid, orderid, operationid, workplaceid)
+		} else if radio[0] == "stroj" {
+			sytelineOrderClosed = CloseOrderRecordInSyteline("9", userid, orderid, operationid, workplaceid)
+		} else if radio[0] == "serizeni" {
+			sytelineOrderClosed = CloseOrderRecordInSyteline("2", userid, orderid, operationid, workplaceid)
+		}
+	}
+	return sytelineOkAndNokTransferred || sytelineOrderClosed
 }
 
-func TransferOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
-	// TODO: complete
-	return false
+func CloseOrderRecordInSyteline(closingNumber string, userid []string, orderid []string, operationid []string, workplaceid []string) bool {
+	order, suffix := ParseOrder(orderid[0])
+	suffixAsNumber, _ := strconv.Atoi(suffix)
+	operationAsNumber, _ := strconv.Atoi(operationid[0])
+	userCode := strings.Split(userid[0], ";")[0]
+	okTransferred := TransferCloseOrderToSyteline(closingNumber, userid, orderid, operationid, userCode, order, suffixAsNumber, operationAsNumber, workplaceid)
+	return okTransferred
+}
+
+func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid []string, operationid []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string) bool {
+	terminalInputOrder := GetActualOpenOrderForWorkplaces(userid, orderid, operationid, order, workplaceid)
+	db, err := gorm.Open("mssql", SytelineConnection)
+	if err != nil {
+		LogError("MAIN", "Problem with Syteline: "+err.Error())
+		return false
+	}
+	defer db.Close()
+	LogInfo("MAIN", "Closing order in Syteline")
+	db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: terminalInputOrder.DTS, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
+	return true
+}
+
+func GetActualOpenOrderForWorkplaces(userid []string, orderid []string, operationid []string, order string, workplaceid []string) TerminalInputOrder {
+	userLogin := strings.Split(userid[0], ";")[0]
+	order, suffix := ParseOrder(orderid[0])
+	orderName := order + "." + suffix + "-" + operationid[0]
+	var zapsiUser User
+	var zapsiOrder Order
+	var zapsiWorkplace Workplace
+	var terminalInputOrder TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return terminalInputOrder
+	}
+	defer db.Close()
+	db.Where("Login = ?", userLogin).Find(&zapsiUser)
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
+	return terminalInputOrder
+}
+
+func TransferOkAndNokToSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string) bool {
+	order, suffix := ParseOrder(orderid[0])
+	suffixAsNumber, _ := strconv.Atoi(suffix)
+	operationAsNumber, _ := strconv.Atoi(operationid[0])
+	userCode := strings.Split(userid[0], ";")[0]
+	okTransferred := TransferOkRecordToSyteline(ok, userCode, order, suffixAsNumber, operationAsNumber, workplaceid)
+	nokTransferred := TransferNokRecordToSyteline(nok, noktype, userCode, order, suffixAsNumber, operationAsNumber, workplaceid)
+	return okTransferred || !nokTransferred
+}
+
+func TransferNokRecordToSyteline(nok []string, noktype []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string) bool {
+	db, err := gorm.Open("mssql", SytelineConnection)
+	if err != nil {
+		LogError("MAIN", "Problem with Syteline: "+err.Error())
+		return false
+	}
+	defer db.Close()
+	nokAsNumber, nokErr := strconv.Atoi(nok[0])
+	if nokErr != nil {
+		LogError("MAIN", "Problem parsing nok: "+err.Error())
+		return false
+	} else if nokAsNumber > 0 {
+		LogInfo("MAIN", "Saving NOK to Syteline")
+		nokTypes := GetNokTypesFromSyteline()
+		failCodeToInsert := "0"
+		for _, nokType := range nokTypes {
+			if nokType.Nazev == noktype[0] {
+				failCodeToInsert = nokType.Kod
+				continue
+			}
+		}
+		db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], 0.0, float64(nokAsNumber), 0.0, failCodeToInsert)
+	}
+	return true
+}
+
+func TransferOkRecordToSyteline(ok []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string) bool {
+	db, err := gorm.Open("mssql", SytelineConnection)
+	if err != nil {
+		LogError("MAIN", "Problem with Syteline: "+err.Error())
+		return false
+	}
+	defer db.Close()
+	okAsNumber, okErr := strconv.Atoi(ok[0])
+	if okErr != nil && okAsNumber > 0 {
+		LogError("MAIN", "Problem parsing ok: "+err.Error())
+		return false
+	} else if okAsNumber > 0 {
+		LogInfo("MAIN", "Saving OK to Syteline")
+		db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, null);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], float64(okAsNumber), 0.0, 0.0)
+	}
+	return true
 }
 
 func StartOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
-	// TODO: complete
-	return false
+	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceid)
+	sytelineOrderStarted := false
+	if sytelineWorkplace.typ_zdroje_zapsi == "0" {
+		sytelineOrderStarted = StartOrderRecordInSyteline("3", userid, orderid, operationid, workplaceid)
+	} else {
+		if radio[0] == "clovek" {
+			sytelineOrderStarted = StartOrderRecordInSyteline("3", userid, orderid, operationid, workplaceid)
+			sytelineOrderStarted = StartOrderRecordInSyteline("8", userid, orderid, operationid, workplaceid)
+		} else if radio[0] == "stroj" {
+			sytelineOrderStarted = StartOrderRecordInSyteline("8", userid, orderid, operationid, workplaceid)
+		} else if radio[0] == "serizeni" {
+			sytelineOrderStarted = StartOrderRecordInSyteline("1", userid, orderid, operationid, workplaceid)
+		}
+	}
+	return sytelineOrderStarted
+}
+
+func StartOrderRecordInSyteline(closingNumber string, userid []string, orderid []string, operationid []string, workplaceid []string) bool {
+	order, suffix := ParseOrder(orderid[0])
+	suffixAsNumber, _ := strconv.Atoi(suffix)
+	operationAsNumber, _ := strconv.Atoi(operationid[0])
+	userCode := strings.Split(userid[0], ";")[0]
+	terminalInputOrder := GetActualOpenOrderForWorkplaces(userid, orderid, operationid, order, workplaceid)
+	timeToInsert := time.Now()
+	if terminalInputOrder.DTS.Before(time.Now()) && terminalInputOrder.OID > 0 {
+		timeToInsert = terminalInputOrder.DTS
+	}
+	db, err := gorm.Open("mssql", SytelineConnection)
+	if err != nil {
+		LogError("MAIN", "Problem with Syteline: "+err.Error())
+		return false
+	}
+	defer db.Close()
+	LogInfo("MAIN", "Closing order in Syteline")
+	db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
+	return true
 }
 
 func GetNokTypesFromSyteline() []SytelineNok {

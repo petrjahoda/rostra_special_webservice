@@ -8,6 +8,22 @@ import (
 	"time"
 )
 
+type zapsi_trans struct {
+	trans_date      sql.NullTime
+	emp_num         string
+	trans_type      string
+	job             string
+	suffix          int
+	oper_num        int
+	wc              string
+	qty_complete    float64
+	qty_scrapped    float64
+	complete_op     int
+	reason_code     string
+	start_date_time sql.NullTime
+	end_date_time   sql.NullTime
+}
+
 type SytelineUser struct {
 	JePlatny string
 	Jmeno    string
