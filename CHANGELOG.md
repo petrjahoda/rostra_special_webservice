@@ -27,7 +27,7 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 - complete saving to zapsi
 
 ### Changed
-- removed table
+- removed table from html
 - code formatted to more files 
 
 ## [2020.2.3.9] - 2020-06-9
