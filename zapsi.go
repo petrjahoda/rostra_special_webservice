@@ -195,8 +195,15 @@ func StartOrderInZapsi(userid []string, orderid []string, operationid []string, 
 
 func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOperation SytelineOperation, workplaceid []string) bool {
 	userLogin := strings.Split(userid[0], ";")[0]
+	parsedCavity, err := strconv.Atoi(sytelineOperation.nasobnost)
+	if err != nil {
+		LogError("MAIN", "Problem parsing cavity: "+sytelineOperation.nasobnost)
+		return false
+	}
 	var zapsiUser User
 	var zapsiWorkplace Workplace
+	var terminalInputOrder TerminalInputOrder
+	var existingTerminalInputOrder TerminalInputOrder
 	connectionString, dialect := CheckDatabaseType()
 	db, err := gorm.Open(dialect, connectionString)
 	if err != nil {
@@ -206,25 +213,32 @@ func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOpera
 	defer db.Close()
 	db.Where("Login = ?", userLogin).Find(&zapsiUser)
 	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
-	var terminalInputOrder TerminalInputOrder
-	defer db.Close()
-	parsedCavity, err := strconv.Atoi(sytelineOperation.nasobnost)
-	if err != nil {
-		LogError("MAIN", "Problem parsing cavity: "+sytelineOperation.nasobnost)
-		return false
+	db.Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null").Find(&existingTerminalInputOrder)
+	if existingTerminalInputOrder.OID > 0 {
+		LogInfo("MAIN", "System terminal_input_order exists, just updating")
+		//existingTerminalInputOrder.OrderID = zapsiOrder.OID
+		//existingTerminalInputOrder.UserID = zapsiUser.OID
+		//terminalInputOrder.WorkerCount = 1
+		//terminalInputOrder.WorkplaceModeID = 1
+		//terminalInputOrder.Cavity = parsedCavity
+		db.Model(&terminalInputOrder).Updates(map[string]interface{}{"OrderID": zapsiOrder.OID, "UserID": zapsiUser.OID, "Cavity": parsedCavity}).Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null")
+		//db.Debug().Update(&existingTerminalInputOrder)
+	} else {
+		LogInfo("MAIN", "Creating new terminal_input_order")
+		terminalInputOrder.DTS = time.Now()
+		terminalInputOrder.OrderID = zapsiOrder.OID
+		terminalInputOrder.UserID = zapsiUser.OID
+		terminalInputOrder.DeviceID = zapsiWorkplace.DeviceID
+		terminalInputOrder.Interval = 0
+		terminalInputOrder.Count = 0
+		terminalInputOrder.Fail = 0
+		terminalInputOrder.AverageCycle = 0.0
+		terminalInputOrder.WorkerCount = 1
+		terminalInputOrder.WorkplaceModeID = 1
+		terminalInputOrder.Cavity = parsedCavity
+		db.Create(&terminalInputOrder)
 	}
-	terminalInputOrder.DTS = time.Now()
-	terminalInputOrder.OrderID = zapsiOrder.OID
-	terminalInputOrder.UserID = zapsiUser.OID
-	terminalInputOrder.DeviceID = zapsiWorkplace.DeviceID
-	terminalInputOrder.Interval = 0
-	terminalInputOrder.Count = 0
-	terminalInputOrder.Fail = 0
-	terminalInputOrder.AverageCycle = 0.0
-	terminalInputOrder.WorkerCount = 1
-	terminalInputOrder.WorkplaceModeID = 1
-	terminalInputOrder.Cavity = parsedCavity
-	db.Create(&terminalInputOrder)
+
 	return true
 }
 
@@ -382,7 +396,7 @@ func CheckAnyOpenOrderInZapsi(workplaceid []string) bool {
 	}
 	defer db.Close()
 	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
-	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Find(&terminalInputOrder)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is not null").Find(&terminalInputOrder)
 	if terminalInputOrder.OID > 0 {
 		return true
 	}

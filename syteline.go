@@ -167,7 +167,7 @@ func StartOrderRecordInSyteline(closingNumber string, userid []string, orderid [
 		return false
 	}
 	defer db.Close()
-	LogInfo("MAIN", "Closing order in Syteline")
+	LogInfo("MAIN", "Starting order in Syteline")
 	db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
 		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
 	return true
