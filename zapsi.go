@@ -216,13 +216,7 @@ func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOpera
 	db.Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null").Find(&existingTerminalInputOrder)
 	if existingTerminalInputOrder.OID > 0 {
 		LogInfo("MAIN", "System terminal_input_order exists, just updating")
-		//existingTerminalInputOrder.OrderID = zapsiOrder.OID
-		//existingTerminalInputOrder.UserID = zapsiUser.OID
-		//terminalInputOrder.WorkerCount = 1
-		//terminalInputOrder.WorkplaceModeID = 1
-		//terminalInputOrder.Cavity = parsedCavity
-		db.Model(&terminalInputOrder).Updates(map[string]interface{}{"OrderID": zapsiOrder.OID, "UserID": zapsiUser.OID, "Cavity": parsedCavity}).Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null")
-		//db.Debug().Update(&existingTerminalInputOrder)
+		db.Debug().Model(&terminalInputOrder).Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null").Updates(map[string]interface{}{"OrderID": zapsiOrder.OID, "UserID": zapsiUser.OID, "Cavity": parsedCavity})
 	} else {
 		LogInfo("MAIN", "Creating new terminal_input_order")
 		terminalInputOrder.DTS = time.Now()

@@ -14,6 +14,14 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+
+## [2020.2.3.12] - 2020-06-12
+
+### Fixed
+- when updating terminal_input_order in zapsi, updating just one, not all
+- when inserting record to syteline, ANSI WARNING OFF has to be set
+
+
 ## [2020.2.3.11] - 2020-06-11
 
 ### Added

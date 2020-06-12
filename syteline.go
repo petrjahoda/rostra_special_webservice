@@ -42,6 +42,7 @@ func CloseOrderRecordInSyteline(closingNumber string, userid []string, orderid [
 
 func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid []string, operationid []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string) bool {
 	terminalInputOrder := GetActualOpenOrderForWorkplaces(userid, orderid, operationid, order, workplaceid)
+
 	db, err := gorm.Open("mssql", SytelineConnection)
 	if err != nil {
 		LogError("MAIN", "Problem with Syteline: "+err.Error())
@@ -49,8 +50,8 @@ func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid
 	}
 	defer db.Close()
 	LogInfo("MAIN", "Closing order in Syteline")
-	db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: terminalInputOrder.DTS, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
+	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: terminalInputOrder.DTS, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
 	return true
 }
 
@@ -108,8 +109,8 @@ func TransferNokRecordToSyteline(nok []string, noktype []string, userCode string
 				continue
 			}
 		}
-		db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], 0.0, float64(nokAsNumber), 0.0, failCodeToInsert)
+		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], 0.0, float64(nokAsNumber), 0.0, failCodeToInsert)
 	}
 	return true
 }
@@ -127,8 +128,8 @@ func TransferOkRecordToSyteline(ok []string, userCode string, order string, suff
 		return false
 	} else if okAsNumber > 0 {
 		LogInfo("MAIN", "Saving OK to Syteline")
-		db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, null);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], float64(okAsNumber), 0.0, 0.0)
+		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], float64(okAsNumber), 0.0, 0.0)
 	}
 	return true
 }
@@ -168,8 +169,8 @@ func StartOrderRecordInSyteline(closingNumber string, userid []string, orderid [
 	}
 	defer db.Close()
 	LogInfo("MAIN", "Starting order in Syteline")
-	db.Exec("INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
+	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
 	return true
 }
 
