@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/julienschmidt/httprouter"
 	"strconv"
+	"strings"
+
 	//"golang.org/x/crypto/openpgp/packet"
 	"html/template"
 	"net/http"
@@ -102,9 +104,13 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 
 func EndOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) {
 	LogInfo("MAIN", "Ending order")
-	sytelineOrderEnded := EndOrderInSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
-	zapsiOrderEnded := EndOrderInZapsi(userid, orderid, operationid, workplaceid, ok, nok)
-	SaveNokIntoZapsi(nok, noktype, workplaceid, userid)
+	workplaceIdSplitted := workplaceid
+	if strings.Contains(workplaceid[0], ";") {
+		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
+	}
+	sytelineOrderEnded := EndOrderInSyteline(userid, orderid, operationid, workplaceIdSplitted, ok, nok, noktype, radio)
+	zapsiOrderEnded := EndOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted, ok, nok)
+	SaveNokIntoZapsi(nok, noktype, workplaceIdSplitted, userid)
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	LogInfo("MAIN", "Order in Zapsi closed "+strconv.FormatBool(zapsiOrderEnded))
@@ -116,22 +122,34 @@ func EndOrderButton(writer *http.ResponseWriter, userid []string, orderid []stri
 
 func TransferOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) {
 	LogInfo("MAIN", "Transferring order")
-	zapsiOrderCreated := StartAndCloseOrderInZapsi(userid, orderid, operationid, workplaceid, ok, nok)
-	sytelineOkAndNokTransferred := TransferOkAndNokToSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype)
-	SaveNokIntoZapsi(nok, noktype, workplaceid, userid)
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
-	LogInfo("MAIN", "Order in Zapsi transfered "+strconv.FormatBool(zapsiOrderCreated))
-	data.Message += "Order in zapsi transfered: " + strconv.FormatBool(zapsiOrderCreated) + "\n"
+	workplaceIdSplitted := workplaceid
+	if strings.Contains(workplaceid[0], ";") {
+		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
+	}
+	thisOpenOrderInZapsi, _ := CheckThisOpenOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted)
+	if !thisOpenOrderInZapsi {
+		zapsiOrderCreated := StartAndCloseOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted, ok, nok)
+		LogInfo("MAIN", "Order in Zapsi transfered "+strconv.FormatBool(zapsiOrderCreated))
+		data.Message += "Order in zapsi transfered: " + strconv.FormatBool(zapsiOrderCreated) + "\n"
+
+	}
+	sytelineOkAndNokTransferred := TransferOkAndNokToSyteline(userid, orderid, operationid, workplaceIdSplitted, ok, nok, noktype)
+	SaveNokIntoZapsi(nok, noktype, workplaceIdSplitted, userid)
 	LogInfo("MAIN", "Ok and NOK to Syteline transfered "+strconv.FormatBool(sytelineOkAndNokTransferred))
 	data.Message += "Ok and NOK to Syteline transfered: " + strconv.FormatBool(sytelineOkAndNokTransferred) + "\n"
 	_ = tmpl.Execute(*writer, data)
 }
 
 func StartOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) {
-	LogInfo("MAIN", "Starting order")
-	zapsiOrderCreated := StartOrderInZapsi(userid, orderid, operationid, workplaceid)
-	sytelineOrderCreated := StartOrderInSyteline(userid, orderid, operationid, workplaceid, radio)
+	workplaceIdSplitted := workplaceid
+	if strings.Contains(workplaceid[0], ";") {
+		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
+	}
+	LogInfo("MAIN", "Starting order for "+workplaceIdSplitted[0]+" and "+radio[0])
+	zapsiOrderCreated := StartOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted, radio)
+	sytelineOrderCreated := StartOrderInSyteline(userid, orderid, operationid, workplaceIdSplitted, radio)
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	LogInfo("MAIN", "Order in Zapsi created "+strconv.FormatBool(zapsiOrderCreated))

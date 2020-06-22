@@ -33,8 +33,9 @@ func EndOrderInSyteline(userid []string, orderid []string, operationid []string,
 
 func CloseOrderRecordInSyteline(closingNumber string, userid []string, orderid []string, operationid []string, workplaceid []string) bool {
 	order, suffix := ParseOrder(orderid[0])
+	operation := ParseOperation(operationid[0])
 	suffixAsNumber, _ := strconv.Atoi(suffix)
-	operationAsNumber, _ := strconv.Atoi(operationid[0])
+	operationAsNumber, _ := strconv.Atoi(operation)
 	userCode := strings.Split(userid[0], ";")[0]
 	okTransferred := TransferCloseOrderToSyteline(closingNumber, userid, orderid, operationid, userCode, order, suffixAsNumber, operationAsNumber, workplaceid)
 	return okTransferred
@@ -58,7 +59,8 @@ func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid
 func GetActualOpenOrderForWorkplaces(userid []string, orderid []string, operationid []string, order string, workplaceid []string) TerminalInputOrder {
 	userLogin := strings.Split(userid[0], ";")[0]
 	order, suffix := ParseOrder(orderid[0])
-	orderName := order + "." + suffix + "-" + operationid[0]
+	operation := ParseOperation(operationid[0])
+	orderName := order + "." + suffix + "-" + operation
 	var zapsiUser User
 	var zapsiOrder Order
 	var zapsiWorkplace Workplace
@@ -73,7 +75,7 @@ func GetActualOpenOrderForWorkplaces(userid []string, orderid []string, operatio
 	defer db.Close()
 	db.Where("Login = ?", userLogin).Find(&zapsiUser)
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
-	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
 	return terminalInputOrder
 }
@@ -197,6 +199,7 @@ func GetNokTypesFromSyteline() []SytelineNok {
 func GetWorkplaceFromSyteline(orderid []string, operationid []string, workplaceid []string) SytelineWorkplace {
 	LogInfo("MAIN", "Checking operation")
 	order, suffix := ParseOrder(orderid[0])
+	operation := ParseOperation(operationid[0])
 	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineOperation SytelineOperation
 	var sytelineWorkplace SytelineWorkplace
@@ -205,7 +208,7 @@ func GetWorkplaceFromSyteline(orderid []string, operationid []string, workplacei
 		return sytelineWorkplace
 	}
 	defer db.Close()
-	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationid[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		LogError("MAIN", "Error: "+err.Error())
@@ -219,7 +222,7 @@ func GetWorkplaceFromSyteline(orderid []string, operationid []string, workplacei
 	}
 	if len(sytelineOperation.pracoviste) > 0 {
 		LogInfo("MAIN", "Operation found: "+operationid[0])
-		command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationid[0] + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
+		command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
 		workplaceRows, err := db.Raw(command).Rows()
 		if err != nil {
 			LogError("MAIN", "Error: "+err.Error())
@@ -242,6 +245,7 @@ func GetWorkplaceFromSyteline(orderid []string, operationid []string, workplacei
 func GetOperationFromSyteline(orderid []string, operationid []string) SytelineOperation {
 	LogInfo("MAIN", "Getting operation from syteline")
 	order, suffix := ParseOrder(orderid[0])
+	operation := ParseOperation(operationid[0])
 	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineOperation SytelineOperation
 	if err != nil {
@@ -249,7 +253,7 @@ func GetOperationFromSyteline(orderid []string, operationid []string) SytelineOp
 		return sytelineOperation
 	}
 	defer db.Close()
-	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationid[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		LogError("MAIN", "Error: "+err.Error())
@@ -262,6 +266,14 @@ func GetOperationFromSyteline(orderid []string, operationid []string) SytelineOp
 		}
 	}
 	return sytelineOperation
+}
+
+func ParseOperation(operationid string) string {
+	if strings.Contains(operationid, ";") {
+		parsedOperation := strings.Split(operationid, ";")
+		return parsedOperation[0]
+	}
+	return operationid
 }
 
 func GetOrderFromSyteline(orderid []string) SytelineOrder {
@@ -292,11 +304,13 @@ func GetOrderFromSyteline(orderid []string) SytelineOrder {
 func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orderId []string, operationId []string) {
 	LogInfo("MAIN", "Checking operation")
 	order, suffix := ParseOrder(orderId[0])
+	operation := ParseOperation(operationId[0])
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	db, err := gorm.Open("mssql", SytelineConnection)
 	var sytelineOperation SytelineOperation
 	var sytelineWorkplaces []SytelineWorkplace
+	var updatedSytelineWorkplaces []SytelineWorkplace
 	if err != nil {
 		LogError("MAIN", "Error opening db: "+err.Error())
 		data.UsernameValue = userId[0]
@@ -310,7 +324,7 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 		_ = tmpl.Execute(*writer, data)
 	} else {
 		defer db.Close()
-		command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationId[0] + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+		command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 		rows, err := db.Raw(command).Rows()
 		if err != nil {
 			LogError("MAIN", "Error: "+err.Error())
@@ -324,7 +338,7 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 		}
 		if len(sytelineOperation.pracoviste) > 0 {
 			LogInfo("MAIN", "Operation found: "+operationId[0])
-			command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operationId[0] + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
+			command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
 			workplaceRows, err := db.Raw(command).Rows()
 			if err != nil {
 				LogError("MAIN", "Error: "+err.Error())
@@ -337,14 +351,24 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 				if err != nil {
 					LogError("MAIN", "Error: "+err.Error())
 				}
+				for _, sytelineWorkplace := range sytelineWorkplaces {
+					sytelineWorkplace.Zapsi_zdroj = UpdateZapsiZdrojFor(sytelineWorkplace)
+					updatedSytelineWorkplaces = append(updatedSytelineWorkplaces, sytelineWorkplace)
+				}
+
 			}
-			if len(sytelineWorkplaces) > 0 {
-				data.Workplaces = sytelineWorkplaces
-				LogInfo("MAIN", "Workplaces found: "+strconv.Itoa(len(sytelineWorkplaces)))
+			if len(updatedSytelineWorkplaces) > 0 {
+				data.Workplaces = updatedSytelineWorkplaces
+				LogInfo("MAIN", "Workplaces found: "+strconv.Itoa(len(updatedSytelineWorkplaces)))
 				data.UsernameValue = userId[0]
 				data.OrderValue = orderId[0]
-				data.Operation = operationId[0]
-				data.OperationValue = operationId[0]
+				if strings.Contains(operationId[0], ";") {
+					data.Operation = operationId[0]
+					data.OperationValue = operationId[0]
+				} else {
+					data.Operation = operationId[0] + ";" + sytelineOperation.pracoviste + "-" + sytelineOperation.pracoviste_popis
+					data.OperationValue = operationId[0] + ";" + sytelineOperation.pracoviste + "-" + sytelineOperation.pracoviste_popis
+				}
 				data.WorkplaceDisabled = ""
 				data.UserDisabled = "disabled"
 				data.WorkplaceFocus = "autofocus"
@@ -406,8 +430,8 @@ func CheckOrderInSyteline(writer *http.ResponseWriter, userId []string, orderId 
 		}
 		if len(sytelineOrder.CisloVp) > 0 {
 			LogInfo("MAIN", "Order found: "+orderId[0])
-			data.Order = orderId[0]
-			data.OrderValue = orderId[0]
+			data.Order = order + "." + suffix + ";" + sytelineOrder.PolozkaVp + " " + sytelineOrder.PopisPolVp
+			data.OrderValue = order + "." + suffix + ";" + sytelineOrder.PolozkaVp + "-" + sytelineOrder.PopisPolVp
 			data.UsernameValue = userId[0]
 			data.UserFocus = ""
 			data.OperationFocus = "autofocus"
@@ -428,12 +452,25 @@ func CheckOrderInSyteline(writer *http.ResponseWriter, userId []string, orderId 
 }
 
 func ParseOrder(orderId string) (string, string) {
-	if strings.Contains(orderId, "-") {
-		splittedOrder := strings.Split(orderId, "-")
-		return splittedOrder[0], splittedOrder[1]
-	} else if strings.Contains(orderId, ".") {
-		splittedOrder := strings.Split(orderId, ".")
-		return splittedOrder[0], splittedOrder[1]
+	if strings.Contains(orderId, ";") {
+		splitted := strings.Split(orderId, ";")
+		if strings.Contains(splitted[0], "-") {
+			splittedOrder := strings.Split(splitted[0], "-")
+			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
+			if err != nil {
+				LogError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				return splittedOrder[0], splittedOrder[1]
+			}
+			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
+		} else if strings.Contains(splitted[0], ".") {
+			splittedOrder := strings.Split(splitted[0], ".")
+			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
+			if err != nil {
+				LogError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				return splittedOrder[0], splittedOrder[1]
+			}
+			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
+		}
 	}
 	return orderId, "0"
 }

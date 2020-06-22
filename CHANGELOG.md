@@ -14,6 +14,23 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.3.22] - 2020-06-22
+
+### Changed
+- displaying order with additional data
+- displaying operation with additional data
+- displaying workplace with additional data
+- GUI for OK, NOK, and NOK type
+
+
+### Added
+- suffix from order is trimmed from leading zeros
+- when saving order to zapsi, type is saved to note
+- when loading order from zapsi, loading from note, what to display on radio
+
+### Fixed
+- proper saving failtype
+
 
 ## [2020.2.3.12] - 2020-06-12
 

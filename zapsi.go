@@ -8,10 +8,26 @@ import (
 	"time"
 )
 
+func UpdateZapsiZdrojFor(workplace SytelineWorkplace) string {
+	LogInfo("MAIN", "Updating workplace name: "+workplace.Zapsi_zdroj)
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return workplace.Zapsi_zdroj
+	}
+	defer db.Close()
+	var zapsiWorkplace Workplace
+	db.Where("Code = ?", workplace.Zapsi_zdroj).Find(&zapsiWorkplace)
+	LogInfo("MAIN", "Updated to: "+workplace.Zapsi_zdroj+";"+zapsiWorkplace.Name)
+	return workplace.Zapsi_zdroj + ";" + zapsiWorkplace.Name
+}
+
 func EndOrderInZapsi(userid []string, orderId []string, operationid []string, workplaceid []string, ok []string, nok []string) bool {
 	userLogin := strings.Split(userid[0], ";")[0]
 	order, suffix := ParseOrder(orderId[0])
-	orderName := order + "." + suffix + "-" + operationid[0]
+	operation := ParseOperation(operationid[0])
+	orderName := order + "." + suffix + "-" + operation
 	var zapsiUser User
 	var zapsiOrder Order
 	var zapsiWorkplace Workplace
@@ -69,6 +85,7 @@ func StartAndCloseOrderInZapsi(userid []string, orderid []string, operationid []
 
 func SaveNokIntoZapsi(nok []string, noktype []string, workplaceid []string, userid []string) {
 	if len(nok) > 0 {
+		LogInfo("MAIN", "Saving nok to Zapsi : "+noktype[0])
 		CreateFailInZapsiIfNotExists(noktype)
 		SaveTerminalInputFail(nok, noktype, workplaceid, userid)
 	}
@@ -149,7 +166,7 @@ func CreateAndCloseTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytel
 	}
 	defer db.Close()
 	db.Where("Login = ?", userLogin).Find(&zapsiUser)
-	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 	var terminalInputOrder TerminalInputOrder
 	defer db.Close()
 	parsedCavity, err := strconv.Atoi(sytelineOperation.nasobnost)
@@ -183,17 +200,17 @@ func CreateAndCloseTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytel
 	return true
 }
 
-func StartOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string) bool {
-	LogInfo("MAIN", "Starting order")
+func StartOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
+	LogInfo("MAIN", "Starting order "+orderid[0])
 	sytelineOrder := GetOrderFromSyteline(orderid)
 	sytelineOperation := GetOperationFromSyteline(orderid, operationid)
 	CreateProductInZapsiIfNotExists(sytelineOrder)
 	zapsiOrder := CreateOrderInZapsiIfNotExists(sytelineOrder, orderid, operationid, sytelineOperation, workplaceid)
-	orderCreated := CreateTerminalOrderInZapsi(userid, zapsiOrder, sytelineOperation, workplaceid)
+	orderCreated := CreateTerminalOrderInZapsi(userid, zapsiOrder, sytelineOperation, workplaceid, radio)
 	return orderCreated
 }
 
-func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOperation SytelineOperation, workplaceid []string) bool {
+func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOperation SytelineOperation, workplaceid []string, radio []string) bool {
 	userLogin := strings.Split(userid[0], ";")[0]
 	parsedCavity, err := strconv.Atoi(sytelineOperation.nasobnost)
 	if err != nil {
@@ -212,11 +229,11 @@ func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOpera
 	}
 	defer db.Close()
 	db.Where("Login = ?", userLogin).Find(&zapsiUser)
-	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 	db.Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null").Find(&existingTerminalInputOrder)
 	if existingTerminalInputOrder.OID > 0 {
 		LogInfo("MAIN", "System terminal_input_order exists, just updating")
-		db.Debug().Model(&terminalInputOrder).Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null").Updates(map[string]interface{}{"OrderID": zapsiOrder.OID, "UserID": zapsiUser.OID, "Cavity": parsedCavity})
+		db.Model(&terminalInputOrder).Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is null").Updates(map[string]interface{}{"OrderID": zapsiOrder.OID, "UserID": zapsiUser.OID, "Cavity": parsedCavity})
 	} else {
 		LogInfo("MAIN", "Creating new terminal_input_order")
 		terminalInputOrder.DTS = time.Now()
@@ -230,6 +247,7 @@ func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOpera
 		terminalInputOrder.WorkerCount = 1
 		terminalInputOrder.WorkplaceModeID = 1
 		terminalInputOrder.Cavity = parsedCavity
+		terminalInputOrder.Note = radio[0]
 		db.Create(&terminalInputOrder)
 	}
 
@@ -242,7 +260,8 @@ func CreateOrderInZapsiIfNotExists(sytelineOrder SytelineOrder, orderid []string
 	var zapsiProduct Product
 	var zapsiWorkplace Workplace
 	order, suffix := ParseOrder(orderid[0])
-	zapsiOrderName := order + "." + suffix + "-" + operationid[0]
+	operation := ParseOperation(operationid[0])
+	zapsiOrderName := order + "." + suffix + "-" + operation
 	connectionString, dialect := CheckDatabaseType()
 	db, err := gorm.Open(dialect, connectionString)
 
@@ -258,7 +277,7 @@ func CreateOrderInZapsiIfNotExists(sytelineOrder SytelineOrder, orderid []string
 	}
 	LogInfo("MAIN", "Order "+zapsiOrder.Name+" does not exist, creating order in zapsi")
 	db.Where("Name = ?", sytelineOrder.PolozkaVp).Find(&zapsiProduct)
-	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 	countRequestedConverted, err := strconv.ParseFloat(sytelineOperation.mn_2_ks, 32)
 	if err != nil {
 		LogError("MAIN", "Problem parsing count for sytelineOrder: "+sytelineOperation.mn_2_ks)
@@ -315,7 +334,7 @@ func CheckIfOperatorAmountLessThanInZapsi(userAmount []string, userid []string, 
 	defer db.Close()
 	db.Where("Login like ?", userLogin).Find(&zapsiUser)
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
-	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
 	okAmount, err := strconv.Atoi(userAmount[0])
 	if err != nil {
@@ -352,10 +371,11 @@ func CheckIfAnyOpenOrderHasOneOfProducts(workplaceid []string, products []Produc
 	return false
 }
 
-func CheckThisOpenOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string) bool {
+func CheckThisOpenOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string) (bool, string) {
 	userLogin := strings.Split(userid[0], ";")[0]
 	order, suffix := ParseOrder(orderid[0])
-	orderName := order + "." + suffix + "-" + operationid[0]
+	operation := ParseOperation(operationid[0])
+	orderName := order + "." + suffix + "-" + operation
 	var zapsiUser User
 	var zapsiOrder Order
 	var zapsiWorkplace Workplace
@@ -365,17 +385,17 @@ func CheckThisOpenOrderInZapsi(userid []string, orderid []string, operationid []
 
 	if err != nil {
 		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
-		return false
+		return false, ""
 	}
 	defer db.Close()
 	db.Where("Login = ?", userLogin).Find(&zapsiUser)
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
-	db.Where("Code = ?", workplaceid).Find(&zapsiWorkplace)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
 	if terminalInputOrder.OID > 0 {
-		return true
+		return true, terminalInputOrder.Note
 	}
-	return false
+	return false, ""
 }
 
 func CheckAnyOpenOrderInZapsi(workplaceid []string) bool {

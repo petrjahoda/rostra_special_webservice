@@ -4,30 +4,35 @@ import (
 	"html/template"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func SecondControls(writer *http.ResponseWriter, workplaceid []string, userid []string, orderid []string, operationid []string, ok []string, nok []string, noktype []string) {
 	LogInfo("MAIN", "Starting second controls")
+	workplaceIdSplitted := workplaceid
+	if strings.Contains(workplaceid[0], ";") {
+		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
+	}
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	sytelineOperation := GetOperationFromSyteline(orderid, operationid)
-	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceid)
+	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceIdSplitted)
 	if sytelineOperation.jen_prenos_mnozstvi == "1" {
 		LogInfo("MAIN", "sytelineOperation.jen_prenos_mnozstvi is one, only transfer will be available")
 		data.Message += "jen_prenos_mnozstvi je 1\n"
-		okCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
-		nokCheck := CheckAmount(nok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
+		okCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceIdSplitted, sytelineOperation)
+		nokCheck := CheckAmount(nok, sytelineWorkplace, data, userid, orderid, operationid, workplaceIdSplitted, sytelineOperation)
 		if okCheck == false || nokCheck == false {
 			data.Message += "uzivatel zadal vice kusu, nez je odvedeno v zapsi\n"
 			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
 		} else {
-			EnableTransfer(writer, workplaceid, userid, orderid, operationid, data, ok, nok, tmpl)
+			EnableTransfer(writer, workplaceid, userid, orderid, operationid, data, ok, nok, noktype, tmpl)
 		}
 	} else {
 		LogInfo("MAIN", "sytelineOperation.jen_prenos_mnozstvi is not one, transfer and close will be available")
 		data.Message += "jen_prenos_mnozstvi neni 1\n"
-		okCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
-		nokCheck := CheckAmount(nok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
+		okCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceIdSplitted, sytelineOperation)
+		nokCheck := CheckAmount(nok, sytelineWorkplace, data, userid, orderid, operationid, workplaceIdSplitted, sytelineOperation)
 		if okCheck == false || nokCheck == false {
 			data.Message += "uzivatel zadal vice kusu, nez je odvedeno v zapsi\n"
 			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
@@ -53,6 +58,29 @@ func EnableClovekSerizeniStrojTransferCloseInput(writer *http.ResponseWriter, da
 	var nokTypes []SytelineNok
 	nokType := SytelineNok{Nazev: noktype[0]}
 	nokTypes = append(nokTypes, nokType)
+	workplaceIdSplitted := workplaceid
+	if strings.Contains(workplaceid[0], ";") {
+		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
+	}
+	_, orderNote := CheckThisOpenOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted)
+	if orderNote == "clovek" {
+		data.ClovekDisabled = "checked"
+		data.SerizeniDisabled = "disabled"
+		data.StrojDisabled = "disabled"
+	} else if orderNote == "serizeni" {
+		data.ClovekDisabled = "disabled"
+		data.SerizeniDisabled = "checked"
+		data.StrojDisabled = "disabled"
+	} else if orderNote == "stroj" {
+		data.ClovekDisabled = "disabled"
+		data.SerizeniDisabled = "disabled"
+		data.StrojDisabled = "checked"
+	} else {
+		data.ClovekDisabled = "checked"
+		data.SerizeniDisabled = ""
+		data.StrojDisabled = ""
+	}
+	data.NokTypes = nokTypes
 	data.Workplaces = workplaces
 	data.Workplaces = workplaces
 	data.UsernameValue = userid[0]
@@ -61,13 +89,12 @@ func EnableClovekSerizeniStrojTransferCloseInput(writer *http.ResponseWriter, da
 	data.OperationValue = operationid[0]
 	data.UserDisabled = "disabled"
 	data.RadioDisabled = ""
-	data.ClovekDisabled = "checked"
-	data.SerizeniDisabled = ""
-	data.StrojDisabled = ""
+
 	data.TransferOrderButton = ""
 	data.EndOrderButton = ""
 	data.OkValue = ok[0]
 	data.NokValue = nok[0]
+
 	_ = tmpl.Execute(*writer, data)
 }
 
@@ -78,8 +105,8 @@ func EnableClovekTransferCloseInput(writer *http.ResponseWriter, data RostraMain
 	var nokTypes []SytelineNok
 	nokType := SytelineNok{Nazev: noktype[0]}
 	nokTypes = append(nokTypes, nokType)
-	data.Workplaces = workplaces
 	data.NokTypes = nokTypes
+	data.Workplaces = workplaces
 	data.UsernameValue = userid[0]
 	data.OrderValue = orderid[0]
 	data.Operation = operationid[0]
@@ -168,18 +195,22 @@ func CheckAmount(inputAmount []string, sytelineWorkplace SytelineWorkplace, data
 }
 
 func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []string, orderid []string, operationid []string) {
+	workplaceIdSplitted := workplaceid
+	if strings.Contains(workplaceid[0], ";") {
+		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
+	}
 	LogInfo("MAIN", "Starting first controls")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
 	sytelineOperation := GetOperationFromSyteline(orderid, operationid)
-	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceid)
-	anyOpenOrderInZapsi := CheckAnyOpenOrderInZapsi(workplaceid)
+	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceIdSplitted)
+	anyOpenOrderInZapsi := CheckAnyOpenOrderInZapsi(workplaceIdSplitted)
 	if anyOpenOrderInZapsi {
-		LogInfo("MAIN", workplaceid[0]+" has open order in Zapsi")
+		LogInfo("MAIN", workplaceIdSplitted[0]+" has open order in Zapsi")
 		data.Message += "V Zapsi existuje pro toto pracoviste otevrena zakazka\n"
-		thisOpenOrderInZapsi := CheckThisOpenOrderInZapsi(userid, orderid, operationid, workplaceid)
+		thisOpenOrderInZapsi, _ := CheckThisOpenOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted)
 		if thisOpenOrderInZapsi {
-			LogInfo("MAIN", workplaceid[0]+" has open this exact order in Zapsi")
+			LogInfo("MAIN", workplaceIdSplitted[0]+" has open this exact order in Zapsi")
 			data.Message += "V Zapsi existuje pro toto pracoviste otevrena zakazka\n"
 			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
 		} else {
@@ -314,17 +345,20 @@ func EnableOkNok(writer *http.ResponseWriter, workplaceid []string, userid []str
 	_ = tmpl.Execute(*writer, data)
 }
 
-func EnableTransfer(writer *http.ResponseWriter, workplaceid []string, userid []string, orderid []string, operationid []string, data RostraMainPage, ok []string, nok []string, tmpl *template.Template) {
-	nokTypes := GetNokTypesFromSyteline()
+func EnableTransfer(writer *http.ResponseWriter, workplaceid []string, userid []string, orderid []string, operationid []string, data RostraMainPage, ok []string, nok []string, noktype []string, tmpl *template.Template) {
 	var workplaces []SytelineWorkplace
 	workplace := SytelineWorkplace{Zapsi_zdroj: workplaceid[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 	workplaces = append(workplaces, workplace)
+	var nokTypes []SytelineNok
+	nokType := SytelineNok{Nazev: noktype[0]}
+	nokTypes = append(nokTypes, nokType)
+	data.NokTypes = nokTypes
 	data.Workplaces = workplaces
 	data.UsernameValue = userid[0]
 	data.OrderValue = orderid[0]
 	data.Operation = operationid[0]
 	data.OperationValue = operationid[0]
-	data.NokTypes = nokTypes
+
 	data.UserDisabled = "disabled"
 	if len(ok) > 0 {
 		data.OkValue = ok[0]
