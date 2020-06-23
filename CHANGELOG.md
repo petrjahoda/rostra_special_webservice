@@ -14,6 +14,7 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+![Figure 1-1](screenshot.png?raw=true)
 
 ## [2020.2.3.23] - 2020-06-23
 
