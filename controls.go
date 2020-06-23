@@ -24,38 +24,51 @@ func SecondControls(writer *http.ResponseWriter, workplaceid []string, userid []
 		countFromZapsi := GetCountForActualOpenOrder(workplaceIdSplitted, userid, orderid, operationid)
 		countFromSyteline := GetCountForAllTransferredToSyteline(workplaceIdSplitted, userid, orderid, operationid)
 		countFromUser := GetCountFromUser(ok, nok)
+		countCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
 		LogInfo("MAIN", "[CountZapsi:CountSyteline:CountUser] ["+strconv.Itoa(countFromZapsi)+":"+strconv.Itoa(countFromSyteline)+":"+strconv.Itoa(countFromUser)+"]")
-		if countFromUser > (countFromZapsi - countFromSyteline) {
+		if countCheck {
+			if countFromUser > (countFromZapsi - countFromSyteline) {
+				data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
+				EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
+			} else {
+				EnableTransfer(writer, workplaceid, userid, orderid, operationid, data, ok, nok, noktype, tmpl)
+			}
+		} else {
 			data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
 			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
-		} else {
-			EnableTransfer(writer, workplaceid, userid, orderid, operationid, data, ok, nok, noktype, tmpl)
 		}
+
 	} else {
 		LogInfo("MAIN", "sytelineOperation.jen_prenos_mnozstvi is not one, transfer and close will be available")
 		data.Message += "jen_prenos_mnozstvi neni 1\n"
 		countFromZapsi := GetCountForActualOpenOrder(workplaceIdSplitted, userid, orderid, operationid)
 		countFromSyteline := GetCountForAllTransferredToSyteline(workplaceIdSplitted, userid, orderid, operationid)
 		countFromUser := GetCountFromUser(ok, nok)
+		countCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
 		LogInfo("MAIN", "[CountZapsi:CountSyteline:CountUser] ["+strconv.Itoa(countFromZapsi)+":"+strconv.Itoa(countFromSyteline)+":"+strconv.Itoa(countFromUser)+"]")
-		if countFromUser > (countFromZapsi - countFromSyteline) {
-			data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
-			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
-		} else {
-			if sytelineWorkplace.typ_zdroje_zapsi == "0" {
-				LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
-				data.Message += "typ_zdroje_zapsi je 0\n"
-				EnableClovekTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
-
+		if countCheck {
+			if countFromUser > (countFromZapsi - countFromSyteline) {
+				data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
+				EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
 			} else {
-				LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi does not equal zero")
-				data.Message += "typ_zdroje_zapsi neni 0\n"
-				if countFromUser == (countFromZapsi - countFromSyteline) {
-					EnableClovekSerizeniStrojTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+				if sytelineWorkplace.typ_zdroje_zapsi == "0" {
+					LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
+					data.Message += "typ_zdroje_zapsi je 0\n"
+					EnableClovekTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+
 				} else {
-					EnableClovekSerizeniStrojTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+					LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi does not equal zero")
+					data.Message += "typ_zdroje_zapsi neni 0\n"
+					if countFromUser == (countFromZapsi - countFromSyteline) {
+						EnableClovekSerizeniStrojTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+					} else {
+						EnableClovekSerizeniStrojTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+					}
 				}
 			}
+		} else {
+			data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
+			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
 		}
 	}
 }
@@ -400,4 +413,78 @@ func EnableTransfer(writer *http.ResponseWriter, workplaceid []string, userid []
 	}
 	data.TransferOrderButton = ""
 	_ = tmpl.Execute(*writer, data)
+}
+
+func CheckAmount(inputAmount []string, sytelineWorkplace SytelineWorkplace, data RostraMainPage, userid []string, orderid []string, operationid []string, workplaceid []string, sytelineOperation SytelineOperation) bool {
+	amountCheck := true
+	checkAmount, err := strconv.Atoi(inputAmount[0])
+	if err != nil {
+		LogError("MAIN", "Problem parsing data from user")
+		return false
+	}
+	LogInfo("MAIN", "Checking amount: "+strconv.Itoa(checkAmount))
+	if sytelineWorkplace.priznak_mn_1 == "1" {
+		LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 is one")
+		data.Message += "priznak_mn_1 je 1\n"
+		amountLessThanInZapsi := CheckIfOperatorAmountLessThanInZapsi(inputAmount, userid, orderid, operationid, workplaceid)
+		if amountLessThanInZapsi {
+			LogInfo("MAIN", "ok from user is less than in zapsi")
+			data.Message += "uzivatel zadal mene kusu nez je v zapsi, coz je spravne\n"
+		} else {
+			LogInfo("MAIN", "ok from user is more than in zapsi")
+			data.Message += "uzivatel zadal vice kusu nez je v zapsi, coz je spatne\n"
+			amountCheck = false
+		}
+	} else {
+		LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 is not one")
+		data.Message += "priznak_mn_1 neni 1\n"
+	}
+	if sytelineOperation.priznak_mn_2 == "1" {
+		LogInfo("MAIN", "sytelineWorkplace.priznak_mn_2 is one")
+		data.Message += "priznak_mn_2 je 1\n"
+		parsedFromSyteline, err := strconv.ParseFloat(sytelineOperation.mn_2_ks, 64)
+		if err != nil {
+			LogError("MAIN", "Problem parsing mn_2_ks: "+sytelineOperation.mn_2_ks+", "+err.Error())
+		}
+		parsedFromInput, err := strconv.Atoi(inputAmount[0])
+		if err != nil {
+			LogError("MAIN", "Problem parsing mn_2_ks: "+sytelineOperation.mn_2_ks+", "+err.Error())
+		}
+		if parsedFromInput < int(parsedFromSyteline) {
+			LogInfo("MAIN", "ok from user is less than mn_2_ks")
+			data.Message += "uzivatel zadal mene kusu nez je v mn_2_ks, coz je spravne\n"
+		} else {
+			LogInfo("MAIN", "ok from user is more than mn_2_ks")
+			data.Message += "uzivatel zadal vic kusu nez je v mn_2_ks, coz je spatne\n"
+			amountCheck = false
+		}
+	} else {
+		LogInfo("MAIN", "sytelineWorkplace.priznak_mn_2 is not one")
+		data.Message += "priznak_mn_2 neni 1\n"
+	}
+	if sytelineOperation.priznak_mn_3 == "1" {
+		LogInfo("MAIN", "sytelineWorkplace.priznak_mn_3 is one")
+		data.Message += "priznak_mn_3 je 1\n"
+		parsedFromSyteline, err := strconv.ParseFloat(sytelineOperation.mn_3_ks, 64)
+		if err != nil {
+			LogError("MAIN", "Problem parsing mn_2_ks: "+sytelineOperation.mn_3_ks+", "+err.Error())
+		}
+		parsedFromInput, err := strconv.Atoi(inputAmount[0])
+		if err != nil {
+			LogError("MAIN", "Problem parsing mn_2_ks: "+sytelineOperation.mn_3_ks+", "+err.Error())
+		}
+		if parsedFromInput < int(parsedFromSyteline) {
+			LogInfo("MAIN", "ok from user is less than mn_3_ks")
+			data.Message += "uzivatel zadal mene kusu nez je v mn_3_ks, coz je spravne\n"
+		} else {
+			LogInfo("MAIN", "ok from user is more than mn_3_ks")
+			data.Message += "uzivatel zadal vic kusu nez je v mn_3_ks, coz je spatne\n"
+			amountCheck = false
+		}
+
+	} else {
+		LogInfo("MAIN", "sytelineWorkplace.priznak_mn_3 is not one")
+		data.Message += "priznak_mn_3 neni 1\n"
+	}
+	return amountCheck
 }
