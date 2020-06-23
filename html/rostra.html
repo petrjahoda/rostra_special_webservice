@@ -71,7 +71,7 @@
         <div class="row {{.NokDisabled}}" style="padding: 5px">
             <div class="cell-5">
                 <input {{.NokFocus}} type="text" data-role="input" data-prepend="<span class='mif-cross'></span>"
-                placeholder="{{.Nok}}" name="nok" data-default-value="{{.NokValue}}">
+                                     placeholder="{{.Nok}}" name="nok" data-default-value="{{.NokValue}}">
             </div>
             <div class="cell-4">
                 <select {{.NokFocus}} data-role="select" data-prepend="<span class='mif-list'></span>"
@@ -88,16 +88,15 @@
         </div>
 
 
-
         <div class="row" {{.RadioDisabled}}>
             <div class="cell-4">
-                <input  {{.ClovekDisabled}} name="syteline" type="radio" data-role="radio" value="clovek">Člověk
+                <input {{.ClovekDisabled}} name="syteline" type="radio" data-role="radio" value="clovek">Člověk
             </div>
             <div class="cell-4">
-                <input  {{.SerizeniDisabled}} name="syteline" type="radio" data-role="radio" value="serizeni">Seřízení
+                <input {{.SerizeniDisabled}} name="syteline" type="radio" data-role="radio" value="serizeni">Seřízení
             </div>
             <div class="cell-4">
-                <input  {{.StrojDisabled}} name="syteline" type="radio" data-role="radio" value="stroj">Stroj
+                <input {{.StrojDisabled}} name="syteline" type="radio" data-role="radio" value="stroj">Stroj
             </div>
         </div>
         <br>
@@ -119,31 +118,44 @@
     </form>
 </div>
 
-{{/*<div id="ordertable" style="padding: 50px">*/}}
-{{/*    <table class="table">*/}}
-{{/*        <thead>*/}}
-{{/*        <tr>*/}}
-{{/*            <th>Typ</th>*/}}
-{{/*            <th>Zakázka</th>*/}}
-{{/*            <th>Pracoviště</th>*/}}
-{{/*            <th>Zahájení</th>*/}}
-{{/*            <th>Ok</th>*/}}
-{{/*            <th>Nok</th>*/}}
-{{/*            <th>Přeneseno</th>*/}}
-{{/*        </tr>*/}}
-{{/*        </thead>*/}}
-{{/*        <tbody>*/}}
-{{/*        <tr>*/}}
-{{/*            <td>C</td>*/}}
-{{/*            <td>VP-12345</td>*/}}
-{{/*            <td>CNC-23</td>*/}}
-{{/*            <td>213</td>*/}}
-{{/*            <td>2</td>*/}}
-{{/*            <td>0</td>*/}}
-{{/*        </tr>*/}}
-{{/*        </tbody>*/}}
-{{/*    </table>*/}}
-{{/*</div>*/}}
+<div id="ordertable" style="padding: 50px">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Kód</th>
+            <th>Zakázka</th>
+            <th>Produkt</th>
+            <th>Pracoviště</th>
+            <th>Začátek</th>
+            <th>Plán</th>
+            <th>Vyrobeno celkem</th>
+            <th>Vyrobeno na zakázce</th>
+            <th>Odvedeno celkem</th>
+            <th>Odvedeno na zakázce</th>
+            <th>Zbývá odvést</th>
+            <th>Nok celkem</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{range .DisplayOrder}}
+            <tr>
+                <td>{{.OrderCode}}</td>
+                <td>{{.OrderName}}</td>
+                <td>{{.ProductName}}</td>
+                <td>{{.WorkplaceName}}</td>
+                <td>{{.OrderStart}}</td>
+                <td>{{.OrderRequestedTotal}}</td>
+                <td>{{.OrderCountTotal}}</td>
+                <td>{{.OrderCountActual}}</td>
+                <td>{{.OrderSendToSytelineTotal}}</td>
+                <td>{{.OrderSendToSytelineActual}}</td>
+                <td>{{.ForSave}}</td>
+                <td>{{.OrderSendToSytelineNokTotal}}</td>
+            </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
 
 <div class="text"
      style="position:absolute;font-size: 1vw;font-weight: 100;bottom:2%;right:1%">

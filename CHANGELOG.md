@@ -14,6 +14,19 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+
+## [2020.2.3.23] - 2020-06-23
+
+### Changed
+- when starting order, first checking sameorder and then sameuser
+- when closing order, close is allowed only when amount from user is the same as difference between zapsi amount and syteline amount
+
+### Added
+- handling time_divisor (saving to zapsi2.device.Setting)
+    - increasing with another open order added
+    - reseting to 1 when no open order
+- html table with open orders and calculated data
+
 ## [2020.2.3.22] - 2020-06-22
 
 ### Changed

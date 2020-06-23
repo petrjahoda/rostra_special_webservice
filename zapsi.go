@@ -8,6 +8,210 @@ import (
 	"time"
 )
 
+func GetCountForActualOpenOrder(workplaceid []string, userid []string, orderid []string, operationid []string) int {
+	userLogin := strings.Split(userid[0], ";")[0]
+	order, suffix := ParseOrder(orderid[0])
+	operation := ParseOperation(operationid[0])
+	orderName := order + "." + suffix + "-" + operation
+	var zapsiUser User
+	var zapsiOrder Order
+	var zapsiWorkplace Workplace
+	var thisOrder TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return 0
+	}
+	defer db.Close()
+	db.Where("Login = ?", userLogin).Find(&zapsiUser)
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Where("UserID = ?", zapsiUser.OID).Find(&thisOrder)
+	return thisOrder.Count
+}
+
+func GetActualDataForUser(userid []string) []DisplayOrder {
+	userLogin := strings.Split(userid[0], ";")[0]
+	var allData []DisplayOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+	}
+	defer db.Close()
+	var user User
+	db.Where("Login = ?", userLogin).Find(&user)
+	var terminalInputOrder []TerminalInputOrder
+	db.Where("DTE is null").Where("UserId = ?", user.OID).Find(&terminalInputOrder)
+	LogInfo("MAIN", "For user "+userLogin+" found "+strconv.Itoa(len(terminalInputOrder))+" open orders")
+	for _, terminalInputOrder := range terminalInputOrder {
+		displayOrder := GetDataForActualDisplayOrder(terminalInputOrder, user, db)
+		allData = append(allData, displayOrder)
+	}
+	return allData
+}
+
+func GetDataForActualDisplayOrder(terminalInputOrder TerminalInputOrder, user User, db *gorm.DB) DisplayOrder {
+	displayOrder := DisplayOrder{
+		OrderSendToSytelineTotal:    "",
+		OrderSendToSytelineActual:   "",
+		OrderSendToSytelineNokTotal: "",
+	}
+	if terminalInputOrder.Note == "clovek" {
+		displayOrder.OrderCode = "PC"
+	} else if terminalInputOrder.Note == "stroj" {
+		displayOrder.OrderCode = "PS"
+	} else if displayOrder.OrderCode == "serizeni" {
+		displayOrder.OrderCode = "SE"
+	} else {
+		displayOrder.OrderCode = "N/A"
+	}
+
+	var order Order
+	db.Where("OID = ?", terminalInputOrder.OrderID).Find(&order)
+	displayOrder.OrderName = order.Name
+	displayOrder.OrderRequestedTotal = strconv.Itoa(order.CountRequested)
+
+	var product Product
+	db.Where("OID = ?", order.ProductID).Find(&product)
+	displayOrder.ProductName = product.Name
+
+	var device Device
+	db.Where("OID = ?", terminalInputOrder.DeviceID).Find(&device)
+	var workplace Workplace
+	db.Where("DeviceID = ?", device.OID).Find(&workplace)
+	displayOrder.WorkplaceName = workplace.Name
+
+	displayOrder.OrderStart = terminalInputOrder.DTS.String()
+
+	displayOrder.OrderCountActual = strconv.Itoa(terminalInputOrder.Count)
+
+	var terminalInputOrders []TerminalInputOrder
+	db.Where("OrderId = ?", terminalInputOrder.OrderID).Find(&terminalInputOrders)
+	totalCount := 0
+	for _, inputOrder := range terminalInputOrders {
+		totalCount += inputOrder.Count
+	}
+	displayOrder.OrderCountTotal = strconv.Itoa(totalCount)
+
+	db, err := gorm.Open("mssql", SytelineConnection)
+	defer db.Close()
+	if err != nil {
+		LogError("MAIN", "Error opening db: "+err.Error())
+		displayOrder.OrderSendToSytelineActual = "error"
+		displayOrder.OrderSendToSytelineTotal = "error"
+		displayOrder.OrderSendToSytelineNokTotal = "error"
+	} else {
+		parsedOrderName := order.Name
+		if strings.Contains(order.Name, ".") {
+			parsedOrderName = strings.Split(order.Name, ".")[0]
+		}
+		var zapsiTrans []zapsi_trans
+		db.Where("job = ?", parsedOrderName).Where("qty_complete is not null").Find(&zapsiTrans)
+		transferredTotal := 0
+		transferredNok := 0
+		for _, oneTrans := range zapsiTrans {
+			transferredTotal += int(oneTrans.Qty_complete)
+			transferredNok += int(oneTrans.Qty_scrapped)
+		}
+		displayOrder.OrderSendToSytelineTotal = strconv.Itoa(transferredTotal)
+		displayOrder.OrderSendToSytelineNokTotal = strconv.Itoa(transferredNok)
+
+		var zapsiTransThisOrder []zapsi_trans
+		db.Raw("SELECT * FROM [zapsi_trans]  WHERE (job = '" + parsedOrderName + "') AND (qty_complete is not null) AND (trans_date > '" + terminalInputOrder.DTS.Format("2006-01-02 15:04:05") + "') AND (emp_num = '" + user.Login + "')").Find(&zapsiTransThisOrder)
+		LogInfo("MAIN", "Checking "+strconv.Itoa(len(zapsiTransThisOrder))+" transferred orders for "+parsedOrderName)
+		transferredTotalThisOrder := 0
+		for _, thisTrans := range zapsiTransThisOrder {
+			transferredTotalThisOrder += int(thisTrans.Qty_complete)
+		}
+		displayOrder.OrderSendToSytelineActual = strconv.Itoa(transferredTotalThisOrder)
+		forSave := terminalInputOrder.Count - transferredTotalThisOrder
+		displayOrder.ForSave = strconv.Itoa(forSave)
+
+	}
+	return displayOrder
+}
+
+func UpdateDeviceWithNew(divisor int, workplaceid []string) {
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+	}
+	defer db.Close()
+	var zapsiWorkplace Workplace
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
+	var device Device
+	db.Where("OID = ?", zapsiWorkplace.DeviceID).Find(&device)
+	db.Model(&device).Where("OID = ?", device.OID).UpdateColumn(Device{Setting: strconv.Itoa(divisor)})
+}
+func GetActualZapsiOpenFor(workplaceid []string) int {
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return 1
+	}
+	defer db.Close()
+	var zapsiWorkplace Workplace
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
+	var device Device
+	db.Where("OID = ?", zapsiWorkplace.DeviceID).Find(&device)
+	var terminalInputOrder []TerminalInputOrder
+	db.Where("DTE is null").Where("DeviceID = ?", device.OID).Find(&terminalInputOrder)
+	return len(terminalInputOrder)
+}
+
+func GetActualTimeDivisor(workplaceid []string) int {
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return 1
+	}
+	defer db.Close()
+	var zapsiWorkplace Workplace
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
+	var device Device
+	db.Where("OID = ?", zapsiWorkplace.DeviceID).Find(&device)
+	timeDivisor, err := strconv.Atoi(device.Setting)
+	if err != nil {
+		LogError("MAIN", "Problem parsing time_divisor from device")
+		return 1
+	}
+	return timeDivisor
+}
+
+func CheckUserAndOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string) (bool, bool) {
+	userLogin := strings.Split(userid[0], ";")[0]
+	order, suffix := ParseOrder(orderid[0])
+	operation := ParseOperation(operationid[0])
+	orderName := order + "." + suffix + "-" + operation
+	var zapsiUser User
+	var zapsiOrder Order
+	var zapsiWorkplace Workplace
+	var thisOrder TerminalInputOrder
+	var thisUser TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return false, false
+	}
+	defer db.Close()
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Find(&thisOrder)
+
+	db.Where("Login = ?", userLogin).Find(&zapsiUser)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Find(&thisUser)
+	return thisOrder.OID > 0, thisUser.OID > 0
+}
+
 func UpdateZapsiZdrojFor(workplace SytelineWorkplace) string {
 	LogInfo("MAIN", "Updating workplace name: "+workplace.Zapsi_zdroj)
 	connectionString, dialect := CheckDatabaseType()

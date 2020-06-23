@@ -10,6 +10,20 @@ import (
 	"net/http"
 )
 
+type DisplayOrder struct {
+	OrderCode                   string
+	OrderName                   string
+	ProductName                 string
+	WorkplaceName               string
+	OrderStart                  string
+	OrderRequestedTotal         string
+	OrderCountTotal             string
+	OrderCountActual            string
+	OrderSendToSytelineTotal    string
+	OrderSendToSytelineActual   string
+	ForSave                     string
+	OrderSendToSytelineNokTotal string
+}
 type RostraMainPage struct {
 	Version   string
 	Username  string
@@ -48,8 +62,9 @@ type RostraMainPage struct {
 	StrojDisabled     string
 	SerizeniDisabled  string
 
-	NokTypes   []SytelineNok
-	Workplaces []SytelineWorkplace
+	NokTypes     []SytelineNok
+	Workplaces   []SytelineWorkplace
+	DisplayOrder []DisplayOrder
 }
 
 const (
@@ -108,7 +123,14 @@ func EndOrderButton(writer *http.ResponseWriter, userid []string, orderid []stri
 	if strings.Contains(workplaceid[0], ";") {
 		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 	}
-	sytelineOrderEnded := EndOrderInSyteline(userid, orderid, operationid, workplaceIdSplitted, ok, nok, noktype, radio)
+
+	actualTimeDivisor := GetActualTimeDivisor(workplaceIdSplitted)
+	actualZapsiOpenorders := GetActualZapsiOpenFor(workplaceIdSplitted)
+	sytelineOrderEnded := EndOrderInSyteline(userid, orderid, operationid, workplaceIdSplitted, ok, nok, noktype, radio, actualTimeDivisor)
+	if actualZapsiOpenorders == 1 {
+		actualTimeDivisor = 1
+	}
+	UpdateDeviceWithNew(actualTimeDivisor, workplaceIdSplitted)
 	zapsiOrderEnded := EndOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted, ok, nok)
 	SaveNokIntoZapsi(nok, noktype, workplaceIdSplitted, userid)
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
@@ -149,6 +171,11 @@ func StartOrderButton(writer *http.ResponseWriter, userid []string, orderid []st
 	}
 	LogInfo("MAIN", "Starting order for "+workplaceIdSplitted[0]+" and "+radio[0])
 	zapsiOrderCreated := StartOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted, radio)
+	actualTimeDivisor := GetActualTimeDivisor(workplaceIdSplitted)
+	actualZapsiOpenorders := GetActualZapsiOpenFor(workplaceIdSplitted)
+	if actualZapsiOpenorders > actualTimeDivisor {
+		UpdateDeviceWithNew(actualZapsiOpenorders, workplaceIdSplitted)
+	}
 	sytelineOrderCreated := StartOrderInSyteline(userid, orderid, operationid, workplaceIdSplitted, radio)
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()
@@ -228,6 +255,23 @@ func CreateDefaultPage() RostraMainPage {
 	if len(data.Workplaces) == 0 {
 		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", typ_zdroje_zapsi: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 		data.Workplaces = append(data.Workplaces, workplace)
+	}
+	if len(data.DisplayOrder) == 0 {
+		displayOrder := DisplayOrder{
+			OrderCode:                   "",
+			OrderName:                   "",
+			ProductName:                 "",
+			WorkplaceName:               "",
+			OrderStart:                  "",
+			OrderRequestedTotal:         "",
+			OrderCountTotal:             "",
+			OrderCountActual:            "",
+			OrderSendToSytelineTotal:    "",
+			OrderSendToSytelineActual:   "",
+			ForSave:                     "",
+			OrderSendToSytelineNokTotal: "",
+		}
+		data.DisplayOrder = append(data.DisplayOrder, displayOrder)
 	}
 	return data
 }

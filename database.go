@@ -9,19 +9,28 @@ import (
 )
 
 type zapsi_trans struct {
-	trans_date      sql.NullTime
-	emp_num         string
-	trans_type      string
-	job             string
-	suffix          int
-	oper_num        int
-	wc              string
-	qty_complete    float64
-	qty_scrapped    float64
-	complete_op     int
-	reason_code     string
-	start_date_time sql.NullTime
-	end_date_time   sql.NullTime
+	Trans_num       float64      `gorm:"column:trans_num"`
+	Posted          int          `gorm:"column:posted"`
+	Trans_date      sql.NullTime `gorm:"column:trans_date"`
+	Emp_num         string       `gorm:"column:emp_num"`
+	Trans_type      string       `gorm:"column:trans_type"`
+	Job             string       `gorm:"column:job"`
+	Suffix          int          `gorm:"column:suffix"`
+	Oper_num        int          `gorm:"column:oper_num"`
+	Wc              string       `gorm:"column:wc"`
+	Qty_complete    float64      `gorm:"column:qty_complete"`
+	Qty_scrapped    float64      `gorm:"column:qty_scrapped"`
+	Lot             string       `gorm:"column:lot"`
+	Start_date_time sql.NullTime `gorm:"column:start_date_time"`
+	End_date_time   sql.NullTime `gorm:"column:end_date_time"`
+	Complete_op     int          `gorm:"column:complete_op"`
+	Shift           string       `gorm:"column:shift"`
+	Reason_code     string       `gorm:"column:reacon_code"`
+	Time_divisor    float64      `gorm:"column:time_divisor"`
+}
+
+func (zapsi_trans) TableName() string {
+	return "zapsi_trans"
 }
 
 type SytelineUser struct {
@@ -165,6 +174,15 @@ type Workplace struct {
 
 func (Workplace) TableName() string {
 	return "workplace"
+}
+
+type Device struct {
+	OID     int    `gorm:"column:OID"`
+	Setting string `gorm:"column:Setting"`
+}
+
+func (Device) TableName() string {
+	return "device"
 }
 
 func CheckDatabaseType() (string, string) {

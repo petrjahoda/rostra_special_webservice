@@ -10,38 +10,84 @@ import (
 	"time"
 )
 
-func EndOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) bool {
+func GetCountForAllTransferredToSyteline(workplaceid []string, userid []string, orderid []string, operationid []string) int {
+	transferredTotalThisOrder := 0
+	userLogin := strings.Split(userid[0], ";")[0]
+	order, suffix := ParseOrder(orderid[0])
+	operation := ParseOperation(operationid[0])
+	orderName := order + "." + suffix + "-" + operation
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+	}
+	defer db.Close()
+	var user User
+	db.Where("Login = ?", userLogin).Find(&user)
+	var zapsiOrder Order
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	var workplace Workplace
+	db.Where("Code = ?", workplaceid[0]).Find(&workplace)
+	var device Device
+	db.Where("OID = ?", workplace.DeviceID).Find(&device)
+	var terminalInputOrder TerminalInputOrder
+	db.Where("DTE is null").Where("UserId = ?", user.OID).Where("OrderId = ?", zapsiOrder.OID).Where("DeviceId = ?", device.OID).Find(&terminalInputOrder)
+
+	syteline, err := gorm.Open("mssql", SytelineConnection)
+	defer syteline.Close()
+	if err != nil {
+		LogError("MAIN", "Error opening db: "+err.Error())
+
+	} else {
+		parsedOrderName := zapsiOrder.Name
+		if strings.Contains(zapsiOrder.Name, ".") {
+			parsedOrderName = strings.Split(zapsiOrder.Name, ".")[0]
+		}
+
+		var zapsiTransThisOrder []zapsi_trans
+		syteline.Raw("SELECT * FROM [zapsi_trans]  WHERE (job = '" + parsedOrderName + "') AND (qty_complete is not null) AND (trans_date > '" + terminalInputOrder.DTS.Format("2006-01-02 15:04:05") + "') AND (emp_num = '" + user.Login + "')").Find(&zapsiTransThisOrder)
+		LogInfo("MAIN", "Checking "+strconv.Itoa(len(zapsiTransThisOrder))+" transferred orders for "+parsedOrderName)
+
+		for _, thisTrans := range zapsiTransThisOrder {
+			transferredTotalThisOrder += int(thisTrans.Qty_complete)
+		}
+	}
+	return transferredTotalThisOrder
+}
+
+func EndOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string, timedivisor int) bool {
 	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceid)
 	sytelineOkAndNokTransferred := false
 	sytelineOrderClosed := false
 	if sytelineWorkplace.typ_zdroje_zapsi == "0" {
 		sytelineOkAndNokTransferred = TransferOkAndNokToSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype)
-		sytelineOrderClosed = CloseOrderRecordInSyteline("4", userid, orderid, operationid, workplaceid)
+		sytelineOrderClosed = CloseOrderRecordInSyteline("4", userid, orderid, operationid, workplaceid, timedivisor)
 	} else {
 		sytelineOkAndNokTransferred = TransferOkAndNokToSyteline(userid, orderid, operationid, workplaceid, ok, nok, noktype)
 		if radio[0] == "clovek" {
-			sytelineOrderClosed = CloseOrderRecordInSyteline("9", userid, orderid, operationid, workplaceid)
-			sytelineOrderClosed = CloseOrderRecordInSyteline("4", userid, orderid, operationid, workplaceid)
+			sytelineOrderClosed = CloseOrderRecordInSyteline("9", userid, orderid, operationid, workplaceid, timedivisor)
+			sytelineOrderClosed = CloseOrderRecordInSyteline("4", userid, orderid, operationid, workplaceid, timedivisor)
 		} else if radio[0] == "stroj" {
-			sytelineOrderClosed = CloseOrderRecordInSyteline("9", userid, orderid, operationid, workplaceid)
+			sytelineOrderClosed = CloseOrderRecordInSyteline("9", userid, orderid, operationid, workplaceid, timedivisor)
 		} else if radio[0] == "serizeni" {
-			sytelineOrderClosed = CloseOrderRecordInSyteline("2", userid, orderid, operationid, workplaceid)
+			sytelineOrderClosed = CloseOrderRecordInSyteline("2", userid, orderid, operationid, workplaceid, timedivisor)
 		}
 	}
 	return sytelineOkAndNokTransferred || sytelineOrderClosed
 }
 
-func CloseOrderRecordInSyteline(closingNumber string, userid []string, orderid []string, operationid []string, workplaceid []string) bool {
+func CloseOrderRecordInSyteline(closingNumber string, userid []string, orderid []string, operationid []string, workplaceid []string, timedivisor int) bool {
 	order, suffix := ParseOrder(orderid[0])
 	operation := ParseOperation(operationid[0])
 	suffixAsNumber, _ := strconv.Atoi(suffix)
 	operationAsNumber, _ := strconv.Atoi(operation)
+	timeDivisorAsNumber := float64(timedivisor)
 	userCode := strings.Split(userid[0], ";")[0]
-	okTransferred := TransferCloseOrderToSyteline(closingNumber, userid, orderid, operationid, userCode, order, suffixAsNumber, operationAsNumber, workplaceid)
+	okTransferred := TransferCloseOrderToSyteline(closingNumber, userid, orderid, operationid, userCode, order, suffixAsNumber, operationAsNumber, workplaceid, timeDivisorAsNumber)
 	return okTransferred
 }
 
-func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid []string, operationid []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string) bool {
+func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid []string, operationid []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string, timeDivisorAsNumber float64) bool {
 	terminalInputOrder := GetActualOpenOrderForWorkplaces(userid, orderid, operationid, order, workplaceid)
 
 	db, err := gorm.Open("mssql", SytelineConnection)
@@ -51,8 +97,8 @@ func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid
 	}
 	defer db.Close()
 	LogInfo("MAIN", "Closing order in Syteline")
-	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: terminalInputOrder.DTS, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
+	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
+		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: terminalInputOrder.DTS, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisorAsNumber)
 	return true
 }
 
@@ -320,6 +366,7 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 		data.OperationFocus = "autofocus"
 		data.Username = "disabled"
 		data.Message = err.Error()
+		data.DisplayOrder = GetActualDataForUser(userId)
 		LogInfo("MAIN", "Sending error page for order check")
 		_ = tmpl.Execute(*writer, data)
 	} else {
@@ -372,6 +419,7 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 				data.WorkplaceDisabled = ""
 				data.UserDisabled = "disabled"
 				data.WorkplaceFocus = "autofocus"
+				data.DisplayOrder = GetActualDataForUser(userId)
 			} else {
 				LogInfo("MAIN", "Workplaces not found for "+orderId[0])
 				data.UsernameValue = userId[0]
@@ -380,6 +428,7 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 				data.OperationDisabled = ""
 				data.UserDisabled = "disabled"
 				data.OperationFocus = "autofocus"
+				data.DisplayOrder = GetActualDataForUser(userId)
 			}
 			_ = tmpl.Execute(*writer, data)
 		} else {
@@ -391,6 +440,7 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 			data.OperationDisabled = ""
 			data.UserDisabled = "disabled"
 			data.OperationFocus = "autofocus"
+			data.DisplayOrder = GetActualDataForUser(userId)
 			_ = tmpl.Execute(*writer, data)
 		}
 	}
@@ -412,6 +462,7 @@ func CheckOrderInSyteline(writer *http.ResponseWriter, userId []string, orderId 
 		data.OrderFocus = "autofocus"
 		data.OrderDisabled = ""
 		data.UserDisabled = "disabled"
+		data.DisplayOrder = GetActualDataForUser(userId)
 		LogInfo("MAIN", "Sending error page for order check")
 		_ = tmpl.Execute(*writer, data)
 	} else {
@@ -437,6 +488,7 @@ func CheckOrderInSyteline(writer *http.ResponseWriter, userId []string, orderId 
 			data.OperationFocus = "autofocus"
 			data.UserDisabled = "disabled"
 			data.OperationDisabled = ""
+			data.DisplayOrder = GetActualDataForUser(userId)
 		} else {
 			LogInfo("MAIN", "Order not found for "+orderId[0]+" for command "+command)
 			data.UsernameValue = userId[0]
@@ -445,6 +497,7 @@ func CheckOrderInSyteline(writer *http.ResponseWriter, userId []string, orderId 
 			data.UserDisabled = "disabled"
 			data.UserFocus = ""
 			data.OrderFocus = "autofocus"
+			data.DisplayOrder = GetActualDataForUser(userId)
 		}
 		LogInfo("MAIN", "Sending page for order check")
 		_ = tmpl.Execute(*writer, data)
@@ -464,6 +517,24 @@ func ParseOrder(orderId string) (string, string) {
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
 		} else if strings.Contains(splitted[0], ".") {
 			splittedOrder := strings.Split(splitted[0], ".")
+			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
+			if err != nil {
+				LogError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				return splittedOrder[0], splittedOrder[1]
+			}
+			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
+		}
+	} else {
+		if strings.Contains(orderId, "-") {
+			splittedOrder := strings.Split(orderId, "-")
+			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
+			if err != nil {
+				LogError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				return splittedOrder[0], splittedOrder[1]
+			}
+			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
+		} else if strings.Contains(orderId, ".") {
+			splittedOrder := strings.Split(orderId, ".")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
 				LogError("MAIN", "Problem converting suffix: "+splittedOrder[1])
@@ -503,6 +574,7 @@ func CheckUserInSyteline(writer *http.ResponseWriter, userId []string) {
 			data.UserFocus = ""
 			data.OrderFocus = "autofocus"
 			data.UserDisabled = "disabled"
+			data.DisplayOrder = GetActualDataForUser(userId)
 			data.Order = "Zadejte prosím číslo zakázky"
 		} else {
 			LogInfo("MAIN", userId[0]+", user not found")
