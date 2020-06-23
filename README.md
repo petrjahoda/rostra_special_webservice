@@ -7,8 +7,7 @@
 * use linux, mac or windows version and make it run like a service
 
 ## Description
-Go webservice that enables operators to start and end their work
-[here](logika.pdf)
+Go webservice that enables operators to start and end their work described [here](logika.pdf)
 
 ## Changelog
 Updated [here](CHANGELOG.md)
