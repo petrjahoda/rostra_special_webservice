@@ -9,5 +9,7 @@
 ## Description
 Go webservice that enables operators to start and end their work
 
+## Changelog
+Updated [here](CHANGELOG.md)
 
 www.zapsi.eu © 2020
