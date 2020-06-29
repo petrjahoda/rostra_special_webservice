@@ -14,6 +14,12 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.2.3.29] - 2020-06-29
+
+### Changed
+- when closing order, additional checks are made: sytelineWorkplace.priznak_mn_1 == "0" || (sytelineWorkplace.priznak_mn_1 == "1" && countFromUser == (countFromZapsi - countFromSyteline))
+
+
 ## [2020.2.3.23] - 2020-06-23
 
 ### Changed

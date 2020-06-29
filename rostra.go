@@ -2,12 +2,10 @@ package main
 
 import (
 	"github.com/julienschmidt/httprouter"
-	"strconv"
-	"strings"
-
-	//"golang.org/x/crypto/openpgp/packet"
 	"html/template"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 type DisplayOrder struct {
@@ -111,7 +109,7 @@ func DataInput(writer http.ResponseWriter, r *http.Request, _ httprouter.Params)
 	case startOrderStep:
 		StartOrderButton(&writer, userid, orderid, operationid, workplaceid, radio)
 	case transferOrderStep:
-		TransferOrderButton(&writer, userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
+		TransferOrderButton(&writer, userid, orderid, operationid, workplaceid, ok, nok, noktype)
 	case endOrderStep:
 		EndOrderButton(&writer, userid, orderid, operationid, workplaceid, ok, nok, noktype, radio)
 	}
@@ -142,7 +140,7 @@ func EndOrderButton(writer *http.ResponseWriter, userid []string, orderid []stri
 	_ = tmpl.Execute(*writer, data)
 }
 
-func TransferOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, radio []string) {
+func TransferOrderButton(writer *http.ResponseWriter, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string) {
 	LogInfo("MAIN", "Transferring order")
 	tmpl := template.Must(template.ParseFiles("html/rostra.html"))
 	data := CreateDefaultPage()

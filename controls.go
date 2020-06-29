@@ -54,14 +54,26 @@ func SecondControls(writer *http.ResponseWriter, workplaceid []string, userid []
 				if sytelineWorkplace.typ_zdroje_zapsi == "0" {
 					LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
 					data.Message += "typ_zdroje_zapsi je 0\n"
-					EnableClovekTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+					if sytelineWorkplace.priznak_mn_1 == "0" || (sytelineWorkplace.priznak_mn_1 == "1" && countFromUser == (countFromZapsi-countFromSyteline)) {
+						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+						data.Message += "priznak_mn_1 je 0 anebo je 1 se stejnym mnozstvim\n"
+						EnableClovekTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+					} else {
+						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+						data.Message += "priznak_mn_1 je 1 s ruznym mnozstvim\n"
+						EnableClovekTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+					}
 
 				} else {
 					LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi does not equal zero")
 					data.Message += "typ_zdroje_zapsi neni 0\n"
-					if countFromUser == (countFromZapsi - countFromSyteline) {
+					if sytelineWorkplace.priznak_mn_1 == "0" || (sytelineWorkplace.priznak_mn_1 == "1" && countFromUser == (countFromZapsi-countFromSyteline)) {
+						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+						data.Message += "priznak_mn_1 je 0 anebo je 1 se stejnym mnozstvim\n"
 						EnableClovekSerizeniStrojTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
 					} else {
+						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+						data.Message += "priznak_mn_1 je 1 s ruznym mnozstvim\n"
 						EnableClovekSerizeniStrojTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
 					}
 				}
@@ -71,6 +83,30 @@ func SecondControls(writer *http.ResponseWriter, workplaceid []string, userid []
 			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
 		}
 	}
+}
+
+func EnableClovekTransferCloseInput(writer *http.ResponseWriter, data RostraMainPage, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, tmpl *template.Template) {
+	var workplaces []SytelineWorkplace
+	workplace := SytelineWorkplace{Zapsi_zdroj: workplaceid[0], priznak_mn_1: "", vice_vp: "", SL_prac: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
+	workplaces = append(workplaces, workplace)
+	var nokTypes []SytelineNok
+	nokType := SytelineNok{Nazev: noktype[0]}
+	nokTypes = append(nokTypes, nokType)
+	data.NokTypes = nokTypes
+	data.Workplaces = workplaces
+	data.UsernameValue = userid[0]
+	data.OrderValue = orderid[0]
+	data.Operation = operationid[0]
+	data.OperationValue = operationid[0]
+	data.UserDisabled = "disabled"
+	data.RadioDisabled = ""
+	data.ClovekDisabled = "checked"
+	data.TransferOrderButton = ""
+	data.EndOrderButton = ""
+	data.OkValue = ok[0]
+	data.NokValue = nok[0]
+	data.DisplayOrder = GetActualDataForUser(userid)
+	_ = tmpl.Execute(*writer, data)
 }
 
 func GetCountFromUser(ok []string, nok []string) int {
