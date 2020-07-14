@@ -562,7 +562,7 @@ func CheckIfAnyOpenOrderHasOneOfProducts(workplaceid []string, products []Produc
 	defer db.Close()
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
-	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Find(&terminalInputOrders)
+	db.Where("DTE is null").Find(&terminalInputOrders)
 	for _, terminalInputOrder := range terminalInputOrders {
 		var zapsiOrder Order
 		db.Where("OID = ?", terminalInputOrder.OrderID).Find(&zapsiOrder)

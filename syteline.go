@@ -80,14 +80,13 @@ func CloseOrderRecordInSyteline(closingNumber string, userid []string, orderid [
 	order, suffix := ParseOrder(orderid[0])
 	operation := ParseOperation(operationid[0])
 	suffixAsNumber, _ := strconv.Atoi(suffix)
-	operationAsNumber, _ := strconv.Atoi(operation)
 	timeDivisorAsNumber := float64(timedivisor)
 	userCode := strings.Split(userid[0], ";")[0]
-	okTransferred := TransferCloseOrderToSyteline(closingNumber, userid, orderid, operationid, userCode, order, suffixAsNumber, operationAsNumber, workplaceid, timeDivisorAsNumber)
+	okTransferred := TransferCloseOrderToSyteline(closingNumber, userid, orderid, operationid, userCode, order, suffixAsNumber, operation, workplaceid, timeDivisorAsNumber)
 	return okTransferred
 }
 
-func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid []string, operationid []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string, timeDivisorAsNumber float64) bool {
+func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid []string, operationid []string, userCode string, order string, suffixAsNumber int, operation string, workplaceid []string, timeDivisorAsNumber float64) bool {
 	terminalInputOrder := GetActualOpenOrderForWorkplaces(userid, orderid, operationid, order, workplaceid)
 
 	db, err := gorm.Open("mssql", SytelineConnection)
@@ -98,7 +97,7 @@ func TransferCloseOrderToSyteline(closingNumber string, userid []string, orderid
 	defer db.Close()
 	LogInfo("MAIN", "Closing order in Syteline")
 	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
-		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: terminalInputOrder.DTS, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisorAsNumber)
+		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operation, workplaceid[0], sql.NullTime{Time: terminalInputOrder.DTS, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisorAsNumber)
 	return true
 }
 
@@ -129,14 +128,14 @@ func GetActualOpenOrderForWorkplaces(userid []string, orderid []string, operatio
 func TransferOkAndNokToSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string) bool {
 	order, suffix := ParseOrder(orderid[0])
 	suffixAsNumber, _ := strconv.Atoi(suffix)
-	operationAsNumber, _ := strconv.Atoi(operationid[0])
+	operation := ParseOperation(operationid[0])
 	userCode := strings.Split(userid[0], ";")[0]
-	okTransferred := TransferOkRecordToSyteline(ok, userCode, order, suffixAsNumber, operationAsNumber, workplaceid)
-	nokTransferred := TransferNokRecordToSyteline(nok, noktype, userCode, order, suffixAsNumber, operationAsNumber, workplaceid)
+	okTransferred := TransferOkRecordToSyteline(ok, userCode, order, suffixAsNumber, operation, workplaceid)
+	nokTransferred := TransferNokRecordToSyteline(nok, noktype, userCode, order, suffixAsNumber, operation, workplaceid)
 	return okTransferred || !nokTransferred
 }
 
-func TransferNokRecordToSyteline(nok []string, noktype []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string) bool {
+func TransferNokRecordToSyteline(nok []string, noktype []string, userCode string, order string, suffixAsNumber int, operation string, workplaceid []string) bool {
 	db, err := gorm.Open("mssql", SytelineConnection)
 	if err != nil {
 		LogError("MAIN", "Problem with Syteline: "+err.Error())
@@ -158,12 +157,12 @@ func TransferNokRecordToSyteline(nok []string, noktype []string, userCode string
 			}
 		}
 		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], 0.0, float64(nokAsNumber), 0.0, failCodeToInsert)
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operation, workplaceid[0], 0.0, float64(nokAsNumber), 0.0, failCodeToInsert)
 	}
 	return true
 }
 
-func TransferOkRecordToSyteline(ok []string, userCode string, order string, suffixAsNumber int, operationAsNumber int, workplaceid []string) bool {
+func TransferOkRecordToSyteline(ok []string, userCode string, order string, suffixAsNumber int, operation string, workplaceid []string) bool {
 	db, err := gorm.Open("mssql", SytelineConnection)
 	if err != nil {
 		LogError("MAIN", "Problem with Syteline: "+err.Error())
@@ -177,7 +176,7 @@ func TransferOkRecordToSyteline(ok []string, userCode string, order string, suff
 	} else if okAsNumber > 0 {
 		LogInfo("MAIN", "Saving OK to Syteline")
 		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operationAsNumber, workplaceid[0], float64(okAsNumber), 0.0, 0.0)
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, "5", order, suffixAsNumber, operation, workplaceid[0], float64(okAsNumber), 0.0, 0.0)
 	}
 	return true
 }
@@ -185,6 +184,7 @@ func TransferOkRecordToSyteline(ok []string, userCode string, order string, suff
 func StartOrderInSyteline(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
 	sytelineWorkplace := GetWorkplaceFromSyteline(orderid, operationid, workplaceid)
 	sytelineOrderStarted := false
+	println(operationid[0])
 	if sytelineWorkplace.typ_zdroje_zapsi == "0" {
 		sytelineOrderStarted = StartOrderRecordInSyteline("3", userid, orderid, operationid, workplaceid)
 	} else {
@@ -203,7 +203,7 @@ func StartOrderInSyteline(userid []string, orderid []string, operationid []strin
 func StartOrderRecordInSyteline(closingNumber string, userid []string, orderid []string, operationid []string, workplaceid []string) bool {
 	order, suffix := ParseOrder(orderid[0])
 	suffixAsNumber, _ := strconv.Atoi(suffix)
-	operationAsNumber, _ := strconv.Atoi(operationid[0])
+	operation := ParseOperation(operationid[0])
 	userCode := strings.Split(userid[0], ";")[0]
 	terminalInputOrder := GetActualOpenOrderForWorkplaces(userid, orderid, operationid, order, workplaceid)
 	timeToInsert := time.Now()
@@ -218,7 +218,7 @@ func StartOrderRecordInSyteline(closingNumber string, userid []string, orderid [
 	defer db.Close()
 	LogInfo("MAIN", "Starting order in Syteline")
 	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
-		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operationAsNumber, workplaceid[0], sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
+		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userCode, closingNumber, order, suffixAsNumber, operation, workplaceid[0], sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
 	return true
 }
 
@@ -398,11 +398,10 @@ func CheckOperationInSyteline(writer *http.ResponseWriter, userId []string, orde
 				if err != nil {
 					LogError("MAIN", "Error: "+err.Error())
 				}
-				for _, sytelineWorkplace := range sytelineWorkplaces {
-					sytelineWorkplace.Zapsi_zdroj = UpdateZapsiZdrojFor(sytelineWorkplace)
-					updatedSytelineWorkplaces = append(updatedSytelineWorkplaces, sytelineWorkplace)
-				}
-
+			}
+			for _, sytelineWorkplace := range sytelineWorkplaces {
+				sytelineWorkplace.Zapsi_zdroj = UpdateZapsiZdrojFor(sytelineWorkplace)
+				updatedSytelineWorkplaces = append(updatedSytelineWorkplaces, sytelineWorkplace)
 			}
 			if len(updatedSytelineWorkplaces) > 0 {
 				data.Workplaces = updatedSytelineWorkplaces

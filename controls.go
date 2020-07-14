@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm"
 	"html/template"
 	"net/http"
@@ -27,12 +28,7 @@ func SecondControls(writer *http.ResponseWriter, workplaceid []string, userid []
 		countCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
 		LogInfo("MAIN", "[CountZapsi:CountSyteline:CountUser] ["+strconv.Itoa(countFromZapsi)+":"+strconv.Itoa(countFromSyteline)+":"+strconv.Itoa(countFromUser)+"]")
 		if countCheck {
-			if countFromUser > (countFromZapsi - countFromSyteline) {
-				data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
-				EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
-			} else {
-				EnableTransfer(writer, workplaceid, userid, orderid, operationid, data, ok, nok, noktype, tmpl)
-			}
+			EnableTransfer(writer, workplaceid, userid, orderid, operationid, data, ok, nok, noktype, tmpl)
 		} else {
 			data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
 			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
@@ -134,7 +130,7 @@ func EnableClovekSerizeniStrojTransferInput(writer *http.ResponseWriter, data Ro
 	if strings.Contains(workplaceid[0], ";") {
 		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 	}
-	_, orderNote := CheckThisOpenOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted)
+	_, orderNote := CheckOpenOrderForWorkplaceInZapsi(orderid, operationid, workplaceIdSplitted)
 	if orderNote == "clovek" {
 		data.ClovekDisabled = "checked"
 		data.SerizeniDisabled = "disabled"
@@ -168,6 +164,30 @@ func EnableClovekSerizeniStrojTransferInput(writer *http.ResponseWriter, data Ro
 	data.DisplayOrder = GetActualDataForUser(userid)
 
 	_ = tmpl.Execute(*writer, data)
+}
+
+func CheckOpenOrderForWorkplaceInZapsi(orderid []string, operationid []string, workplaceid []string) (interface{}, interface{}) {
+	order, suffix := ParseOrder(orderid[0])
+	operation := ParseOperation(operationid[0])
+	orderName := order + "." + suffix + "-" + operation
+	var zapsiOrder Order
+	var zapsiWorkplace Workplace
+	var terminalInputOrder TerminalInputOrder
+	connectionString, dialect := CheckDatabaseType()
+	db, err := gorm.Open(dialect, connectionString)
+
+	if err != nil {
+		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
+		return false, ""
+	}
+	defer db.Close()
+	db.Where("Name = ?", orderName).Find(&zapsiOrder)
+	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
+	if terminalInputOrder.OID > 0 {
+		return true, terminalInputOrder.Note
+	}
+	return false, ""
 }
 
 func EnableClovekTransferInput(writer *http.ResponseWriter, data RostraMainPage, userid []string, orderid []string, operationid []string, workplaceid []string, ok []string, nok []string, noktype []string, tmpl *template.Template) {
@@ -204,7 +224,7 @@ func EnableClovekSerizeniStrojTransferCloseInput(writer *http.ResponseWriter, da
 	if strings.Contains(workplaceid[0], ";") {
 		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 	}
-	_, orderNote := CheckThisOpenOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted)
+	_, orderNote := CheckOpenOrderForWorkplaceInZapsi(orderid, operationid, workplaceIdSplitted)
 	if orderNote == "clovek" {
 		data.ClovekDisabled = "checked"
 		data.SerizeniDisabled = "disabled"
@@ -294,7 +314,7 @@ func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []s
 					LogInfo("MAIN", "sytelineOperation.parovy_dil equals one")
 					data.Message += "parovy dil je 1\n"
 					if len(sytelineOperation.seznamm_par_dilu) > 0 {
-						LogInfo("MAIN", "sytelineOperation.seznamm_par_dilu not empty")
+						LogInfo("MAIN", "sytelineOperation.seznamm_par_dilu not empty: "+sytelineOperation.seznamm_par_dilu)
 						data.Message += "seznamm_par_dilu osahuje nejaky parovy dil\n"
 						var zapsiProducts = CheckProductsInZapsi(sytelineOperation)
 						anyOpenOrderHasOneOfProducts := CheckIfAnyOpenOrderHasOneOfProducts(workplaceid, zapsiProducts)
@@ -312,7 +332,6 @@ func FirstControls(writer *http.ResponseWriter, workplaceid []string, userid []s
 							}
 						} else {
 							LogInfo("MAIN", "No open order in Zapsi contains any of pair parts")
-							data.Message += "Zadna otevrena zakazka v Zapsi neobsahuje zadny z parovych dilu\n"
 							CheckOperationInSyteline(writer, userid, orderid, operationid)
 						}
 					} else {
@@ -358,7 +377,7 @@ func EnableClovekSerizeniStrojStart(writer *http.ResponseWriter, data RostraMain
 	if strings.Contains(workplaceid[0], ";") {
 		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 	}
-	_, orderNote := CheckThisOpenOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted)
+	_, orderNote := CheckOpenOrderForWorkplaceInZapsi(orderid, operationid, workplaceIdSplitted)
 	if orderNote == "clovek" {
 		data.ClovekDisabled = "checked"
 		data.SerizeniDisabled = "disabled"
