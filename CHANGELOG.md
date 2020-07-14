@@ -19,6 +19,9 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 ### Fixed
 - number of fixes in behavior
 
+### Changed
+- updated color logging, used "github.com/TwinProduction/go-color" library
+
 ## [2020.2.3.29] - 2020-06-29
 
 ### Changed

@@ -31,7 +31,16 @@ func (p *program) run() {
 	router.GET("/css/metro-all.css", metrocss)
 	router.GET("/mif/metro.ttf", metrottf)
 	LogInfo("MAIN", "Server running")
+	go DeleteLogs()
 	_ = http.ListenAndServe(":80", router)
+}
+
+func DeleteLogs() {
+	for {
+		LogInfo("MAIN", "Deleting old log files")
+		DeleteOldLogFiles()
+		time.Sleep(24 * time.Hour)
+	}
 }
 
 func main() {
