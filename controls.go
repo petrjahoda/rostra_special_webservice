@@ -43,37 +43,37 @@ func SecondControls(writer *http.ResponseWriter, workplaceid []string, userid []
 		countCheck := CheckAmount(ok, sytelineWorkplace, data, userid, orderid, operationid, workplaceid, sytelineOperation)
 		LogInfo("MAIN", "[CountZapsi:CountSyteline:CountUser] ["+strconv.Itoa(countFromZapsi)+":"+strconv.Itoa(countFromSyteline)+":"+strconv.Itoa(countFromUser)+"]")
 		if countCheck {
-			if countFromUser > (countFromZapsi - countFromSyteline) {
-				data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
-				EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
-			} else {
-				if sytelineWorkplace.typ_zdroje_zapsi == "0" {
-					LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
-					data.Message += "typ_zdroje_zapsi je 0\n"
-					if sytelineWorkplace.priznak_mn_1 == "0" || (sytelineWorkplace.priznak_mn_1 == "1" && countFromUser == (countFromZapsi-countFromSyteline)) {
-						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
-						data.Message += "priznak_mn_1 je 0 anebo je 1 se stejnym mnozstvim\n"
-						EnableClovekTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
-					} else {
-						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
-						data.Message += "priznak_mn_1 je 1 s ruznym mnozstvim\n"
-						EnableClovekTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
-					}
-
+			//if countFromUser > (countFromZapsi - countFromSyteline) {
+			//	data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
+			//	EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
+			//} else {
+			if sytelineWorkplace.typ_zdroje_zapsi == "0" {
+				LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
+				data.Message += "typ_zdroje_zapsi je 0\n"
+				if sytelineWorkplace.priznak_mn_1 == "0" || (sytelineWorkplace.priznak_mn_1 == "1" && countFromUser == (countFromZapsi-countFromSyteline)) {
+					LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+					data.Message += "priznak_mn_1 je 0 anebo je 1 se stejnym mnozstvim\n"
+					EnableClovekTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
 				} else {
-					LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi does not equal zero")
-					data.Message += "typ_zdroje_zapsi neni 0\n"
-					if sytelineWorkplace.priznak_mn_1 == "0" || (sytelineWorkplace.priznak_mn_1 == "1" && countFromUser == (countFromZapsi-countFromSyteline)) {
-						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
-						data.Message += "priznak_mn_1 je 0 anebo je 1 se stejnym mnozstvim\n"
-						EnableClovekSerizeniStrojTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
-					} else {
-						LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
-						data.Message += "priznak_mn_1 je 1 s ruznym mnozstvim\n"
-						EnableClovekSerizeniStrojTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
-					}
+					LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+					data.Message += "priznak_mn_1 je 1 s ruznym mnozstvim\n"
+					EnableClovekTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+				}
+
+			} else {
+				LogInfo("MAIN", "sytelineWorkplace.typ_zdroje_zapsi does not equal zero")
+				data.Message += "typ_zdroje_zapsi neni 0\n"
+				if sytelineWorkplace.priznak_mn_1 == "0" || (sytelineWorkplace.priznak_mn_1 == "1" && countFromUser == (countFromZapsi-countFromSyteline)) {
+					LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+					data.Message += "priznak_mn_1 je 0 anebo je 1 se stejnym mnozstvim\n"
+					EnableClovekSerizeniStrojTransferCloseInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
+				} else {
+					LogInfo("MAIN", "sytelineWorkplace.priznak_mn_1 equals zero or sytelineWorkplace.priznak_mn_1 equals one with the same amount")
+					data.Message += "priznak_mn_1 je 1 s ruznym mnozstvim\n"
+					EnableClovekSerizeniStrojTransferInput(writer, data, userid, orderid, operationid, workplaceid, ok, nok, noktype, tmpl)
 				}
 			}
+			//}
 		} else {
 			data.Message += "V Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + " kusu, do Syteline uz je odvedeno " + strconv.Itoa(countFromSyteline) + " kusu, je mozno odvest maximalne " + strconv.Itoa(countFromZapsi-countFromSyteline) + " kusu\n"
 			EnableOkNok(writer, workplaceid, userid, orderid, operationid, data, tmpl)
@@ -131,6 +131,7 @@ func EnableClovekSerizeniStrojTransferInput(writer *http.ResponseWriter, data Ro
 		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 	}
 	_, orderNote := CheckOpenOrderForWorkplaceInZapsi(orderid, operationid, workplaceIdSplitted)
+	println("Order note: " + orderNote)
 	if orderNote == "clovek" {
 		data.ClovekDisabled = "checked"
 		data.SerizeniDisabled = "disabled"
@@ -166,7 +167,7 @@ func EnableClovekSerizeniStrojTransferInput(writer *http.ResponseWriter, data Ro
 	_ = tmpl.Execute(*writer, data)
 }
 
-func CheckOpenOrderForWorkplaceInZapsi(orderid []string, operationid []string, workplaceid []string) (interface{}, interface{}) {
+func CheckOpenOrderForWorkplaceInZapsi(orderid []string, operationid []string, workplaceid []string) (bool, string) {
 	order, suffix := ParseOrder(orderid[0])
 	operation := ParseOperation(operationid[0])
 	orderName := order + "." + suffix + "-" + operation
@@ -183,7 +184,7 @@ func CheckOpenOrderForWorkplaceInZapsi(orderid []string, operationid []string, w
 	defer db.Close()
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
 	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
-	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
+	db.Debug().Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Find(&terminalInputOrder)
 	if terminalInputOrder.OID > 0 {
 		return true, terminalInputOrder.Note
 	}
@@ -225,6 +226,7 @@ func EnableClovekSerizeniStrojTransferCloseInput(writer *http.ResponseWriter, da
 		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 	}
 	_, orderNote := CheckOpenOrderForWorkplaceInZapsi(orderid, operationid, workplaceIdSplitted)
+	println("Order note: " + orderNote)
 	if orderNote == "clovek" {
 		data.ClovekDisabled = "checked"
 		data.SerizeniDisabled = "disabled"
@@ -378,6 +380,7 @@ func EnableClovekSerizeniStrojStart(writer *http.ResponseWriter, data RostraMain
 		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 	}
 	_, orderNote := CheckOpenOrderForWorkplaceInZapsi(orderid, operationid, workplaceIdSplitted)
+	println("Order note: " + orderNote)
 	if orderNote == "clovek" {
 		data.ClovekDisabled = "checked"
 		data.SerizeniDisabled = "disabled"
@@ -541,5 +544,6 @@ func CheckAmount(inputAmount []string, sytelineWorkplace SytelineWorkplace, data
 		LogInfo("MAIN", "sytelineWorkplace.priznak_mn_3 is not one")
 		data.Message += "priznak_mn_3 neni 1\n"
 	}
+	LogInfo("MAIN", "Returning from amount check: "+strconv.FormatBool(amountCheck))
 	return amountCheck
 }

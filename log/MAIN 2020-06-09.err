@@ -1,8 +1,0 @@
-2020-06-09 12:13:46.156   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
-2020-06-09 12:13:48.356   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
-2020-06-09 12:14:57.102   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
-2020-06-09 13:11:06.010   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
-2020-06-09 13:11:07.855   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
-2020-06-09 13:11:09.394   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
-2020-06-09 13:12:15.398   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host
-2020-06-09 13:28:57.400   MAIN   ERR   Error opening db: Unable to open tcp connection with host '192.168.1.26:1433': dial tcp 192.168.1.26:1433: connect: no route to host

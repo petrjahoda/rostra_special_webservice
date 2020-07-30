@@ -1,9 +1,0 @@
-2020-05-12 10:38:52.922   MAIN   INF   Starting Zapsi Service on darwin-launchd
-2020-05-12 10:38:52.923   MAIN   INF   Server running
-2020-05-12 10:38:55.362   MAIN   INF   Displaying main screen
-2020-05-12 10:38:55.362   MAIN   INF   No workplaces, adding null workplace
-2020-05-12 10:38:55.362   MAIN   INF   No noktypes, adding null noktype
-2020-05-12 10:39:32.467   MAIN   INF   Displaying main screen
-2020-05-12 10:39:32.467   MAIN   INF   No workplaces, adding null workplace
-2020-05-12 10:39:32.468   MAIN   INF   No noktypes, adding null noktype
-2020-05-12 10:40:14.478   MAIN   INF   Stopped on platform darwin-launchd
