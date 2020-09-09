@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="TerminalProjectOptionsProvider">
-    <envs>
-      <env key="PATH" value="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/Users/PetrJahoda/go/go1.14.2/bin" />
-    </envs>
-  </component>
-</project>

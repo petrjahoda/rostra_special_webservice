@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const version = "2020.3.1.30"
+const version = "2020.3.3.9"
 const programName = "Rostra Special Web Service"
 const programDescription = "Allow users to start and end orders"
 const deleteLogsAfter = 240 * time.Hour
