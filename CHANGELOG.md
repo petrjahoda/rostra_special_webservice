@@ -14,6 +14,12 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.3.3.22] - 2020-09-22
+
+### Changed
+- when checking for fails in syteline, removing empty runes from string, causes inconsistencies
+- when checking for fails in zapsi, removing empty runes from string, causes inconsistencies
+
 ## [2020.3.3.9] - 2020-09-09
 
 ### Fixed

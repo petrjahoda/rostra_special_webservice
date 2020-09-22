@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="../css/metro-all.css">
 <link rel="stylesheet" href="../css/metro-icons.css">
-<script src="../js/metro.min.js"></script>
+<script src="../js/metro.min.js" defer></script>
 <script type="text/javascript">
     const time = new EventSource('/time');
-    time.addEventListener('time', () => {
-        document.getElementById("time").innerHTML = event.data;
+    time.addEventListener('time', (e) => {
+        document.getElementById("time").innerHTML = e.data;
 
     }, false);
 </script>

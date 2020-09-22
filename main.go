@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const version = "2020.3.3.9"
+const version = "2020.3.3.22"
 const programName = "Rostra Special Web Service"
 const programDescription = "Allow users to start and end orders"
 const deleteLogsAfter = 240 * time.Hour
@@ -28,6 +28,7 @@ func (p *program) run() {
 	router.GET("/", RostraMainScreen)
 	router.GET("/data_input", DataInput)
 	router.GET("/js/metro.min.js", metrojs)
+	router.GET("/js/metro.min.js.map", metrominjsmap)
 	router.GET("/css/metro-all.css", metrocss)
 	router.GET("/mif/metro.ttf", metrottf)
 	LogInfo("MAIN", "Server running")
@@ -67,6 +68,10 @@ func (p *program) Stop(s service.Service) error {
 
 func metrojs(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	http.ServeFile(writer, request, "js/metro.min.js")
+}
+
+func metrominjsmap(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	http.ServeFile(writer, request, "js/metro.min.js.map")
 }
 
 func metrocss(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {

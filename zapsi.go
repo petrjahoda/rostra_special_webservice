@@ -331,7 +331,7 @@ func SaveTerminalInputFail(nok []string, noktype []string, workplaceid []string,
 func CreateFailInZapsiIfNotExists(noktype []string) {
 	nokTypes := GetNokTypesFromSyteline()
 	for _, nokType := range nokTypes {
-		if nokType.Nazev == noktype[0] {
+		if strings.ReplaceAll(nokType.Nazev, " ", "") == strings.ReplaceAll(noktype[0], " ", "") {
 			var zapsiFail Fail
 			connectionString, dialect := CheckDatabaseType()
 			db, err := gorm.Open(dialect, connectionString)
@@ -546,7 +546,7 @@ func CheckIfOperatorAmountLessThanInZapsi(userAmount []string, userid []string, 
 		LogError("MAIN", "Problem parsing data from user")
 		return false
 	}
-	if okAmount < terminalInputOrder.Count {
+	if okAmount <= terminalInputOrder.Count {
 		return true
 	}
 	return false

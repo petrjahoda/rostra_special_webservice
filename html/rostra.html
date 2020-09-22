@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <link rel="stylesheet" href="../css/metro-all.css">
-<script src="../js/metro.min.js"></script>
+<script src="../js/metro.min.js" defer></script>
 
 <body style="min-width: 1280px;">
 <div style="position:absolute;font-size: 10px;color: red;font-weight: 500;top:95px;left: 10px">
@@ -16,8 +16,10 @@
     <form action="/data_input">
         <div class="row {{.UserDisabled}}" style="padding: 30px 5px 5px;">
             <div class="cell-9">
-                <input {{.UserFocus}} type="text" data-role="input" data-prepend="<span class='mif-user'></span>"
-                                      placeholder="{{.Username}}" name="userid" data-default-value="{{.UsernameValue}}">
+                <label>
+                    <input type="text" data-role="input" data-prepend="<span class='mif-user'></span>"
+                                          placeholder="{{.Username}}" name="userid" data-default-value="{{.UsernameValue}}" {{.UserFocus}}>
+                </label>
             </div>
             <div class="cell-3">
                 <input style="width: 100%" class="button primary {{.UserDisabled}}" type="submit"
@@ -26,8 +28,10 @@
         </div>
         <div class="row {{.OrderDisabled}}" style="padding: 5px">
             <div class="cell-9">
-                <input {{.OrderFocus}} type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>"
-                                       placeholder="{{.Order}}" name="orderid" data-default-value="{{.OrderValue}}">
+                <label>
+                    <input type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>"
+                                           placeholder="{{.Order}}" name="orderid" data-default-value="{{.OrderValue}}" {{.OrderFocus}}>
+                </label>
             </div>
             <div class="cell-3">
                 <input style="width: 100%" class="button primary {{.OrderDisabled}}" type="submit"
@@ -36,9 +40,11 @@
         </div>
         <div class="row {{.OperationDisabled}}" style="padding: 5px">
             <div class="cell-9">
-                <input {{.OperationFocus}} type="text" data-role="input" data-prepend="<span class='mif-lines'></span>"
-                                           placeholder="{{.Operation}}" name="operationid"
-                                           data-default-value="{{.OperationValue}}">
+                <label>
+                    <input type="text" data-role="input" data-prepend="<span class='mif-lines'></span>"
+                                               placeholder="{{.Operation}}" name="operationid"
+                                               data-default-value="{{.OperationValue}}" {{.OperationFocus}}>
+                </label>
             </div>
             <div class="cell-3">
                 <input style="width: 100%" class="button primary {{.OperationDisabled}}" type="submit"
@@ -47,12 +53,14 @@
         </div>
         <div class="row {{.WorkplaceDisabled}}" style="padding: 5px">
             <div class="cell-9">
-                <select {{.WorkplaceFocus}} data-role="select" data-prepend="<span class='mif-home'></span>"
-                                            placeholder="{{.Workplace}}" name="workplaceid">
-                    {{range .Workplaces}}
-                        <option>{{.Zapsi_zdroj}}</option>
-                    {{end}}
-                </select>
+                <label>
+                    <select data-role="select" data-prepend="<span class='mif-home'></span>"
+                                                placeholder="{{.Workplace}}" name="workplaceid" {{.WorkplaceFocus}}>
+                        {{range .Workplaces}}
+                            <option>{{.Zapsi_zdroj}}</option>
+                        {{end}}
+                    </select>
+                </label>
             </div>
             <div class="cell-3">
                 <input style="width: 100%" class="button primary {{.WorkplaceDisabled}}"
@@ -62,25 +70,31 @@
 
         <div class="row {{.OkDisabled}}" style="padding: 5px">
             <div class="cell-5">
-                <input {{.OkFocus}} type="text" data-role="input"
-                                    data-prepend="<span class='mif-checkmark'></span>"
-                                    placeholder="{{.Ok}}" name="ok" data-default-value="{{.OkValue}}">
+                <label>
+                    <input type="text" data-role="input"
+                                        data-prepend="<span class='mif-checkmark'></span>"
+                                        placeholder="{{.Ok}}" name="ok" data-default-value="{{.OkValue}}" {{.OkFocus}}>
+                </label>
             </div>
             <div class="cell-4">
             </div>
         </div>
         <div class="row {{.NokDisabled}}" style="padding: 5px">
             <div class="cell-5">
-                <input {{.NokFocus}} type="text" data-role="input" data-prepend="<span class='mif-cross'></span>"
-                                     placeholder="{{.Nok}}" name="nok" data-default-value="{{.NokValue}}">
+                <label>
+                    <input type="text" data-role="input" data-prepend="<span class='mif-cross'></span>"
+                                         placeholder="{{.Nok}}" name="nok" data-default-value="{{.NokValue}}" {{.NokFocus}}>
+                </label>
             </div>
             <div class="cell-4">
-                <select {{.NokFocus}} data-role="select" data-prepend="<span class='mif-list'></span>"
-                                      placeholder="{{.Nok}}" name="noktype">
-                    {{range .NokTypes}}
-                        <option>{{.Nazev}}</option>
-                    {{end}}
-                </select>
+                <label>
+                    <select data-role="select" data-prepend="<span class='mif-list'></span>"
+                                          placeholder="{{.Nok}}" name="noktype" {{.NokFocus}}>
+                        {{range .NokTypes}}
+                            <option>{{.Nazev}}</option>
+                        {{end}}
+                    </select>
+                </label>
             </div>
             <div class="cell-3">
                 <input style="width: 100%" class="button primary {{.OkDisabled}}" name="checkok" type="submit"
@@ -91,13 +105,19 @@
 
         <div class="row" {{.RadioDisabled}}>
             <div class="cell-4">
-                <input {{.ClovekDisabled}} name="syteline" type="radio" data-role="radio" value="clovek">Člověk
+                <label>
+                    <input {{.ClovekDisabled}} name="syteline" type="radio" data-role="radio" value="clovek">
+                </label>Člověk
             </div>
             <div class="cell-4">
-                <input {{.SerizeniDisabled}} name="syteline" type="radio" data-role="radio" value="serizeni">Seřízení
+                <label>
+                    <input {{.SerizeniDisabled}} name="syteline" type="radio" data-role="radio" value="serizeni">
+                </label>Seřízení
             </div>
             <div class="cell-4">
-                <input {{.StrojDisabled}} name="syteline" type="radio" data-role="radio" value="stroj">Stroj
+                <label>
+                    <input {{.StrojDisabled}} name="syteline" type="radio" data-role="radio" value="stroj">
+                </label>Stroj
             </div>
         </div>
         <br>

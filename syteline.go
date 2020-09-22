@@ -151,7 +151,7 @@ func TransferNokRecordToSyteline(nok []string, noktype []string, userCode string
 		nokTypes := GetNokTypesFromSyteline()
 		failCodeToInsert := "0"
 		for _, nokType := range nokTypes {
-			if nokType.Nazev == noktype[0] {
+			if strings.ReplaceAll(nokType.Nazev, " ", "") == strings.ReplaceAll(noktype[0], " ", "") {
 				failCodeToInsert = nokType.Kod
 				continue
 			}

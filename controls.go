@@ -508,7 +508,7 @@ func CheckAmount(inputAmount []string, sytelineWorkplace SytelineWorkplace, data
 		if err != nil {
 			LogError("MAIN", "Problem parsing mn_2_ks: "+sytelineOperation.mn_2_ks+", "+err.Error())
 		}
-		if parsedFromInput < int(parsedFromSyteline) {
+		if parsedFromInput <= int(parsedFromSyteline) {
 			LogInfo("MAIN", "ok from user is less than mn_2_ks")
 			data.Message += "uzivatel zadal mene kusu nez je v mn_2_ks, coz je spravne\n"
 		} else {
@@ -531,7 +531,7 @@ func CheckAmount(inputAmount []string, sytelineWorkplace SytelineWorkplace, data
 		if err != nil {
 			LogError("MAIN", "Problem parsing mn_2_ks: "+sytelineOperation.mn_3_ks+", "+err.Error())
 		}
-		if parsedFromInput < int(parsedFromSyteline) {
+		if parsedFromInput <= int(parsedFromSyteline) {
 			LogInfo("MAIN", "ok from user is less than mn_3_ks")
 			data.Message += "uzivatel zadal mene kusu nez je v mn_3_ks, coz je spravne\n"
 		} else {
