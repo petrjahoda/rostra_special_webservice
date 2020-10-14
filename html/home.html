@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="/css/metro-all.css">
+<script src="/js/metro.min.js" defer></script>
+<script src="/js/zapsi.js" defer></script>
+<body style="min-width: 1400px;">
+<div class="grid">
+    <div class="row" style="margin-left: 5px;margin-top: 30px">
+        <div class="cell">
+            <button class="button primary" style="width: 100%" id="reset-button">Reset</button>
+        </div>
+        <div class="cell-3"></div>
+        <div class="cell-4">
+            <input type="text" data-role="input" data-prepend="<span class='mif-user'></span>" id="user-input"
+                   placeholder="Zadejte osobní číslo" name="userid" autofocus>
+        </div>
+        <div class="cell">
+            <button class="button primary" style="width: 100%" id="user-ok-button">Potvrdit</button>
+        </div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+    <div class="row" style="margin-left: 5px;margin-top: 5px">
+        <div class="cell-3"></div>
+        <div class="cell">
+            <button disabled class="button primary" style="width: 100%" id="order-back-button">Zpět</button>
+        </div>
+        <div class="cell-4">
+            <input disabled type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>" id="order-input">
+        </div>
+        <div class="cell">
+            <button disabled class="button primary" style="width: 100%" id="order-ok-button">Potvrdit</button>
+        </div>
+        <div class="cell-3"></div>
+    </div>
+    <div class="row" style="margin-left: 5px;margin-top: 5px">
+        <div class="cell-3"></div>
+        <div class="cell">
+            <button disabled class="button primary" style="width: 100%" id="operation-back-button">Zpět</button>
+        </div>
+        <div class="cell-4">
+            <input disabled type="text" data-role="input" data-prepend="<span class='mif-lines'></span>" id="operation-input">
+        </div>
+        <div class="cell">
+            <button disabled class="button primary" style="width: 100%" id="operation-ok-button">Potvrdit</button>
+        </div>
+        <div class="cell-3"></div>
+    </div>
+    <div class="row" style="margin-left: 5px;margin-top: 5px">
+        <div class="cell-3"></div>
+        <div class="cell">
+            <button class="button primary" style="width: 100%" id="workplace-back-button">Zpět</button>
+        </div>
+        <div class="cell-4">
+            <select data-role="select" data-prepend="<span class='mif-home'></span>" id="workplace-select">
+                <option></option>
+            </select>
+        </div>
+        <div class="cell">
+            <button class="button primary" style="width: 100%" id="workplace-ok-button">Potvrdit</button>
+        </div>
+        <div class="cell-3"></div>
+    </div>
+    <div class="row" style="margin-left: 5px;margin-top: 5px">
+        <div class="cell-3"></div>
+        <div class="cell">
+            <button class="button primary" style="width: 100%" id="count-back-button">Zpět</button>
+        </div>
+        <div class="cell-2">
+            <input type="text" data-role="input" data-prepend="<span class='mif-checkmark'></span>" id="count-ok-input">
+        </div>
+        <div class="cell-6"></div>
+    </div>
+    <div class="row" style="margin-left: 5px;margin-top: 5px">
+        <div class="cell-4"></div>
+        <div class="cell-2">
+            <input type="text" data-role="input" data-prepend="<span class='mif-cross'></span>" id="count-nok-input">
+        </div>
+        <div class="cell-2">
+            <select data-role="select" data-prepend="<span class='mif-list'></span>" id="nok-type-select">
+                <option></option>
+            </select>
+        </div>
+        <div class="cell">
+            <button class="button primary" style="width: 100%" id="count-button">Potvrdit</button>
+        </div>
+        <div class="cell-3"></div>
+    </div>
+    <div class="row" style="margin-top: 30px">
+        <div class="cell-3"></div>
+        <div class="cell-2">
+            <div style="text-align: center">
+                <input name="syteline" type="radio" data-role="radio" id="clovek-radio" data-caption="Člověk">
+            </div>
+        </div>
+        <div class="cell-2">
+            <div style="text-align: center">
+                <input name="syteline" type="radio" data-role="radio" id="serizeni-radio" data-caption="Seřízení">
+            </div>
+        </div>
+        <div class="cell-2">
+            <div style="text-align: center">
+                <input name="syteline" type="radio" data-role="radio" id="stroj-radio" data-caption="Stroj">
+            </div>
+        </div>
+        <div class="cell-3"></div>
+    </div>
+
+    <div class="row" style="margin-top: 30px">
+        <div class="cell-3"></div>
+        <div class="cell-2">
+            <input style="width: 100%;height: 50px;font-weight: bold" class="button success " type="submit"
+                   id="start-order-button" value="Začátek"/>
+        </div>
+        <div class="cell-2">
+            <input style="width: 100%;height: 50px;font-weight: bold" class="button alert " type="submit"
+                   id="end-order-button" value="Konec"/>
+        </div>
+        <div class="cell-2">
+            <input style="width: 100%;height: 50px;font-weight: bold" class="button dark " type="submit"
+                   id="transfer-order-button" value="Přenos"/>
+        </div>
+        <div class="cell-3"></div>
+    </div>
+    <div class="row" style="margin-top: 30px">
+        <table class="table" id="table">
+            <thead>
+            <tr>
+                <th>Kód</th>
+                <th>Zakázka</th>
+                <th>Produkt</th>
+                <th>Pracoviště</th>
+                <th>Začátek</th>
+                <th>Plán</th>
+                <th>Vyrobeno celkem</th>
+                <th>Vyrobeno na zakázce</th>
+                <th>Odvedeno celkem</th>
+                <th>Odvedeno na zakázce</th>
+                <th>Zbývá odvést</th>
+                <th>Nok celkem</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="text"
+     style="position:absolute;font-size: 1vw;font-weight: 100;bottom:2%;right:1%">
+    {{.Version}}
+</div>
+<div class="text-leader"
+     style="position:absolute;font-size: 1.5vw;font-weight: 500;bottom:1%;left:50%;transform: translate(-50%);">
+    www.zapsi.eu
+</div>
+<div class="text-leader"
+     style="position:absolute;font-size: 1.5vw;font-weight: 500;bottom:5%;left:50%;transform: translate(-50%);">
+    <p id="error-info-panel"></p>
+</div>
+</body>
+

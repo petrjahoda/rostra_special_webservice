@@ -4,80 +4,62 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"github.com/kardianos/service"
 	"net/http"
-	"time"
+	"os"
 )
 
-const version = "2020.3.3.22"
-const programName = "Rostra Special Web Service"
-const programDescription = "Allow users to start and end orders"
-const deleteLogsAfter = 240 * time.Hour
+const version = "2020.4.1.14"
+const serviceName = "Rostra Special Web Service"
+const serviceDescription = "Rostra Special Web Service"
+const zapsiDatabaseConnection = "zapsi_uzivatel:zapsi@tcp(zapsidatabase:3306)/zapsi2?charset=utf8mb4&parseTime=True&loc=Local"
+const sytelineDatabaseConnection = "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test"
 
 type program struct{}
 
 func (p *program) Start(s service.Service) error {
-	LogInfo("MAIN", "Starting "+programName+" on "+s.Platform())
+	logInfo("MAIN", serviceName+" ["+version+"] started")
 	go p.run()
 	return nil
 }
 
-func (p *program) run() {
-	LogDirectoryFileCheck("MAIN")
-	CreateConfigIfNotExists()
-	LoadSettingsFromConfigFile()
-	router := httprouter.New()
-	router.GET("/", RostraMainScreen)
-	router.GET("/data_input", DataInput)
-	router.GET("/js/metro.min.js", metrojs)
-	router.GET("/js/metro.min.js.map", metrominjsmap)
-	router.GET("/css/metro-all.css", metrocss)
-	router.GET("/mif/metro.ttf", metrottf)
-	LogInfo("MAIN", "Server running")
-	go DeleteLogs()
-	_ = http.ListenAndServe(":80", router)
-}
-
-func DeleteLogs() {
-	for {
-		LogInfo("MAIN", "Deleting old log files")
-		DeleteOldLogFiles()
-		time.Sleep(24 * time.Hour)
-	}
+func (p *program) Stop(s service.Service) error {
+	logInfo("MAIN", serviceName+" ["+version+"] stopped")
+	return nil
 }
 
 func main() {
+	logInfo("MAIN", serviceName+" ["+version+"] starting...")
 	serviceConfig := &service.Config{
-		Name:        programName,
-		DisplayName: programName,
-		Description: programDescription,
+		Name:        serviceName,
+		DisplayName: serviceName,
+		Description: serviceDescription,
 	}
 	prg := &program{}
 	s, err := service.New(prg, serviceConfig)
 	if err != nil {
-		LogError("MAIN", err.Error())
+		logError("MAIN", "Cannot start: "+err.Error())
 	}
 	err = s.Run()
 	if err != nil {
-		LogError("MAIN", "Problem starting "+serviceConfig.Name)
+		logError("MAIN", "Cannot start: "+err.Error())
 	}
 }
 
-func (p *program) Stop(s service.Service) error {
-	LogInfo("MAIN", "Stopped on platform "+s.Platform())
-	return nil
-}
+func (p *program) run() {
+	router := httprouter.New()
+	router.ServeFiles("/js/*filepath", http.Dir("js"))
+	router.ServeFiles("/html/*filepath", http.Dir("html"))
+	router.ServeFiles("/css/*filepath", http.Dir("css"))
+	router.ServeFiles("/mif/*filepath", http.Dir("mif"))
 
-func metrojs(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	http.ServeFile(writer, request, "js/metro.min.js")
-}
+	router.GET("/", home)
 
-func metrominjsmap(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	http.ServeFile(writer, request, "js/metro.min.js.map")
-}
+	router.POST("/check_user_input", checkUserInput)
+	router.POST("/check_order_input", checkOrderInput)
 
-func metrocss(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	http.ServeFile(writer, request, "css/metro-all.css")
-}
-
-func metrottf(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	http.ServeFile(writer, request, "mif/metro.ttf")
+	err := http.ListenAndServe(":80", router)
+	if err != nil {
+		logError("MAIN", "Problem starting service: "+err.Error())
+		os.Exit(-1)
+	}
+	logInfo("MAIN", serviceName+" ["+version+"] running")
 }

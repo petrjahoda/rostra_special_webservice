@@ -14,6 +14,12 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.4.1.14] - 2020-10-14
+
+### Changed
+- html completely new
+- new communication when checking for user and order
+
 ## [2020.3.3.22] - 2020-09-22
 
 ### Changed

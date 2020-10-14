@@ -35,7 +35,8 @@ func (zapsi_trans) TableName() string {
 
 type SytelineUser struct {
 	JePlatny string
-	Jmeno    string
+	Jmeno    sql.NullString
+	Chyba    sql.NullString
 }
 
 type SytelineOrder struct {
@@ -183,17 +184,4 @@ type Device struct {
 
 func (Device) TableName() string {
 	return "device"
-}
-
-func CheckDatabaseType() (string, string) {
-	var connectionString string
-	var dialect string
-	if DatabaseType == "postgres" {
-		connectionString = "host=" + DatabaseIpAddress + " sslmode=disable port=" + DatabasePort + " user=" + DatabaseLogin + " dbname=" + DatabaseName + " password=" + DatabasePassword
-		dialect = "postgres"
-	} else if DatabaseType == "mysql" {
-		connectionString = DatabaseLogin + ":" + DatabasePassword + "@tcp(" + DatabaseIpAddress + ":" + DatabasePort + ")/" + DatabaseName + "?charset=utf8&parseTime=True&loc=Local"
-		dialect = "mysql"
-	}
-	return connectionString, dialect
 }
