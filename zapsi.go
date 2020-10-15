@@ -16,7 +16,7 @@ package main
 //	orderName := order + "." + suffix + "-" + operation
 //	var zapsiUser User
 //	var zapsiOrder Order
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var thisOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)
@@ -81,7 +81,7 @@ package main
 //
 //	var device Device
 //	db.Where("OID = ?", terminalInputOrder.DeviceID).Find(&device)
-//	var workplace Workplace
+//	var workplace Workplaces
 //	db.Where("DeviceID = ?", device.OID).Find(&workplace)
 //	displayOrder.WorkplaceName = workplace.Name
 //
@@ -142,7 +142,7 @@ package main
 //		LogError("MAIN", "Problem opening "+DatabaseName+" database: "+err.Error())
 //	}
 //	defer db.Close()
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 //	var device Device
 //	db.Where("OID = ?", zapsiWorkplace.DeviceID).Find(&device)
@@ -156,7 +156,7 @@ package main
 //		return 1
 //	}
 //	defer db.Close()
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 //	var device Device
 //	db.Where("OID = ?", zapsiWorkplace.DeviceID).Find(&device)
@@ -173,7 +173,7 @@ package main
 //		return 1
 //	}
 //	defer db.Close()
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 //	var device Device
 //	db.Where("OID = ?", zapsiWorkplace.DeviceID).Find(&device)
@@ -192,7 +192,7 @@ package main
 //	orderName := order + "." + suffix + "-" + operation
 //	var zapsiUser User
 //	var zapsiOrder Order
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var thisOrder TerminalInputOrder
 //	var thisUser TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
@@ -222,7 +222,7 @@ package main
 //		return workplace.Zapsi_zdroj
 //	}
 //	defer db.Close()
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	db.Where("Code = ?", workplace.Zapsi_zdroj).Find(&zapsiWorkplace)
 //	LogInfo("MAIN", "Updated to: "+workplace.Zapsi_zdroj+";"+zapsiWorkplace.Name)
 //	return workplace.Zapsi_zdroj + ";" + zapsiWorkplace.Name
@@ -235,7 +235,7 @@ package main
 //	orderName := order + "." + suffix + "-" + operation
 //	var zapsiUser User
 //	var zapsiOrder Order
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var terminalInputOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)
@@ -300,7 +300,7 @@ package main
 //	userLogin := strings.Split(userid[0], ";")[0]
 //	var zapsiFail Fail
 //	var terminalInputFail TerminalInputFail
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var zapsiUser User
 //
 //	pcs, err := strconv.Atoi(nok[0])
@@ -362,7 +362,7 @@ package main
 //func CreateAndCloseTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOperation SytelineOperation, workplaceid []string, ok []string, nok []string) bool {
 //	userLogin := strings.Split(userid[0], ";")[0]
 //	var zapsiUser User
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)
 //	if err != nil {
@@ -423,7 +423,7 @@ package main
 //		return false
 //	}
 //	var zapsiUser User
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var terminalInputOrder TerminalInputOrder
 //	var existingTerminalInputOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
@@ -464,7 +464,7 @@ package main
 //	var zapsiOrder Order
 //	var newOrder Order
 //	var zapsiProduct Product
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	order, suffix := ParseOrder(orderid[0])
 //	operation := ParseOperation(operationid[0])
 //	zapsiOrderName := order + "." + suffix + "-" + operation
@@ -529,7 +529,7 @@ package main
 //	orderName := order + "." + suffix + "-" + operationid[0]
 //	var zapsiUser User
 //	var zapsiOrder Order
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var terminalInputOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)
@@ -562,7 +562,7 @@ package main
 //		return false
 //	}
 //	defer db.Close()
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 //	db.Where("DTE is null").Find(&terminalInputOrders)
 //	for _, terminalInputOrder := range terminalInputOrders {
@@ -584,7 +584,7 @@ package main
 //	orderName := order + "." + suffix + "-" + operation
 //	var zapsiUser User
 //	var zapsiOrder Order
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var terminalInputOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)
@@ -605,7 +605,7 @@ package main
 //}
 //
 //func CheckAnyOpenOrderInZapsi(workplaceid []string) bool {
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var terminalInputOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)

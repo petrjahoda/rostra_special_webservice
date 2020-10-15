@@ -2,15 +2,22 @@
 <link rel="stylesheet" href="/css/metro-all.css">
 <script src="/js/metro.min.js" defer></script>
 <script src="/js/zapsi.js" defer></script>
+<script src="/js/user.js" defer></script>
+<script src="/js/order.js" defer></script>
+<script src="/js/operation.js" defer></script>
+<script src="/js/workplace.js" defer></script>
 <body style="min-width: 1400px;">
 <div class="grid">
-    <div class="row" style="margin-left: 5px;margin-top: 30px">
+    <div class="row" style="margin-left: 5px;margin-top: 10px">
         <div class="cell">
             <button class="button primary" style="width: 100%" id="reset-button">Reset</button>
         </div>
-        <div class="cell-3"></div>
+        <div class="cell-11"></div>
+    </div>
+    <div class="row" style="margin-left: 5px;margin-top: 5px" id="user-row">
+        <div class="cell-4"></div>
         <div class="cell-4">
-            <input type="text" data-role="input" data-prepend="<span class='mif-user'></span>" id="user-input"
+            <input type="text" data-role="input" id="user-input" data-prepend="<span class='mif-user'></span>"
                    placeholder="Zadejte osobní číslo" name="userid" autofocus>
         </div>
         <div class="cell">
@@ -20,40 +27,40 @@
         <div class="cell"></div>
         <div class="cell"></div>
     </div>
-    <div class="row" style="margin-left: 5px;margin-top: 5px">
+    <div class="row disabled" style="margin-left: 5px;margin-top: 5px" id="order-row">
         <div class="cell-3"></div>
         <div class="cell">
-            <button disabled class="button primary" style="width: 100%" id="order-back-button">Zpět</button>
+            <button class="button primary" style="width: 100%" id="order-back-button">Zpět</button>
         </div>
         <div class="cell-4">
-            <input disabled type="text" data-role="input" data-prepend="<span class='mif-open-book'></span>" id="order-input">
+            <input type="text" data-role="input" id="order-input" data-prepend="<span class='mif-open-book'></span>">
         </div>
         <div class="cell">
-            <button disabled class="button primary" style="width: 100%" id="order-ok-button">Potvrdit</button>
+            <button class="button primary" style="width: 100%" id="order-ok-button">Potvrdit</button>
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row" style="margin-left: 5px;margin-top: 5px">
+    <div class="row disabled" style="margin-left: 5px;margin-top: 5px" id="operation-row">
         <div class="cell-3"></div>
         <div class="cell">
-            <button disabled class="button primary" style="width: 100%" id="operation-back-button">Zpět</button>
+            <button class="button primary" style="width: 100%" id="operation-back-button">Zpět</button>
         </div>
         <div class="cell-4">
-            <input disabled type="text" data-role="input" data-prepend="<span class='mif-lines'></span>" id="operation-input">
+            <select data-role="select" data-prepend="<span class='mif-lines'></span>" id="operation-select">
+            </select>
         </div>
         <div class="cell">
-            <button disabled class="button primary" style="width: 100%" id="operation-ok-button">Potvrdit</button>
+            <button class="button primary" style="width: 100%" id="operation-ok-button">Potvrdit</button>
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row" style="margin-left: 5px;margin-top: 5px">
+    <div class="row" style="margin-left: 5px;margin-top: 5px" id="workplace-row">
         <div class="cell-3"></div>
         <div class="cell">
             <button class="button primary" style="width: 100%" id="workplace-back-button">Zpět</button>
         </div>
         <div class="cell-4">
-            <select data-role="select" data-prepend="<span class='mif-home'></span>" id="workplace-select">
-                <option></option>
+            <select data-role="select" id="workplace-select" data-prepend="<span class='mif-home'></span>">
             </select>
         </div>
         <div class="cell">
@@ -67,17 +74,17 @@
             <button class="button primary" style="width: 100%" id="count-back-button">Zpět</button>
         </div>
         <div class="cell-2">
-            <input type="text" data-role="input" data-prepend="<span class='mif-checkmark'></span>" id="count-ok-input">
+            <input type="text" data-role="input" id="count-ok-input" data-prepend="<span class='mif-checkmark'></span>">
         </div>
         <div class="cell-6"></div>
     </div>
     <div class="row" style="margin-left: 5px;margin-top: 5px">
         <div class="cell-4"></div>
         <div class="cell-2">
-            <input type="text" data-role="input" data-prepend="<span class='mif-cross'></span>" id="count-nok-input">
+            <input type="text" data-role="input" id="count-nok-input" data-prepend="<span class='mif-cross'></span>">
         </div>
         <div class="cell-2">
-            <select data-role="select" data-prepend="<span class='mif-list'></span>" id="nok-type-select">
+            <select data-role="select" id="nok-type-select" data-prepend="<span class='mif-list'></span>">
                 <option></option>
             </select>
         </div>

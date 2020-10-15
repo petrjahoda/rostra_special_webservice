@@ -20,6 +20,7 @@ type OrderResponseData struct {
 	OrderName  string
 	OrderId    string
 	OrderError string
+	Operations []OperationList
 }
 
 func checkOrderInput(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -40,20 +41,20 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, params h
 	logInfo("Check order", "Data: "+data.OrderInput)
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check user", "Problem opening database: "+err.Error())
+		logError("Check order", "Problem opening database: "+err.Error())
 		var responseData OrderResponseData
 		responseData.Result = "nok"
 		responseData.OrderInput = data.OrderInput
 		responseData.OrderError = "Problem connecting Syteline database: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check user", "Ended with error")
+		logInfo("Check order", "Ended with error")
 		return
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
 	order, suffix := ParseOrder(data.OrderInput)
-	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		logError("Check order", "Error: "+err.Error())
@@ -63,7 +64,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, params h
 		responseData.OrderError = "Problem getting data from syteline: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check user", "Ended with error")
+		logInfo("Check order", "Ended with error")
 		return
 	}
 	defer rows.Close()
@@ -75,11 +76,36 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, params h
 		}
 	}
 	if len(sytelineOrder.CisloVp) > 0 {
-		logInfo("Check order", "Order found: "+data.OrderInput)
+		logInfo("Check order", "Order found: "+data.OrderInput+", getting list of operations ")
+
+		command := "declare @CisloVP JobType, @PriponaVP SuffixType select @CisloVP = N'3VP0014981', @PriponaVP = 0 exec [rostra_exports_test].dbo.ZapsiOperaceVpSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP;\n"
+		rows, err := db.Raw(command).Rows()
+		if err != nil {
+			logError("Check order", "Error: "+err.Error())
+			var responseData OrderResponseData
+			responseData.Result = "nok"
+			responseData.OrderInput = data.OrderInput
+			responseData.OrderError = "Problem getting data from syteline: " + err.Error()
+			writer.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(writer).Encode(responseData)
+			logInfo("Check order", "Ended with error")
+			return
+		}
+		var operationList []OperationList
+		for rows.Next() {
+			var operation OperationList
+			err = rows.Scan(&operation.Operce, &operation.Pracoviste, &operation.PracovistePopis)
+			if err != nil {
+				logError("Check order", "Error: "+err.Error())
+			}
+			operationList = append(operationList, operation)
+		}
+		logInfo("Check order", "Scanned: "+strconv.Itoa(len(operationList))+" operations")
 		var responseData OrderResponseData
 		responseData.Result = "ok"
 		responseData.OrderInput = order + "." + suffix
 		responseData.OrderName = sytelineOrder.PolozkaVp + " " + sytelineOrder.PopisPolVp
+		responseData.Operations = operationList
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
 		return
@@ -91,7 +117,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, params h
 		responseData.OrderError = "Výrobní příkaz " + data.OrderInput + " neexistuje, zopakujte zadání"
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check user", "Ended with error")
+		logInfo("Check order", "Ended with error")
 		return
 	}
 }
@@ -103,7 +129,7 @@ func ParseOrder(orderId string) (string, string) {
 			splittedOrder := strings.Split(splitted[0], "-")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
@@ -111,7 +137,7 @@ func ParseOrder(orderId string) (string, string) {
 			splittedOrder := strings.Split(splitted[0], ".")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
@@ -121,7 +147,7 @@ func ParseOrder(orderId string) (string, string) {
 			splittedOrder := strings.Split(orderId, "-")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
@@ -129,7 +155,7 @@ func ParseOrder(orderId string) (string, string) {
 			splittedOrder := strings.Split(orderId, ".")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("MAIN", "Problem converting suffix: "+splittedOrder[1])
+				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)

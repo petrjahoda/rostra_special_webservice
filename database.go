@@ -8,6 +8,12 @@ import (
 	"time"
 )
 
+type OperationList struct {
+	Operce          string `gorm:"column:operce"`
+	Pracoviste      string `gorm:"column:pracoviste"`
+	PracovistePopis string `gorm:"column:pracoviste_popis"`
+}
+
 type zapsi_trans struct {
 	Trans_num       float64      `gorm:"column:trans_num"`
 	Posted          int          `gorm:"column:posted"`
@@ -34,9 +40,9 @@ func (zapsi_trans) TableName() string {
 }
 
 type SytelineUser struct {
-	JePlatny string
-	Jmeno    sql.NullString
-	Chyba    sql.NullString
+	JePlatny string         `gorm:"column:JePlatny"`
+	Jmeno    sql.NullString `gorm:"column:Jmeno"`
+	Chyba    sql.NullString `gorm:"column:Chyba"`
 }
 
 type SytelineOrder struct {
@@ -59,7 +65,7 @@ type SytelineOperation struct {
 	priznak_nasobnost   string
 	nasobnost           string
 	parovy_dil          string
-	seznamm_par_dilu    string
+	seznamm_par_dilu    sql.NullString
 }
 
 type SytelineWorkplace struct {

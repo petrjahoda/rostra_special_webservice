@@ -28,7 +28,7 @@ package main
 //	Username  string
 //	Order     string
 //	Operation string
-//	Workplace string
+//	Workplaces string
 //	Ok        string
 //	Nok       string
 //	Message   string
@@ -228,7 +228,7 @@ package main
 //		OrderValue:          "",
 //		Operation:           "",
 //		OperationValue:      "",
-//		Workplace:           "",
+//		Workplaces:           "",
 //		Ok:                  "",
 //		Nok:                 "",
 //		OkValue:             "",

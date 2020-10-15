@@ -173,7 +173,7 @@ package main
 //	operation := ParseOperation(operationid[0])
 //	orderName := order + "." + suffix + "-" + operation
 //	var zapsiOrder Order
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var terminalInputOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)

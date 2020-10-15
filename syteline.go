@@ -27,7 +27,7 @@ package main
 //	db.Where("Login = ?", userLogin).Find(&user)
 //	var zapsiOrder Order
 //	db.Where("Name = ?", orderName).Find(&zapsiOrder)
-//	var workplace Workplace
+//	var workplace Workplaces
 //	db.Where("Code = ?", workplaceid[0]).Find(&workplace)
 //	var device Device
 //	db.Where("OID = ?", workplace.DeviceID).Find(&device)
@@ -109,7 +109,7 @@ package main
 //	orderName := order + "." + suffix + "-" + operation
 //	var zapsiUser User
 //	var zapsiOrder Order
-//	var zapsiWorkplace Workplace
+//	var zapsiWorkplace Workplaces
 //	var terminalInputOrder TerminalInputOrder
 //	connectionString, dialect := CheckDatabaseType()
 //	db, err := gorm.Open(dialect, connectionString)

@@ -54,7 +54,7 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, params ht
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
 	var sytelineUser SytelineUser
-	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType, @Chyba NameType Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + data.UserInput + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output, @Chyba = @Chyba output select JePlatny = @JePlatny, Jmeno = @Jmeno, Chyba = @Chyba"
+	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType, @Chyba Infobar  Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + data.UserInput + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output, @Chyba = @Chyba output select JePlatny = @JePlatny, Jmeno = @Jmeno, Chyba = @Chyba;\n"
 	db.Raw(command).Scan(&sytelineUser)
 	if sytelineUser.JePlatny == "1" {
 		logInfo("Check user", "User found: "+data.UserInput)
@@ -74,7 +74,7 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, params ht
 		var responseData UserResponseData
 		responseData.Result = "nok"
 		responseData.UserInput = data.UserInput
-		responseData.UserError = "Zaměstnanec " + data.UserInput + " neexistuje, zopakujte zadání"
+		responseData.UserError = sytelineUser.Chyba.String
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
 		logInfo("Check user", "Ended successfully with no user found")
