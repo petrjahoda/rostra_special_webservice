@@ -9,30 +9,30 @@ import (
 )
 
 type OperationList struct {
-	Operce          string `gorm:"column:operce"`
+	Operace         string `gorm:"column:operce"`
 	Pracoviste      string `gorm:"column:pracoviste"`
 	PracovistePopis string `gorm:"column:pracoviste_popis"`
 }
 
 type zapsi_trans struct {
-	Trans_num       float64      `gorm:"column:trans_num"`
-	Posted          int          `gorm:"column:posted"`
-	Trans_date      sql.NullTime `gorm:"column:trans_date"`
-	Emp_num         string       `gorm:"column:emp_num"`
-	Trans_type      string       `gorm:"column:trans_type"`
-	Job             string       `gorm:"column:job"`
-	Suffix          int          `gorm:"column:suffix"`
-	Oper_num        int          `gorm:"column:oper_num"`
-	Wc              string       `gorm:"column:wc"`
-	Qty_complete    float64      `gorm:"column:qty_complete"`
-	Qty_scrapped    float64      `gorm:"column:qty_scrapped"`
-	Lot             string       `gorm:"column:lot"`
-	Start_date_time sql.NullTime `gorm:"column:start_date_time"`
-	End_date_time   sql.NullTime `gorm:"column:end_date_time"`
-	Complete_op     int          `gorm:"column:complete_op"`
-	Shift           string       `gorm:"column:shift"`
-	Reason_code     string       `gorm:"column:reacon_code"`
-	Time_divisor    float64      `gorm:"column:time_divisor"`
+	TransNum      float64      `gorm:"column:trans_num"`
+	Posted        int          `gorm:"column:posted"`
+	TransDate     sql.NullTime `gorm:"column:trans_date"`
+	EmpNum        string       `gorm:"column:emp_num"`
+	TransType     string       `gorm:"column:trans_type"`
+	Job           string       `gorm:"column:job"`
+	Suffix        int          `gorm:"column:suffix"`
+	OperNum       int          `gorm:"column:oper_num"`
+	Wc            string       `gorm:"column:wc"`
+	QtyComplete   float64      `gorm:"column:qty_complete"`
+	QtyScrapped   float64      `gorm:"column:qty_scrapped"`
+	Lot           string       `gorm:"column:lot"`
+	StartDateTime sql.NullTime `gorm:"column:start_date_time"`
+	EndDateTime   sql.NullTime `gorm:"column:end_date_time"`
+	CompleteOp    int          `gorm:"column:complete_op"`
+	Shift         string       `gorm:"column:shift"`
+	ReasonCode    string       `gorm:"column:reacon_code"`
+	TimeDivisor   float64      `gorm:"column:time_divisor"`
 }
 
 func (zapsi_trans) TableName() string {
@@ -46,36 +46,36 @@ type SytelineUser struct {
 }
 
 type SytelineOrder struct {
-	CisloVp                string
-	SuffixVp               string
-	PolozkaVp              string
-	PopisPolVp             string
-	priznak_seriova_vyroba string
+	CisloVp              string `gorm:"column:CisloVp"`
+	SuffixVp             string `gorm:"column:SuffixVp"`
+	PolozkaVp            string `gorm:"column:PolozkaVp"`
+	PopisPolVp           string `gorm:"column:PopisPolVp"`
+	PriznakSeriovaVyroba string `gorm:"column:priznak_seriova_vyroba"`
 }
 
 type SytelineOperation struct {
-	pracoviste          string
-	pracoviste_popis    string
-	uvolneno_op         string
-	priznak_mn_2        string
-	mn_2_ks             string
-	priznak_mn_3        string
-	mn_3_ks             string
-	jen_prenos_mnozstvi string
-	priznak_nasobnost   string
-	nasobnost           string
-	parovy_dil          string
-	seznamm_par_dilu    sql.NullString
+	Pracoviste        string         `gorm:"column:pracoviste"`
+	PracovistePopis   string         `gorm:"column:pracoviste_popis"`
+	UvolnenoOp        string         `gorm:"column:uvolneno_op"`
+	PriznakMn2        string         `gorm:"column:priznak_mn_2"`
+	Mn2Ks             string         `gorm:"column:mn_2_ks"`
+	PriznakMn3        string         `gorm:"column:priznak_mn_3"`
+	Mn3Ks             string         `gorm:"column:mn_3_ks"`
+	JenPrenosMnozstvi string         `gorm:"column:jen_prenos_mnozstvi"`
+	PriznakNasobnost  string         `gorm:"column:priznak_nasobnost"`
+	Nasobnost         string         `gorm:"column:nasobnost"`
+	ParovyDil         string         `gorm:"column:parovy_dil"`
+	SeznamParDilu     sql.NullString `gorm:"column:seznamm_par_dilu"`
 }
 
 type SytelineWorkplace struct {
-	Zapsi_zdroj           string
-	priznak_mn_1          string
-	vice_vp               string
-	SL_prac               string
-	typ_zdroje_zapsi      string
-	auto_prevod_mnozstvi  string
-	mnozstvi_auto_prevodu string
+	ZapsiZdroj          string `gorm:"column:zapsi_zdroj"`
+	PriznakMn1          string `gorm:"column:priznak_mn_1"`
+	ViceVp              string `gorm:"column:vice_vp"`
+	SlPrac              string `gorm:"column:SL_prac"`
+	TypZdrojeZapsi      string `gorm:"column:typ_zdroje_zapsi"`
+	AutoPrevodMnozstvi  string `gorm:"column:auto_prevod_mnozstvi"`
+	MnozstviAutoPrevodu string `gorm:"column:auto_prevod_mnozstvi"`
 }
 
 type SytelineNok struct {

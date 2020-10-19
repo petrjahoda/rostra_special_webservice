@@ -35,11 +35,16 @@ function processOrderInput() {
                 operationRow.classList.remove("disabled");
                 operationSelect.placeholder = "Zadejte číslo operace výrobního příkazu";
                 sessionStorage.setItem("orderId", result.OrderId)
+                infoOrderId.textContent = result.OrderId
                 sessionStorage.setItem("orderName", result.OrderName)
+                infoOrderName.textContent = result.OrderName
                 sessionStorage.setItem("orderInput", result.OrderInput)
+                infoOrderInput.textContent = result.OrderInput
+                sessionStorage.setItem("priznakSeriovaVyroba", result.PriznakSeriovaVyroba)
+                infoOrderPriznakSeriovaVyroba.textContent = result.PriznakSeriovaVyroba
                 let operace = {};
                 for (operation of result.Operations) {
-                    operace[operation.Operce] = operation.Operce + ": " + operation.Pracoviste + " [" + operation.PracovistePopis + "]"
+                    operace[operation.Operace] = operation.Operace + ": " + operation.Pracoviste + " [" + operation.PracovistePopis + "]"
                 }
                 const select = Metro.getPlugin("#operation-select", 'select');
                 select.data({
@@ -47,12 +52,12 @@ function processOrderInput() {
                 });
                 operationSelect.focus();
             } else {
-                console.log(result.OrderError)
+                infoError.textContent = result.OrderError
                 orderInput.placeholder = result.OrderError
                 orderInput.value = ""
             }
         });
     }).catch((error) => {
-        errorInfoPanel.textContent = error.toString()
+        infoError.textContent = error.toString()
     });
 }

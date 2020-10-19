@@ -15,15 +15,16 @@ type OrderInputData struct {
 }
 
 type OrderResponseData struct {
-	Result     string
-	OrderInput string
-	OrderName  string
-	OrderId    string
-	OrderError string
-	Operations []OperationList
+	Result               string
+	OrderInput           string
+	OrderName            string
+	OrderId              string
+	OrderError           string
+	PriznakSeriovaVyroba string
+	Operations           []OperationList
 }
 
-func checkOrderInput(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	logInfo("Check order", "Started")
 	var data OrderInputData
 	err := json.NewDecoder(request.Body).Decode(&data)
@@ -70,7 +71,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, params h
 	defer rows.Close()
 	var sytelineOrder SytelineOrder
 	for rows.Next() {
-		err = rows.Scan(&sytelineOrder.CisloVp, &sytelineOrder.SuffixVp, &sytelineOrder.PolozkaVp, &sytelineOrder.PopisPolVp, &sytelineOrder.priznak_seriova_vyroba)
+		err = rows.Scan(&sytelineOrder.CisloVp, &sytelineOrder.SuffixVp, &sytelineOrder.PolozkaVp, &sytelineOrder.PopisPolVp, &sytelineOrder.PriznakSeriovaVyroba)
 		if err != nil {
 			logError("Check order", "Error: "+err.Error())
 		}
@@ -94,7 +95,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, params h
 		var operationList []OperationList
 		for rows.Next() {
 			var operation OperationList
-			err = rows.Scan(&operation.Operce, &operation.Pracoviste, &operation.PracovistePopis)
+			err = rows.Scan(&operation.Operace, &operation.Pracoviste, &operation.PracovistePopis)
 			if err != nil {
 				logError("Check order", "Error: "+err.Error())
 			}
@@ -106,6 +107,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, params h
 		responseData.OrderInput = order + "." + suffix
 		responseData.OrderName = sytelineOrder.PolozkaVp + " " + sytelineOrder.PopisPolVp
 		responseData.Operations = operationList
+		responseData.PriznakSeriovaVyroba = sytelineOrder.PriznakSeriovaVyroba
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
 		return

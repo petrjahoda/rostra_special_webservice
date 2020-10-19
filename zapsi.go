@@ -185,7 +185,7 @@ package main
 //	return timeDivisor
 //}
 //
-//func CheckUserAndOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string) (bool, bool) {
+//func CheckSameUserAndSameOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string) (bool, bool) {
 //	userLogin := strings.Split(userid[0], ";")[0]
 //	order, suffix := ParseOrder(orderid[0])
 //	operation := ParseOperation(operationid[0])
@@ -374,9 +374,9 @@ package main
 //	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
 //	var terminalInputOrder TerminalInputOrder
 //	defer db.Close()
-//	parsedCavity, err := strconv.Atoi(sytelineOperation.nasobnost)
+//	parsedCavity, err := strconv.Atoi(sytelineOperation.Nasobnost)
 //	if err != nil {
-//		LogError("MAIN", "Problem parsing cavity: "+sytelineOperation.nasobnost)
+//		LogError("MAIN", "Problem parsing cavity: "+sytelineOperation.Nasobnost)
 //		return false
 //	}
 //
@@ -417,9 +417,9 @@ package main
 //
 //func CreateTerminalOrderInZapsi(userid []string, zapsiOrder Order, sytelineOperation SytelineOperation, workplaceid []string, radio []string) bool {
 //	userLogin := strings.Split(userid[0], ";")[0]
-//	parsedCavity, err := strconv.Atoi(sytelineOperation.nasobnost)
+//	parsedCavity, err := strconv.Atoi(sytelineOperation.Nasobnost)
 //	if err != nil {
-//		LogError("MAIN", "Problem parsing cavity: "+sytelineOperation.nasobnost)
+//		LogError("MAIN", "Problem parsing cavity: "+sytelineOperation.Nasobnost)
 //		return false
 //	}
 //	var zapsiUser User
@@ -484,9 +484,9 @@ package main
 //	LogInfo("MAIN", "Order "+zapsiOrder.Name+" does not exist, creating order in zapsi")
 //	db.Where("Name = ?", sytelineOrder.PolozkaVp).Find(&zapsiProduct)
 //	db.Where("Code = ?", workplaceid[0]).Find(&zapsiWorkplace)
-//	countRequestedConverted, err := strconv.ParseFloat(sytelineOperation.mn_2_ks, 32)
+//	countRequestedConverted, err := strconv.ParseFloat(sytelineOperation.Mn2Ks, 32)
 //	if err != nil {
-//		LogError("MAIN", "Problem parsing count for sytelineOrder: "+sytelineOperation.mn_2_ks)
+//		LogError("MAIN", "Problem parsing count for sytelineOrder: "+sytelineOperation.Mn2Ks)
 //	}
 //	newOrder.Name = zapsiOrderName
 //	newOrder.Barcode = zapsiOrderName
@@ -626,10 +626,10 @@ package main
 //func CheckProductsInZapsi(operation SytelineOperation) []Product {
 //	var zapsiProducts []Product
 //	var products []string
-//	if strings.Contains(operation.seznamm_par_dilu, "|") {
-//		products = strings.Split(operation.seznamm_par_dilu, "|")
+//	if strings.Contains(operation.SeznamParDilu, "|") {
+//		products = strings.Split(operation.SeznamParDilu, "|")
 //	} else {
-//		products = append(products, operation.seznamm_par_dilu)
+//		products = append(products, operation.SeznamParDilu)
 //	}
 //
 //	connectionString, dialect := CheckDatabaseType()

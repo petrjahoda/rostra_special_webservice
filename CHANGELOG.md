@@ -14,6 +14,14 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.4.1.19] - 2020-10-19
+
+### Changed
+- new communication when checking for workplace
+- completely reworked first controls
+
+### Added
+- infopanel for all data
 
 ## [2020.4.1.15] - 2020-10-15
 

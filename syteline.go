@@ -262,12 +262,12 @@ package main
 //	}
 //	defer rows.Close()
 //	for rows.Next() {
-//		err = rows.Scan(&sytelineOperation.pracoviste, &sytelineOperation.pracoviste_popis, &sytelineOperation.uvolneno_op, &sytelineOperation.priznak_mn_2, &sytelineOperation.mn_2_ks, &sytelineOperation.priznak_mn_3, &sytelineOperation.mn_3_ks, &sytelineOperation.jen_prenos_mnozstvi, &sytelineOperation.priznak_nasobnost, &sytelineOperation.nasobnost, &sytelineOperation.parovy_dil, &sytelineOperation.seznamm_par_dilu)
+//		err = rows.Scan(&sytelineOperation.Pracoviste, &sytelineOperation.PracovistePopis, &sytelineOperation.UvolnenoOp, &sytelineOperation.PriznakMn2, &sytelineOperation.Mn2Ks, &sytelineOperation.PriznakMn3, &sytelineOperation.Mn3Ks, &sytelineOperation.JenPrenosMnozstvi, &sytelineOperation.PriznakNasobnost, &sytelineOperation.Nasobnost, &sytelineOperation.ParovyDil, &sytelineOperation.SeznamParDilu)
 //		if err != nil {
 //			LogError("MAIN", "Error: "+err.Error())
 //		}
 //	}
-//	if len(sytelineOperation.pracoviste) > 0 {
+//	if len(sytelineOperation.Pracoviste) > 0 {
 //		LogInfo("MAIN", "Operation found: "+operationid[0])
 //		command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
 //		workplaceRows, err := db.Raw(command).Rows()
@@ -277,7 +277,7 @@ package main
 //		defer workplaceRows.Close()
 //		for workplaceRows.Next() {
 //			var sytelineWorkplaceScanned SytelineWorkplace
-//			err = workplaceRows.Scan(&sytelineWorkplaceScanned.Zapsi_zdroj, &sytelineWorkplaceScanned.priznak_mn_1, &sytelineWorkplaceScanned.vice_vp, &sytelineWorkplaceScanned.SL_prac, &sytelineWorkplaceScanned.typ_zdroje_zapsi, &sytelineWorkplaceScanned.auto_prevod_mnozstvi, &sytelineWorkplaceScanned.mnozstvi_auto_prevodu)
+//			err = workplaceRows.Scan(&sytelineWorkplaceScanned.Zapsi_zdroj, &sytelineWorkplaceScanned.priznak_mn_1, &sytelineWorkplaceScanned.Vice_vp, &sytelineWorkplaceScanned.SL_prac, &sytelineWorkplaceScanned.typ_zdroje_zapsi, &sytelineWorkplaceScanned.auto_prevod_mnozstvi, &sytelineWorkplaceScanned.mnozstvi_auto_prevodu)
 //			if err != nil {
 //				LogError("MAIN", "Error: "+err.Error())
 //			}
@@ -307,7 +307,7 @@ package main
 //	}
 //	defer rows.Close()
 //	for rows.Next() {
-//		err = rows.Scan(&sytelineOperation.pracoviste, &sytelineOperation.pracoviste_popis, &sytelineOperation.uvolneno_op, &sytelineOperation.priznak_mn_2, &sytelineOperation.mn_2_ks, &sytelineOperation.priznak_mn_3, &sytelineOperation.mn_3_ks, &sytelineOperation.jen_prenos_mnozstvi, &sytelineOperation.priznak_nasobnost, &sytelineOperation.nasobnost, &sytelineOperation.parovy_dil, &sytelineOperation.seznamm_par_dilu)
+//		err = rows.Scan(&sytelineOperation.Pracoviste, &sytelineOperation.PracovistePopis, &sytelineOperation.UvolnenoOp, &sytelineOperation.PriznakMn2, &sytelineOperation.Mn2Ks, &sytelineOperation.PriznakMn3, &sytelineOperation.Mn3Ks, &sytelineOperation.JenPrenosMnozstvi, &sytelineOperation.PriznakNasobnost, &sytelineOperation.Nasobnost, &sytelineOperation.ParovyDil, &sytelineOperation.SeznamParDilu)
 //		if err != nil {
 //			LogError("MAIN", "Error: "+err.Error())
 //		}
@@ -379,12 +379,12 @@ package main
 //		}
 //		defer rows.Close()
 //		for rows.Next() {
-//			err = rows.Scan(&sytelineOperation.pracoviste, &sytelineOperation.pracoviste_popis, &sytelineOperation.uvolneno_op, &sytelineOperation.priznak_mn_2, &sytelineOperation.mn_2_ks, &sytelineOperation.priznak_mn_3, &sytelineOperation.mn_3_ks, &sytelineOperation.jen_prenos_mnozstvi, &sytelineOperation.priznak_nasobnost, &sytelineOperation.nasobnost, &sytelineOperation.parovy_dil, &sytelineOperation.seznamm_par_dilu)
+//			err = rows.Scan(&sytelineOperation.Pracoviste, &sytelineOperation.PracovistePopis, &sytelineOperation.UvolnenoOp, &sytelineOperation.PriznakMn2, &sytelineOperation.Mn2Ks, &sytelineOperation.PriznakMn3, &sytelineOperation.Mn3Ks, &sytelineOperation.JenPrenosMnozstvi, &sytelineOperation.PriznakNasobnost, &sytelineOperation.Nasobnost, &sytelineOperation.ParovyDil, &sytelineOperation.SeznamParDilu)
 //			if err != nil {
 //				LogError("MAIN", "Error: "+err.Error())
 //			}
 //		}
-//		if len(sytelineOperation.pracoviste) > 0 {
+//		if len(sytelineOperation.Pracoviste) > 0 {
 //			LogInfo("MAIN", "Operation found: "+operationId[0])
 //			command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace"
 //			workplaceRows, err := db.Raw(command).Rows()
@@ -394,7 +394,7 @@ package main
 //			defer workplaceRows.Close()
 //			for workplaceRows.Next() {
 //				var sytelineWorkplace SytelineWorkplace
-//				err = workplaceRows.Scan(&sytelineWorkplace.Zapsi_zdroj, &sytelineWorkplace.priznak_mn_1, &sytelineWorkplace.vice_vp, &sytelineWorkplace.SL_prac, &sytelineWorkplace.typ_zdroje_zapsi, &sytelineWorkplace.auto_prevod_mnozstvi, &sytelineWorkplace.mnozstvi_auto_prevodu)
+//				err = workplaceRows.Scan(&sytelineWorkplace.Zapsi_zdroj, &sytelineWorkplace.priznak_mn_1, &sytelineWorkplace.Vice_vp, &sytelineWorkplace.SL_prac, &sytelineWorkplace.typ_zdroje_zapsi, &sytelineWorkplace.auto_prevod_mnozstvi, &sytelineWorkplace.mnozstvi_auto_prevodu)
 //				sytelineWorkplaces = append(sytelineWorkplaces, sytelineWorkplace)
 //				if err != nil {
 //					LogError("MAIN", "Error: "+err.Error())
@@ -413,8 +413,8 @@ package main
 //					data.Operation = operationId[0]
 //					data.OperationValue = operationId[0]
 //				} else {
-//					data.Operation = operationId[0] + ";" + sytelineOperation.pracoviste + "-" + sytelineOperation.pracoviste_popis
-//					data.OperationValue = operationId[0] + ";" + sytelineOperation.pracoviste + "-" + sytelineOperation.pracoviste_popis
+//					data.Operation = operationId[0] + ";" + sytelineOperation.Pracoviste + "-" + sytelineOperation.PracovistePopis
+//					data.OperationValue = operationId[0] + ";" + sytelineOperation.Pracoviste + "-" + sytelineOperation.PracovistePopis
 //				}
 //				data.WorkplaceDisabled = ""
 //				data.UserDisabled = "disabled"

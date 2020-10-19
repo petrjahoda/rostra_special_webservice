@@ -14,7 +14,6 @@ operationOkButton.addEventListener("click", () => {
 })
 
 operationSelect.addEventListener("keyup", function (event) {
-    console.log("key pressed")
     if (event.code === "Enter") {
         processOperationInput();
     }
@@ -22,7 +21,7 @@ operationSelect.addEventListener("keyup", function (event) {
 
 function processOperationInput() {
     console.log("Operation selected: " + operationSelect.value);
-    let data = {OperationInput: operationSelect.value, OrderInput: sessionStorage.getItem("orderInput")};
+    let data = {OperationSelect: operationSelect.value, OrderInput: sessionStorage.getItem("orderInput")};
     fetch("/check_operation_input", {
         method: "POST",
         body: JSON.stringify(data)
@@ -33,9 +32,29 @@ function processOperationInput() {
                 operationRow.classList.add("disabled")
                 workplaceRow.classList.remove("disabled")
                 sessionStorage.setItem("operationValue", operationSelect.value)
+                infoOperationInput.textContent = operationSelect.value
+                sessionStorage.setItem("parovyDil", result.ParovyDil)
+                infoOperationParovyDil.textContent = result.ParovyDil
+                sessionStorage.setItem("seznamParovychDilu", result.SeznamParovychDilu)
+                infoOperationSeznamParovychDilu.textContent = result.SeznamParovychDilu
+                sessionStorage.setItem("jenPrenosMnozstvi", result.JenPrenosMnozstvi)
+                infoOperationJenPrenosMnozstvi.textContent = result.JenPrenosMnozstvi
+                sessionStorage.setItem("priznakMn2", result.PriznakMn2)
+                infoOperationPriznakMn2.textContent = result.PriznakMn2
+                sessionStorage.setItem("priznakMn3", result.PriznakMn3)
+                infoOperationPriznakMn3.textContent = result.PriznakMn3
+                sessionStorage.setItem("mn2Ks", result.Mn2Ks)
+                infoOperationMn2Ks.textContent = result.Mn2Ks
+                sessionStorage.setItem("mn3Ks", result.Mn3Ks)
+                infoOperationMn3Ks.textContent = result.Mn3Ks
+                sessionStorage.setItem("priznakNasobnost", result.PriznakNasobnost)
+                infoOperationPriznakNasobnost.textContent = result.PriznakNasobnost
+                sessionStorage.setItem("nasobnost", result.Nasobnost)
+                infoOperationNasobnost.textContent = result.Nasobnost
                 let pracoviste = {};
+                savedWorkplaces = result.Workplaces;
                 for (workplace of result.Workplaces) {
-                    pracoviste[workplace.Zapsi_zdroj] = workplace.Zapsi_zdroj
+                    pracoviste[workplace.ZapsiZdroj] = workplace.ZapsiZdroj
                 }
                 const select = Metro.getPlugin("#workplace-select", 'select');
                 select.data({
@@ -43,11 +62,10 @@ function processOperationInput() {
                 });
                 workplaceSelect.focus()
             } else {
-                console.log(result.OperationError);
+                infoError.textContent = result.OperationError;
             }
         });
     }).catch((error) => {
-        errorInfoPanel.textContent = error.toString()
+        infoError.textContent = error.toString()
     });
-
 }

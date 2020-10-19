@@ -252,7 +252,7 @@ package main
 //		data.NokTypes = append(data.NokTypes, nokType)
 //	}
 //	if len(data.Workplaces) == 0 {
-//		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", vice_vp: "", SL_prac: "", typ_zdroje_zapsi: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
+//		workplace := SytelineWorkplace{Zapsi_zdroj: "", priznak_mn_1: "", Vice_vp: "", SL_prac: "", typ_zdroje_zapsi: "", auto_prevod_mnozstvi: "", mnozstvi_auto_prevodu: ""}
 //		data.Workplaces = append(data.Workplaces, workplace)
 //	}
 //	if len(data.DisplayOrder) == 0 {

@@ -4,7 +4,6 @@ userInput.addEventListener("keyup", function (event) {
     }
 });
 
-
 userOkButton.addEventListener("click", () => {
     processUserInput();
 })
@@ -22,18 +21,23 @@ function processUserInput() {
                 userInput.value = result.UserName;
                 userRow.classList.add("disabled");
                 orderRow.classList.remove("disabled");
+                resetButton.disable = false;
+                resetButton.classList.remove("disabled");
                 orderInput.placeholder = "Zadejte číslo výrobního příkazu";
                 sessionStorage.setItem("userId", result.UserId)
+                infoUserId.textContent = result.UserId
                 sessionStorage.setItem("userName", result.UserName)
+                infoUserName.textContent = result.UserName
                 sessionStorage.setItem("userInput", result.UserInput)
+                infoUserInput.textContent = result.UserInput
                 orderInput.focus();
             } else {
-                console.log(result.UserError)
-                userInput.placeholder = result.UserError
+                infoError.textContent = result.UserError;
+                userInput.placeholder = result.UserError;
                 userInput.value = ""
             }
         });
     }).catch((error) => {
-        errorInfoPanel.textContent = error.toString()
+        infoError.textContent = error.toString()
     });
 }
