@@ -15,6 +15,8 @@ Updated [here](CHANGELOG.md)
 ## ToDo
 - [ ] Kontroly po zadani kusu
 - [ ] Akce po stisku tri hlavnich tlacitek
+- [ ] Specificke rostra hlasky
+- [ ] Seznam zakazek s proklikem
 - [ ] Zlepseni logovani
 - [ ] Vycisteni a zprehledneni kodu
 
