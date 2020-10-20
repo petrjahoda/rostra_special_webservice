@@ -20,6 +20,9 @@ function processUserInput() {
             if (result.Result === "ok") {
                 userInput.value = result.UserName;
                 userRow.classList.add("disabled");
+                userOkButton.disabled = true
+                orderBackButton.disabled = false
+                orderOkButton.disabled = false
                 orderRow.classList.remove("disabled");
                 resetButton.disable = false;
                 resetButton.classList.remove("disabled");
@@ -30,6 +33,7 @@ function processUserInput() {
                 infoUserName.textContent = result.UserName
                 sessionStorage.setItem("userInput", result.UserInput)
                 infoUserInput.textContent = result.UserInput
+                infoError.textContent = ""
                 orderInput.focus();
             } else {
                 infoError.textContent = result.UserError;

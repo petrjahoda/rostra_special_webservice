@@ -65,7 +65,7 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 	order, suffix := ParseOrder(data.OrderInput)
 	operation := ParseOperation(data.OperationSelect)
 	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
-	rows, err := db.Raw(command).Rows()
+	rows, err := db.Debug().Raw(command).Rows()
 	if err != nil {
 		logError("Check operation", "Error: "+err.Error())
 		var responseData OperationResponseData
@@ -142,17 +142,19 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 			responseData.SeznamParovychDilu = sytelineOperation.SeznamParDilu.String
 			responseData.JenPrenosMnozstvi = sytelineOperation.JenPrenosMnozstvi
 			responseData.PriznakMn2 = sytelineOperation.PriznakMn2
-			if strings.Contains(sytelineOperation.Mn2Ks, "-996700") {
-				responseData.Mn2Ks = "0"
+			logInfo("Check operation", sytelineOperation.Mn2Ks)
+			logInfo("Check operation", sytelineOperation.Mn3Ks)
+			if strings.Contains(sytelineOperation.Mn2Ks, ".") {
+				responseData.Mn2Ks = sytelineOperation.Mn2Ks[:strings.Index(sytelineOperation.Mn2Ks, ".")]
 			} else {
 				responseData.Mn2Ks = sytelineOperation.Mn2Ks
 			}
-			responseData.PriznakMn3 = sytelineOperation.PriznakMn3
-			if strings.Contains(sytelineOperation.Mn3Ks, "-996700") {
-				responseData.Mn3Ks = "0"
+			if strings.Contains(sytelineOperation.Mn3Ks, ".") {
+				responseData.Mn3Ks = sytelineOperation.Mn3Ks[:strings.Index(sytelineOperation.Mn3Ks, ".")]
 			} else {
 				responseData.Mn3Ks = sytelineOperation.Mn3Ks
 			}
+			responseData.PriznakMn3 = sytelineOperation.PriznakMn3
 			responseData.PriznakNasobnost = sytelineOperation.PriznakNasobnost
 			responseData.Nasobnost = sytelineOperation.Nasobnost
 			responseData.Workplaces = updatedSytelineWorkplaces

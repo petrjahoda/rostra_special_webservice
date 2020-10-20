@@ -13,11 +13,7 @@ Go webservice that enables operators to start and end their work described [here
 Updated [here](CHANGELOG.md)
 
 ## ToDo
-- [ ] Kontroly po zadani kusu
 - [ ] Akce po stisku tri hlavnich tlacitek
-- [ ] Specificke rostra hlasky
 - [ ] Seznam zakazek s proklikem
-- [ ] Zlepseni logovani
-- [ ] Vycisteni a zprehledneni kodu
 
-www.zapsi.eu © 2020
+©2020 Petr Jahoda

@@ -3,9 +3,18 @@ orderBackButton.addEventListener("click", () => {
     orderInput.value = ""
     userInput.value = ""
     userInput.placeholder = "Zadejte osobní číslo"
-    userInput.focus()
     userRow.classList.remove("disabled");
     orderRow.classList.add("disabled")
+    userOkButton.disabled = false;
+    orderOkButton.disabled = true;
+    orderBackButton.disabled = true;
+    infoRostra.textContent = ""
+    infoError.textContent = ""
+    infoOrderPriznakSeriovaVyroba.textContent = ""
+    infoOrderInput.textContent = ""
+    infoOrderName.textContent = ""
+    infoOrderId.textContent = ""
+    userInput.focus()
 })
 
 orderOkButton.addEventListener("click", () => {
@@ -33,6 +42,10 @@ function processOrderInput() {
                 orderInput.value = result.OrderName;
                 orderRow.classList.add("disabled");
                 operationRow.classList.remove("disabled");
+                orderOkButton.disabled = true;
+                orderBackButton.disabled = true;
+                operationOkButton.disabled = false;
+                operationBackButton.disabled = false;
                 operationSelect.placeholder = "Zadejte číslo operace výrobního příkazu";
                 sessionStorage.setItem("orderId", result.OrderId)
                 infoOrderId.textContent = result.OrderId

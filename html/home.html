@@ -8,58 +8,9 @@
 <script src="/js/workplace.js" defer></script>
 <script src="/js/count.js" defer></script>
 <body style="min-width: 1400px;">
-<p style="position: fixed;margin-left: 10px;margin-top: 10px;font-weight: bold">Osobní číslo:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 10px" id="info-user-input"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 30px">Jméno a příjmení: </p>
-<p style="position: fixed;margin-left: 190px;margin-top: 30px" id="info-user-name"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 50px">Id v Zapsi:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 50px" id="info-user-id"></p>
 
-<p style="position: fixed;margin-left: 10px;margin-top: 80px;font-weight: bold;">Výrobní příkaz:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 80px" id="info-order-input"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 100px">Název příkazu:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 100px" id="info-order-name"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 120px">Id v Zapsi:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 120px" id="info-order-id"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 140px">[p] Seriová výroba:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 140px" id="info-order-priznak-seriova-vyroba"></p>
-
-<p style="position: fixed;margin-left: 10px;margin-top: 170px;font-weight: bold">Výrobní operace:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 170px" id="info-operation-input"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 190px">[p] Párový díl:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 190px" id="info-operation-parovy-dil"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 210px">[p] Seznam dílů:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 210px" id="info-operation-seznam-parovych-dilu"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 230px">[p] Jen přenos množství:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 230px" id="info-operation-jen-prenos-mnozstvi"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 250px">[p] Mn2:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 250px" id="info-operation-priznak-mn2"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 270px">[p] Mn2 Ks:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 270px" id="info-operation-mn2-ks"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 290px">[p] Mn3:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 290px" id="info-operation-priznak-mn3"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 310px" >[p] Mn3 Ks:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 310px" id="info-operation-mn3-ks"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 330px" >[p] Násobnost:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 330px" id="info-operation-priznak-nasobnost"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 350px">[p] Násobnost ks:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 350px" id="info-operation-nasobnost"></p>
-
-<p style="position: fixed;margin-left: 10px;margin-top: 380px;font-weight: bold" >Kód pracoviště:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 380px" id="info-workplace-code"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 400px" >[p] Typ zdroje zapsi:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 400px" id="info-workplace-typ-zdroje-zapsi"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 420px" >[p] Více vp:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 420px" id="info-workplace-vice-vp"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 440px" >[p] Mn1:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 440px" id="info-workplace-priznak-mn1"></p>
-
-<p style="position: fixed;margin-left: 10px;margin-top: 470px;color: red">Error:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 470px;color: red" id="info-error"></p>
-<p style="position: fixed;margin-left: 10px;margin-top: 490px;color: blue">Rostra:</p>
-<p style="position: fixed;margin-left: 190px;margin-top: 490px;color: blue" id="info-rostra"></p>
 <div class="grid">
-    <div class="row" style="margin-left: 5px;margin-top: 5px">
+    <div class="row" >
         <div class="cell-3"></div>
         <div class="cell">
             <button class="button alert" style="width: 100%" id="reset-button">Reset</button>
@@ -67,7 +18,7 @@
         <div class="cell-8">
         </div>
     </div>
-    <div class="row" style="margin-left: 5px;margin-top: 5px" id="user-row">
+    <div class="row"  id="user-row">
         <div class="cell-4"></div>
         <div class="cell-4">
             <input type="text" data-role="input" id="user-input" data-prepend="<span class='mif-user'></span>"
@@ -80,61 +31,63 @@
         <div class="cell"></div>
         <div class="cell"></div>
     </div>
-    <div class="row disabled" style="margin-left: 5px;margin-top: 5px" id="order-row">
+    <div class="row disabled"  id="order-row">
         <div class="cell-3"></div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="order-back-button">Zpět</button>
+            <button disabled class="button primary" style="width: 100%" id="order-back-button">Zpět</button>
         </div>
         <div class="cell-4">
             <input type="text" data-role="input" id="order-input" data-prepend="<span class='mif-open-book'></span>">
         </div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="order-ok-button">Potvrdit</button>
+            <button disabled class="button primary" style="width: 100%" id="order-ok-button">Potvrdit</button>
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row disabled" style="margin-left: 5px;margin-top: 5px" id="operation-row">
+    <div class="row disabled"  id="operation-row">
         <div class="cell-3"></div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="operation-back-button">Zpět</button>
+            <button disabled class="button primary" style="width: 100%" id="operation-back-button">Zpět</button>
         </div>
         <div class="cell-4">
             <select data-role="select" data-prepend="<span class='mif-lines'></span>" id="operation-select">
             </select>
         </div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="operation-ok-button">Potvrdit</button>
+            <button disabled class="button primary" style="width: 100%" id="operation-ok-button">Potvrdit</button>
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row disabled" style="margin-left: 5px;margin-top: 5px" id="workplace-row">
+    <div class="row disabled"  id="workplace-row">
         <div class="cell-3"></div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="workplace-back-button">Zpět</button>
+            <button disabled class="button primary" style="width: 100%" id="workplace-back-button">Zpět</button>
         </div>
         <div class="cell-4">
             <select data-role="select" id="workplace-select" data-prepend="<span class='mif-home'></span>">
             </select>
         </div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="workplace-ok-button">Potvrdit</button>
+            <button disabled class="button primary" style="width: 100%" id="workplace-ok-button">Potvrdit</button>
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row disabled" style="margin-left: 5px;margin-top: 5px" id="ok-row">
+    <div class="row disabled"  id="ok-row">
         <div class="cell-3"></div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="count-back-button">Zpět</button>
+            <button disabled class="button primary" style="width: 100%" id="count-back-button">Zpět</button>
         </div>
         <div class="cell-2">
-            <input type="text" data-role="input" id="count-ok-input" data-prepend="<span class='mif-checkmark'></span>">
+            <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                   data-role="input" id="count-ok-input" data-prepend="<span class='mif-checkmark'></span>">
         </div>
         <div class="cell-6"></div>
     </div>
-    <div class="row disabled" style="margin-left: 5px;margin-top: 5px" id="nok-row">
+    <div class="row disabled"  id="nok-row">
         <div class="cell-4"></div>
         <div class="cell-2">
-            <input type="text" data-role="input" id="count-nok-input" data-prepend="<span class='mif-cross'></span>">
+            <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                   data-role="input" id="count-nok-input" data-prepend="<span class='mif-cross'></span>">
         </div>
         <div class="cell-2">
             <select data-role="select" id="nok-type-select" data-prepend="<span class='mif-list'></span>">
@@ -142,45 +95,53 @@
             </select>
         </div>
         <div class="cell">
-            <button class="button primary" style="width: 100%" id="count-button">Potvrdit</button>
-        </div>
-        <div class="cell-3"></div>
-    </div>
-    <div class="row" style="margin-top: 30px">
-        <div class="cell-3"></div>
-        <div class="cell-2">
-            <div style="text-align: center" class="disabled">
-                <input name="syteline" type="radio" data-role="radio" id="clovek-radio" data-caption="Člověk">
-            </div>
-        </div>
-        <div class="cell-2">
-            <div style="text-align: center" class="disabled">
-                <input name="syteline" type="radio" data-role="radio" id="serizeni-radio" data-caption="Seřízení">
-            </div>
-        </div>
-        <div class="cell-2">
-            <div style="text-align: center" class="disabled">
-                <input name="syteline" type="radio" data-role="radio" id="stroj-radio" data-caption="Stroj">
-            </div>
+            <button disabled class="button primary" style="width: 100%" id="count-button">Potvrdit</button>
         </div>
         <div class="cell-3"></div>
     </div>
 
-    <div class="row" style="margin-top: 30px">
-        <div class="cell-3"></div>
-        <div class="cell-2">
-            <input style="width: 100%;height: 50px;font-weight: bold" class="button success disabled" type="submit"
-                   id="start-order-button" value="Začátek"/>
+    <div class="row" style="margin-top: 20px">
+        <div class="cell-4"></div>
+        <div class="cell">
+            <div>
+                <input disabled name="syteline" type="radio" data-role="radio" id="clovek-radio"
+                       data-caption="Člověk">
+            </div>
         </div>
-        <div class="cell-2">
-            <input style="width: 100%;height: 50px;font-weight: bold" class="button alert disabled" type="submit"
-                   id="end-order-button" value="Konec"/>
+        <div class="cell-2"></div>
+        <div class="cell">
+            <button disabled class="button primary" style="width: 100%" id="start-order-button">Začátek
+            </button>
         </div>
-        <div class="cell-2">
-            <input style="width: 100%;height: 50px;font-weight: bold" class="button dark disabled" type="submit"
-                   id="transfer-order-button" value="Přenos"/>
+        <div class="cell-4"></div>
+    </div>
+
+    <div class="row">
+        <div class="cell-4"></div>
+        <div class="cell">
+            <input disabled name="syteline" type="radio" data-role="radio" id="serizeni-radio"
+                   data-caption="Seřízení">
         </div>
-        <div class="cell-3"></div>
+        <div class="cell-2"></div>
+        <div class="cell">
+            <button disabled class="button dark" style="width: 100%" id="transfer-order-button">Přenos
+            </button>
+        </div>
+        <div class="cell-4"></div>
+    </div>
+
+    <div class="row">
+        <div class="cell-4"></div>
+        <div class="cell">
+            <input disabled name="syteline" type="radio" data-role="radio" id="stroj-radio"
+                   data-caption="Stroj">
+        </div>
+        <div class="cell-2"></div>
+        <div class="cell">
+            <button disabled class="button alert" style="width: 100%" id="end-order-button">Konec
+            </button>
+        </div>
+        <div class="cell-4"></div>
     </div>
     <div class="row" style="margin-top: 30px">
         <table class="table" id="table">
@@ -204,7 +165,60 @@
             </tbody>
         </table>
     </div>
+    <p style="position: fixed;margin-left: 10px;margin-top: 10px;font-weight: bold">Osobní číslo:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 10px" id="info-user-input"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 30px">Jméno a příjmení: </p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 30px" id="info-user-name"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 50px">Id v Zapsi:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 50px" id="info-user-id"></p>
+
+    <p style="position: fixed;margin-left: 10px;margin-top: 80px;font-weight: bold;">Výrobní příkaz:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 80px" id="info-order-input"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 100px">Název příkazu:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 100px" id="info-order-name"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 120px">Id v Zapsi:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 120px" id="info-order-id"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 140px">[p] Seriová výroba:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 140px" id="info-order-priznak-seriova-vyroba"></p>
+
+    <p style="position: fixed;margin-left: 10px;margin-top: 170px;font-weight: bold">Výrobní operace:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 170px" id="info-operation-input"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 190px">[p] Párový díl:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 190px" id="info-operation-parovy-dil"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 210px">[p] Seznam dílů:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 210px" id="info-operation-seznam-parovych-dilu"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 230px">[p] Jen přenos množství:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 230px" id="info-operation-jen-prenos-mnozstvi"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 250px">[p] Mn2:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 250px" id="info-operation-priznak-mn2"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 270px">[p] Mn2 Ks:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 270px" id="info-operation-mn2-ks"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 290px">[p] Mn3:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 290px" id="info-operation-priznak-mn3"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 310px">[p] Mn3 Ks:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 310px" id="info-operation-mn3-ks"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 330px">[p] Násobnost:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 330px" id="info-operation-priznak-nasobnost"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 350px">[p] Násobnost ks:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 350px" id="info-operation-nasobnost"></p>
+
+    <p style="position: fixed;margin-left: 10px;margin-top: 380px;font-weight: bold">Kód pracoviště:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 380px" id="info-workplace-code"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 400px">Název pracoviště:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 400px" id="info-workplace-name"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 420px">[p] Typ zdroje zapsi:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 420px" id="info-workplace-typ-zdroje-zapsi"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 440px">[p] Více vp:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 440px" id="info-workplace-vice-vp"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 460px">[p] Mn1:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 460px" id="info-workplace-priznak-mn1"></p>
+
+    <p style="position: fixed;margin-left: 10px;margin-top: 490px;color: red">Error:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 490px;color: red" id="info-error"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 510px;color: blue">Rostra:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 510px;color: blue" id="info-rostra"></p>
 </div>
+
 
 <div class="text"
      style="position:absolute;font-size: 1vw;font-weight: 100;bottom:2%;right:1%">

@@ -1,11 +1,27 @@
 operationBackButton.addEventListener("click", () => {
-    orderRow.classList.remove("disabled");
-    operationRow.classList.add("disabled")
     orderInput.value = ""
     orderInput.placeholder = "Zadejte číslo výrobního příkazu";
     const select = Metro.getPlugin("#operation-select", 'select');
     select.data({
     });
+    orderRow.classList.remove("disabled");
+    operationRow.classList.add("disabled")
+    operationBackButton.disabled = true
+    operationOkButton.disabled = true;
+    orderOkButton.disabled = false;
+    orderBackButton.disabled = false;
+    infoRostra.textContent = ""
+    infoError.textContent = ""
+    infoOperationNasobnost.textContent = ""
+    infoOperationPriznakNasobnost.textContent = ""
+    infoOperationMn2Ks.textContent = ""
+    infoOperationPriznakMn2.textContent = ""
+    infoOperationMn3Ks.textContent = ""
+    infoOperationPriznakMn3.textContent = ""
+    infoOperationJenPrenosMnozstvi.textContent = ""
+    infoOperationSeznamParovychDilu.textContent = ""
+    infoOperationParovyDil.textContent = ""
+    infoOperationInput.textContent = ""
     orderInput.focus()
 })
 
@@ -29,6 +45,10 @@ function processOperationInput() {
         response.text().then(function (data) {
             let result = JSON.parse(data);
             if (result.Result === "ok") {
+                operationOkButton.disabled = true
+                operationBackButton.disabled = true
+                workplaceOkButton.disabled = false
+                workplaceBackButton.disabled = false
                 operationRow.classList.add("disabled")
                 workplaceRow.classList.remove("disabled")
                 sessionStorage.setItem("operationValue", operationSelect.value)

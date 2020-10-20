@@ -67,6 +67,7 @@ const infoOperationPriznakNasobnost = document.getElementById("info-operation-pr
 const infoOperationNasobnost = document.getElementById("info-operation-nasobnost");
 
 const infoWorkplaceCode = document.getElementById("info-workplace-code");
+const infoWorkplaceName = document.getElementById("info-workplace-name");
 const infoWorkplaceTypZdrojeZapsi = document.getElementById("info-workplace-typ-zdroje-zapsi");
 const infoWorkplaceViceVp = document.getElementById("info-workplace-vice-vp");
 const infoWorkplacePriznakMn1 = document.getElementById("info-workplace-priznak-mn1");

@@ -3,6 +3,17 @@ workplaceBackButton.addEventListener("click", () => {
     workplaceRow.classList.add("disabled")
     const select = Metro.getPlugin("#workplace-select", 'select');
     select.data({});
+    workplaceOkButton.disabled = true
+    workplaceBackButton.disabled = true
+    operationBackButton.disabled = false
+    operationOkButton.disabled = false
+    infoRostra.textContent = ""
+    infoError.textContent = ""
+    infoWorkplaceName.textContent = ""
+    infoWorkplacePriznakMn1.textContent = ""
+    infoWorkplaceViceVp.textContent = ""
+    infoWorkplaceTypZdrojeZapsi.textContent = ""
+    infoWorkplaceCode.textContent = ""
     operationSelect.focus()
 })
 
@@ -22,8 +33,11 @@ function processWorkplaceInput() {
     for (workplace of savedWorkplaces) {
         if (workplace.ZapsiZdroj === workplaceSelect.value) {
             console.log("Workplace found: " + workplaceSelect.value);
+            workplaceBackButton.disabled = true
+            workplaceOkButton.disabled = true
             sessionStorage.setItem("workplaceCode", workplaceSelect.value.split(";")[0])
             infoWorkplaceCode.textContent = workplaceSelect.value.split(";")[0]
+            infoWorkplaceName.textContent = workplaceSelect.value.split(";")[1]
             sessionStorage.setItem("typZdrojeZapsi", workplace.TypZdrojeZapsi)
             infoWorkplaceTypZdrojeZapsi.textContent = workplace.TypZdrojeZapsi
             sessionStorage.setItem("viceVp", workplace.ViceVp)
@@ -51,28 +65,40 @@ function processWorkplaceInput() {
                         workplaceRow.classList.add("disabled")
                         if (result.OkInput === "true") {
                             okRow.classList.remove("disabled")
+                            countBackButton.disabled = false
+                            countButton.disabled = false
                             countOkInput.focus()
                         }
                         if (result.NokInput === "true") {
                             nokRow.classList.remove("disabled")
+                            countBackButton.disabled = false
+                            countButton.disabled = false
+                            let chyby = {};
+                            for (nokType of result.NokTypes) {
+                                chyby[nokType.Nazev] = nokType.Kod + ";" + nokType.Nazev + ""
+                            }
+                            const select = Metro.getPlugin("#nok-type-select", 'select');
+                            select.data({
+                                "Načtené neshody": chyby
+                            });
                         }
                         if (result.StartButton === "true") {
-                            startOrderButton.classList.remove("disabled")
+                            startOrderButton.disabled = false
                         }
                         if (result.EndButton === "true") {
-                            endOrderButton.classList.remove("disabled")
+                            endOrderButton.disabled = false
                         }
                         if (result.TransferButton === "true") {
-                            transferOrderButton.classList.remove("disabled")
+                            transferOrderButton.disabled = false
                         }
                         if (result.ClovekSelection === "true") {
-                            clovekRadio.classList.remove("disabled")
+                            clovekRadio.disabled = false
                         }
                         if (result.SerizeniSelection === "true") {
-                            serizeniRadio.classList.remove("disabled")
+                            serizeniRadio.disabled = false
                         }
                         if (result.StrojSelection === "true") {
-                            strojRadio.classList.remove("disabled")
+                            strojRadio.disabled = false
                         }
                     } else {
                         infoError.text = result.WorkplaceError

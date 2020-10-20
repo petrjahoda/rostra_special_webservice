@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -33,6 +34,8 @@ type WorkplaceResponseData struct {
 	SerizeniSelection string
 	StrojSelection    string
 	WorkplaceError    string
+	RostraError       string
+	NokTypes          []SytelineNok
 }
 
 func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
@@ -73,11 +76,20 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 				logInfo("Check workplace", data.WorkplaceCode+"has the same open order in Zapsi with the same user")
 				logInfo("Check workplace", "Enabling OK and NOK")
 				var responseData WorkplaceResponseData
-				responseData.Result = "nok"
-				responseData.WorkplaceError = "Problem connecting Syteline database: " + err.Error()
-				//TOD: send back nok types
+				nokTypes := GetNokTypesFromSyteline()
+				responseData.NokTypes = nokTypes
+				responseData.Result = "ok"
+				responseData.OkInput = "true"
+				responseData.NokInput = "true"
+				responseData.StartButton = "false"
+				responseData.EndButton = "false"
+				responseData.TransferButton = "false"
+				responseData.ClovekSelection = "false"
+				responseData.SerizeniSelection = "false"
+				responseData.StrojSelection = "false"
 				writer.Header().Set("Content-Type", "application/json")
 				_ = json.NewEncoder(writer).Encode(responseData)
+				return
 			} else {
 				if data.TypZdrojeZapsi == "0" {
 					logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
@@ -228,6 +240,8 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 			logInfo("Check workplace", "sytelineOperation.JenPrenosMnozstvi is one")
 			logInfo("Check workplace", "Enabling OK and NOK")
 			var responseData WorkplaceResponseData
+			nokTypes := GetNokTypesFromSyteline()
+			responseData.NokTypes = nokTypes
 			responseData.Result = "ok"
 			responseData.OkInput = "true"
 			responseData.NokInput = "true"
@@ -277,6 +291,33 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 			}
 		}
 	}
+}
+
+func GetNokTypesFromSyteline() []SytelineNok {
+	var nokTypes []SytelineNok
+	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	if err != nil {
+		logError("Check workplace", "Problem opening database: "+err.Error())
+		return nokTypes
+	}
+	sqlDB, err := db.DB()
+	defer sqlDB.Close()
+	command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports_test].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	rows, err := db.Raw(command).Rows()
+	if err != nil {
+		logError("Check workplace", "Error: "+err.Error())
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var nokType SytelineNok
+		err = rows.Scan(&nokType.Kod, &nokType.Nazev)
+		nokTypes = append(nokTypes, nokType)
+		if err != nil {
+			logError("Check workplace", "Error: "+err.Error())
+		}
+	}
+	logInfo("Check workplace", "Found "+strconv.Itoa(len(nokTypes))+" noktypes")
+	return nokTypes
 }
 
 func CheckIfAnyOpenOrderHasOneOfProducts(workplaceCode string, products []Product) bool {
