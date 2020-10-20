@@ -100,9 +100,12 @@ function processWorkplaceInput() {
                         if (result.StrojSelection === "true") {
                             strojRadio.disabled = false
                         }
+                        infoRostra.textContent = ""
+                        infoError.textContent = ""
                     } else {
                         infoError.text = result.WorkplaceError
                     }
+
                 });
             }).catch((error) => {
                 infoError.textContent = error.toString()

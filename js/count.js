@@ -89,7 +89,8 @@ function processCountInput() {
                 if (result.Serizeni === true) {
                     serizeniRadio.disabled = false
                 }
-
+                infoRostra.textContent = ""
+                infoError.textContent = ""
             } else {
                 console.log("nok")
                 infoError.textContent = result.CountError;

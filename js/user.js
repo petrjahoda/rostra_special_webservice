@@ -34,6 +34,8 @@ function processUserInput() {
                 sessionStorage.setItem("userInput", result.UserInput)
                 infoUserInput.textContent = result.UserInput
                 infoError.textContent = ""
+                infoRostra.textContent = ""
+                infoError.textContent = ""
                 orderInput.focus();
             } else {
                 infoError.textContent = result.UserError;

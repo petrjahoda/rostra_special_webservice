@@ -80,6 +80,8 @@ function processOperationInput() {
                 select.data({
                     "Načtené pracoviště": pracoviste
                 });
+                infoRostra.textContent = ""
+                infoError.textContent = ""
                 workplaceSelect.focus()
             } else {
                 infoError.textContent = result.OperationError;

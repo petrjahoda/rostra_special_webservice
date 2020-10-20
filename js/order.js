@@ -63,6 +63,8 @@ function processOrderInput() {
                 select.data({
                     "Načtené operace": operace
                 });
+                infoRostra.textContent = ""
+                infoError.textContent = ""
                 operationSelect.focus();
             } else {
                 infoError.textContent = result.OrderError

@@ -15,5 +15,7 @@ Updated [here](CHANGELOG.md)
 ## ToDo
 - [ ] Akce po stisku tri hlavnich tlacitek
 - [ ] Seznam zakazek s proklikem
+- [ ] Upraveni logovani
+- [ ] Procisteni kodu, zlepseni citelnosti, apod.
 
 ©2020 Petr Jahoda
