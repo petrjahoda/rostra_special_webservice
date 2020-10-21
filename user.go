@@ -21,6 +21,24 @@ type UserResponseData struct {
 	UserName  string
 	UserId    string
 	UserError string
+	TableData []Table
+}
+
+type Table struct {
+	TerminalInputOrderId               string
+	OrderCode                          string
+	OrderName                          string
+	ProductName                        string
+	SytelineWorkplace                  string
+	OrderStart                         string
+	OrderRequestedTotal                string
+	TotalProducedCount                 string
+	TerminalInputOrderProducedCount    string
+	TotalTransferredCount              string
+	TotalNokTransferredCount           string
+	TerminalInputOrderTransferredCount string
+	WaitingForTransferCount            string
+	TotalNokCount                      string
 }
 
 func checkUserInput(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -59,12 +77,13 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, params ht
 	if sytelineUser.JePlatny == "1" {
 		logInfo("Check user", "User found: "+data.UserInput)
 		userId := CreateUserInZapsiIfNotExists(sytelineUser, data.UserInput)
+		tableData := GetDataForUser(userId, sytelineUser.Jmeno.String)
 		var responseData UserResponseData
 		responseData.Result = "ok"
 		responseData.UserInput = data.UserInput
 		responseData.UserId = strconv.Itoa(userId)
 		responseData.UserName = sytelineUser.Jmeno.String
-		responseData.UserError = sytelineUser.Chyba.String
+		responseData.TableData = tableData
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
 		logInfo("Check user", "Ended successfully")
@@ -80,6 +99,103 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, params ht
 		logInfo("Check user", "Ended successfully with no user found")
 		return
 	}
+}
+
+func GetDataForUser(userId int, sytelineUserName string) []Table {
+	var dataTable []Table
+	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	if err != nil {
+		logError("Check user", "Problem opening database: "+err.Error())
+		return dataTable
+	}
+	sqlDB, err := db.DB()
+	defer sqlDB.Close()
+	var terminalInputOrder []TerminalInputOrder
+	db.Where("DTE is null").Where("UserId = ?", userId).Find(&terminalInputOrder)
+	var user User
+	db.Where("OID = ?", userId).Find(&user)
+	logInfo("Check user", "For user "+sytelineUserName+" found "+strconv.Itoa(len(terminalInputOrder))+" open orders")
+	for _, terminalInputOrder := range terminalInputOrder {
+		oneTableData := GetDataForActualDisplayOrder(terminalInputOrder, user)
+		dataTable = append(dataTable, oneTableData)
+	}
+	logInfo("Check user", "Found "+strconv.Itoa(len(dataTable))+" open orders")
+	return dataTable
+}
+
+func GetDataForActualDisplayOrder(terminalInputOrder TerminalInputOrder, user User) Table {
+	var oneTableData Table
+	if terminalInputOrder.Note == "clovek" {
+		oneTableData.OrderCode = "PC"
+	} else if terminalInputOrder.Note == "stroj" {
+		oneTableData.OrderCode = "PS"
+	} else if terminalInputOrder.Note == "serizeni" {
+		oneTableData.OrderCode = "SE"
+	} else {
+		oneTableData.OrderCode = "N/A"
+	}
+	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	if err != nil {
+		logError("Check user", "Problem opening database: "+err.Error())
+		return oneTableData
+	}
+	sqlDB, err := db.DB()
+	defer sqlDB.Close()
+	var order Order
+	db.Where("OID = ?", terminalInputOrder.OrderID).Find(&order)
+	oneTableData.OrderName = order.Name
+	oneTableData.OrderRequestedTotal = strconv.Itoa(order.CountRequested)
+	var product Product
+	db.Where("OID = ?", order.ProductID).Find(&product)
+	oneTableData.ProductName = product.Name
+	var device Device
+	db.Where("OID = ?", terminalInputOrder.DeviceID).Find(&device)
+	var workplace Workplace
+	db.Where("DeviceID = ?", device.OID).Find(&workplace)
+	oneTableData.SytelineWorkplace = workplace.Code + ";" + workplace.Name
+	oneTableData.OrderStart = terminalInputOrder.DTS.Format("02.01.2006 15:04:05")
+	oneTableData.TerminalInputOrderProducedCount = strconv.Itoa(terminalInputOrder.Count)
+	var terminalInputOrders []TerminalInputOrder
+	db.Where("OrderId = ?", terminalInputOrder.OrderID).Find(&terminalInputOrders)
+	totalCount := 0
+	for _, inputOrder := range terminalInputOrders {
+		totalCount += inputOrder.Count
+	}
+	oneTableData.TotalProducedCount = strconv.Itoa(totalCount)
+
+	dbSyteline, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	if err != nil {
+		logError("Check user", "Problem opening database: "+err.Error())
+		return oneTableData
+	}
+	sqlDBSyteline, err := dbSyteline.DB()
+	defer sqlDBSyteline.Close()
+
+	parsedOrderName := order.Name
+	if strings.Contains(order.Name, ".") {
+		parsedOrderName = strings.Split(order.Name, ".")[0]
+	}
+	var zapsiTrans []zapsi_trans
+	dbSyteline.Where("job = ?", parsedOrderName).Where("qty_complete is not null").Find(&zapsiTrans)
+	transferredTotal := 0
+	transferredNok := 0
+	for _, oneTrans := range zapsiTrans {
+		transferredTotal += int(oneTrans.QtyComplete)
+		transferredNok += int(oneTrans.QtyScrapped)
+	}
+	oneTableData.TotalTransferredCount = strconv.Itoa(transferredTotal)
+	oneTableData.TotalNokTransferredCount = strconv.Itoa(transferredNok)
+	var zapsiTransThisOrder []zapsi_trans
+	dbSyteline.Raw("SELECT * FROM [zapsi_trans]  WHERE (job = '" + parsedOrderName + "') AND (qty_complete is not null) AND (trans_date > '" + terminalInputOrder.DTS.Format("2006-01-02 15:04:05") + "') AND (emp_num = '" + user.Login + "')").Find(&zapsiTransThisOrder)
+	logInfo("Check user", "Checking "+strconv.Itoa(len(zapsiTransThisOrder))+" transferred orders for "+parsedOrderName)
+	transferredTotalThisOrder := 0
+	for _, thisTrans := range zapsiTransThisOrder {
+		transferredTotalThisOrder += int(thisTrans.QtyComplete)
+	}
+	oneTableData.TerminalInputOrderTransferredCount = strconv.Itoa(transferredTotalThisOrder)
+	forSave := terminalInputOrder.Count - transferredTotalThisOrder
+	oneTableData.WaitingForTransferCount = strconv.Itoa(forSave)
+	return oneTableData
 }
 
 func CreateUserInZapsiIfNotExists(user SytelineUser, input string) int {

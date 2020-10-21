@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<link rel="stylesheet" href="/css/metro-all.css">
+<link rel="stylesheet" href="/css/zapsi.css">
+<link rel="stylesheet" href="/css/metro-all.min.css">
 <script src="/js/metro.min.js" defer></script>
 <script src="/js/zapsi.js" defer></script>
 <script src="/js/user.js" defer></script>
@@ -7,20 +8,16 @@
 <script src="/js/operation.js" defer></script>
 <script src="/js/workplace.js" defer></script>
 <script src="/js/count.js" defer></script>
+<script src="/js/table.js" defer></script>
 <body style="min-width: 1400px;">
 
 <div class="grid">
-    <div class="row" >
+    <div class="row" id="user-row" style="margin-top: 50px">
         <div class="cell-3"></div>
         <div class="cell">
-            <button class="button alert" style="width: 100%" id="reset-button">Reset</button>
+            <button class="button alert" style="width: 100%" id="reset-button" >Reset</button>
         </div>
-        <div class="cell-8">
-        </div>
-    </div>
-    <div class="row"  id="user-row">
-        <div class="cell-4"></div>
-        <div class="cell-4">
+        <div class="cell-4" id="user-input-cell">
             <input type="text" data-role="input" id="user-input" data-prepend="<span class='mif-user'></span>"
                    placeholder="Zadejte osobní číslo" name="userid" autofocus>
         </div>
@@ -31,7 +28,7 @@
         <div class="cell"></div>
         <div class="cell"></div>
     </div>
-    <div class="row disabled"  id="order-row">
+    <div class="row disabled" id="order-row">
         <div class="cell-3"></div>
         <div class="cell">
             <button disabled class="button primary" style="width: 100%" id="order-back-button">Zpět</button>
@@ -44,7 +41,7 @@
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row disabled"  id="operation-row">
+    <div class="row disabled" id="operation-row">
         <div class="cell-3"></div>
         <div class="cell">
             <button disabled class="button primary" style="width: 100%" id="operation-back-button">Zpět</button>
@@ -58,7 +55,7 @@
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row disabled"  id="workplace-row">
+    <div class="row disabled" id="workplace-row">
         <div class="cell-3"></div>
         <div class="cell">
             <button disabled class="button primary" style="width: 100%" id="workplace-back-button">Zpět</button>
@@ -72,7 +69,7 @@
         </div>
         <div class="cell-3"></div>
     </div>
-    <div class="row disabled"  id="ok-row">
+    <div class="row disabled" id="ok-row">
         <div class="cell-3"></div>
         <div class="cell">
             <button disabled class="button primary" style="width: 100%" id="count-back-button">Zpět</button>
@@ -83,7 +80,7 @@
         </div>
         <div class="cell-6"></div>
     </div>
-    <div class="row disabled"  id="nok-row">
+    <div class="row disabled" id="nok-row">
         <div class="cell-4"></div>
         <div class="cell-2">
             <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
@@ -143,30 +140,30 @@
         </div>
         <div class="cell-4"></div>
     </div>
-    <div class="row" style="margin-top: 30px">
+    <div class="row" style="margin-top: 100px;margin-left: 20px;margin-right: 20px">
         <table class="table" id="table">
             <thead>
             <tr>
-                <th>Kód</th>
-                <th>Zakázka</th>
-                <th>Produkt</th>
-                <th>Pracoviště</th>
-                <th>Začátek</th>
-                <th>Plán</th>
-                <th>Vyrobeno celkem</th>
-                <th>Vyrobeno na zakázce</th>
-                <th>Odvedeno celkem</th>
-                <th>Odvedeno na zakázce</th>
-                <th>Zbývá odvést</th>
-                <th>Nok celkem</th>
+                <th scope="col">Kód</th>
+                <th scope="col">Zakázka</th>
+                <th scope="col">Produkt</th>
+                <th scope="col">Pracoviště</th>
+                <th scope="col">Začátek</th>
+                <th scope="col">Plán</th>
+                <th scope="col">Vyrobeno celkem</th>
+                <th scope="col">Vyrobeno na zakázce</th>
+                <th scope="col">Odvedeno celkem</th>
+                <th scope="col">Odvedeno na zakázce</th>
+                <th scope="col">Zbývá odvést</th>
+                <th scope="col">Nok celkem</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody class="table-pointer">
             </tbody>
         </table>
     </div>
-    <p style="position: fixed;margin-left: 10px;margin-top: 10px;font-weight: bold">Osobní číslo:</p>
-    <p style="position: fixed;margin-left: 190px;margin-top: 10px" id="info-user-input"></p>
+    <p style="position: fixed;margin-left: 10px;margin-top: 10px;font-weight: bold;" >Osobní číslo:</p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 10px" id="info-user-input" ></p>
     <p style="position: fixed;margin-left: 10px;margin-top: 30px">Jméno a příjmení: </p>
     <p style="position: fixed;margin-left: 190px;margin-top: 30px" id="info-user-name"></p>
     <p style="position: fixed;margin-left: 10px;margin-top: 50px">Id v Zapsi:</p>
@@ -216,7 +213,7 @@
     <p style="position: fixed;margin-left: 10px;margin-top: 490px;color: red">Error:</p>
     <p style="position: fixed;margin-left: 190px;margin-top: 490px;color: red" id="info-error"></p>
     <p style="position: fixed;margin-left: 10px;margin-top: 510px;color: blue">Rostra:</p>
-    <p style="position: fixed;margin-left: 190px;margin-top: 510px;color: blue" id="info-rostra"></p>
+    <p style="position: fixed;margin-left: 190px;margin-top: 510px;color: blue" id="info-rostra" ></p>
 </div>
 
 

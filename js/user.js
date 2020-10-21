@@ -8,6 +8,7 @@ userOkButton.addEventListener("click", () => {
     processUserInput();
 })
 
+
 function processUserInput() {
     console.log("User entered: " + userInput.value);
     let data = {UserInput: userInput.value};
@@ -19,7 +20,8 @@ function processUserInput() {
             let result = JSON.parse(data);
             if (result.Result === "ok") {
                 userInput.value = result.UserName;
-                userRow.classList.add("disabled");
+                userInputCell.style.pointerEvents = "none"
+                orderInput.focus();
                 userOkButton.disabled = true
                 orderBackButton.disabled = false
                 orderOkButton.disabled = false
@@ -36,6 +38,7 @@ function processUserInput() {
                 infoError.textContent = ""
                 infoRostra.textContent = ""
                 infoError.textContent = ""
+                displayTable(result.TableData)
                 orderInput.focus();
             } else {
                 infoError.textContent = result.UserError;

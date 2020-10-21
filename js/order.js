@@ -3,7 +3,7 @@ orderBackButton.addEventListener("click", () => {
     orderInput.value = ""
     userInput.value = ""
     userInput.placeholder = "Zadejte osobní číslo"
-    userRow.classList.remove("disabled");
+    userInputCell.style.pointerEvents = "auto"
     orderRow.classList.add("disabled")
     userOkButton.disabled = false;
     orderOkButton.disabled = true;

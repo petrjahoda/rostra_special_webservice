@@ -35,6 +35,7 @@ const endOrderButton = document.getElementById("end-order-button");
 const transferOrderButton = document.getElementById("transfer-order-button");
 
 const table = document.getElementById("table");
+const tableBody = document.getElementById("table-body");
 
 let savedWorkplaces = {};
 
@@ -75,3 +76,5 @@ const infoWorkplacePriznakMn1 = document.getElementById("info-workplace-priznak-
 
 const infoError = document.getElementById("info-error");
 const infoRostra = document.getElementById("info-rostra");
+
+const userInputCell = document.getElementById("user-input-cell")

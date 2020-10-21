@@ -65,7 +65,7 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 	order, suffix := ParseOrder(data.OrderInput)
 	operation := ParseOperation(data.OperationSelect)
 	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
-	rows, err := db.Debug().Raw(command).Rows()
+	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		logError("Check operation", "Error: "+err.Error())
 		var responseData OperationResponseData

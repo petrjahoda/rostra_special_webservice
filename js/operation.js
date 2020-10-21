@@ -2,8 +2,7 @@ operationBackButton.addEventListener("click", () => {
     orderInput.value = ""
     orderInput.placeholder = "Zadejte číslo výrobního příkazu";
     const select = Metro.getPlugin("#operation-select", 'select');
-    select.data({
-    });
+    select.data({});
     orderRow.classList.remove("disabled");
     operationRow.classList.add("disabled")
     operationBackButton.disabled = true
