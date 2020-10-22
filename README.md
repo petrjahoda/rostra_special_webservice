@@ -29,8 +29,9 @@ Go webservice that enables operators to start and end their work described [here
 Updated [here](CHANGELOG.md)
 
 ## ToDo
-- [ ] Akce po stisku tri hlavnich tlacitek
+- [ ] Kontrola novych pozadavku
 - [ ] Upraveni logovani
-- [ ] Procisteni kodu, zlepseni citelnosti, apod.
+- [ ] Procisteni kodu, zlepseni citelnosti, happy path
+- [ ] Dokumentace, aktualizace readme
 
 ©2020 Petr Jahoda

@@ -70,6 +70,9 @@ function processCountInput() {
         response.text().then(function (data) {
             let result = JSON.parse(data);
             if (result.Result === "ok") {
+                sessionStorage.setItem("okCount", countOkInput.value)
+                sessionStorage.setItem("nokCount", countNokInput.value)
+                sessionStorage.setItem("nokType", nokTypeSelect.value)
                 okRow.classList.add("disabled")
                 nokRow.classList.add("disabled")
                 countButton.disabled = true

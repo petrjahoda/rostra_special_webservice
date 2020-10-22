@@ -36,7 +36,12 @@ operationSelect.addEventListener("keyup", function (event) {
 
 function processOperationInput() {
     console.log("Operation selected: " + operationSelect.value);
-    let data = {OperationSelect: operationSelect.value, OrderInput: sessionStorage.getItem("orderInput")};
+    let data = {
+        OperationSelect: operationSelect.value,
+        OrderInput: sessionStorage.getItem("orderInput"),
+        ProductId: sessionStorage.getItem("productId"),
+        Nasobnost: sessionStorage.getItem("nasobnost")
+    };
     fetch("/check_operation_input", {
         method: "POST",
         body: JSON.stringify(data)
@@ -70,6 +75,8 @@ function processOperationInput() {
                 infoOperationPriznakNasobnost.textContent = result.PriznakNasobnost
                 sessionStorage.setItem("nasobnost", result.Nasobnost)
                 infoOperationNasobnost.textContent = result.Nasobnost
+                infoOrderId.textContent = result.OrderId
+                sessionStorage.setItem("orderId", result.OrderId)
                 let pracoviste = {};
                 savedWorkplaces = result.Workplaces;
                 for (workplace of result.Workplaces) {

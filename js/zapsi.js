@@ -78,3 +78,16 @@ const infoError = document.getElementById("info-error");
 const infoRostra = document.getElementById("info-rostra");
 
 const userInputCell = document.getElementById("user-input-cell")
+
+
+clovekRadio.addEventListener("click", () => {
+    sessionStorage.setItem("radio", "clovek")
+})
+
+serizeniRadio.addEventListener("click", () => {
+    sessionStorage.setItem("radio", "serizeni")
+})
+
+strojRadio.addEventListener("click", () => {
+    sessionStorage.setItem("radio", "stroj")
+})

@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-const version = "2020.4.1.21"
+const version = "2020.4.1.22"
 const serviceName = "Rostra Special Web Service"
 const serviceDescription = "Rostra Special Web Service"
 const zapsiDatabaseConnection = "zapsi_uzivatel:zapsi@tcp(zapsidatabase:3306)/zapsi2?charset=utf8mb4&parseTime=True&loc=Local"
@@ -58,6 +58,9 @@ func (p *program) run() {
 	router.POST("/check_operation_input", checkOperationInput)
 	router.POST("/check_workplace_input", checkWorkplaceInput)
 	router.POST("/check_count_input", checkCountInput)
+	router.POST("/start_order", startOrder)
+	router.POST("/transfer_order", transferOrder)
+	router.POST("/end_order", endOrder)
 
 	err := http.ListenAndServe(":80", router)
 	if err != nil {

@@ -14,6 +14,14 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.4.1.22] - 2020-10-22
+
+### Added
+- fully working start-transfer-end buttons
+
+### Fixed
+- updated fetch functions in table.js to match operation.js and order.js
+
 ## [2020.4.1.21] - 2020-10-21
 
 ### Added

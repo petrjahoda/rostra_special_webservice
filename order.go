@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/julienschmidt/httprouter"
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"net/http"
@@ -18,9 +19,9 @@ type OrderResponseData struct {
 	Result               string
 	OrderInput           string
 	OrderName            string
-	OrderId              string
 	OrderError           string
 	PriznakSeriovaVyroba string
+	ProductId            string
 	Operations           []OperationList
 }
 
@@ -102,11 +103,13 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 			operationList = append(operationList, operation)
 		}
 		logInfo("Check order", "Scanned: "+strconv.Itoa(len(operationList))+" operations")
+		productId := createProductInZapsiIfNotExists(sytelineOrder.PolozkaVp)
 		var responseData OrderResponseData
 		responseData.Result = "ok"
 		responseData.OrderInput = order + "." + suffix
 		responseData.OrderName = sytelineOrder.PolozkaVp + " " + sytelineOrder.PopisPolVp
 		responseData.Operations = operationList
+		responseData.ProductId = strconv.Itoa(productId)
 		responseData.PriznakSeriovaVyroba = sytelineOrder.PriznakSeriovaVyroba
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
@@ -122,6 +125,33 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 		logInfo("Check order", "Ended with error")
 		return
 	}
+}
+
+func createProductInZapsiIfNotExists(polozkaVp string) int {
+	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	if err != nil {
+		logError("Check order", "Problem opening database: "+err.Error())
+		return 0
+	}
+	sqlDB, err := db.DB()
+	defer sqlDB.Close()
+	var zapsiProduct Product
+	db.Where("Name = ?", polozkaVp).Find(&zapsiProduct)
+	if zapsiProduct.OID > 0 {
+		logInfo("Check order", "Product "+polozkaVp+" already exists")
+		return zapsiProduct.OID
+	}
+	logInfo("Check order", "Product "+polozkaVp+" does not exist, creating product")
+	zapsiProduct.Name = polozkaVp
+	zapsiProduct.Barcode = polozkaVp
+	zapsiProduct.Cycle = 1
+	zapsiProduct.IdleFromTime = 1
+	zapsiProduct.ProductGroupID = 1
+	zapsiProduct.ProductStatusID = 1
+	db.Create(&zapsiProduct)
+	var newZapsiProduct Product
+	db.Where("Name = ?", polozkaVp).Find(&newZapsiProduct)
+	return newZapsiProduct.OID
 }
 
 func ParseOrder(orderId string) (string, string) {

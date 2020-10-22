@@ -75,7 +75,7 @@ function processWorkplaceInput() {
                             countButton.disabled = false
                             let chyby = {};
                             for (nokType of result.NokTypes) {
-                                chyby[nokType.Nazev] = nokType.Kod + ";" + nokType.Nazev + ""
+                                chyby[nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")] = nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")
                             }
                             const select = Metro.getPlugin("#nok-type-select", 'select');
                             select.data({

@@ -143,14 +143,14 @@ func (User) TableName() string {
 }
 
 type Order struct {
-	OID            int    `gorm:"column:OID"`
-	Name           string `gorm:"column:Name"`
-	Barcode        string `gorm:"column:Barcode"`
-	ProductID      int    `gorm:"column:ProductID"`
-	OrderStatusID  int    `gorm:"column:OrderStatusID"`
-	CountRequested int    `gorm:"column:CountRequested"`
-	WorkplaceID    int    `gorm:"column:WorkplaceID"`
-	Cavity         int    `gorm:"column:Cavity"`
+	OID            int           `gorm:"column:OID"`
+	Name           string        `gorm:"column:Name"`
+	Barcode        string        `gorm:"column:Barcode"`
+	ProductID      int           `gorm:"column:ProductID"`
+	OrderStatusID  int           `gorm:"column:OrderStatusID"`
+	CountRequested int           `gorm:"column:CountRequested"`
+	WorkplaceID    sql.NullInt32 `gorm:"column:WorkplaceID"`
+	Cavity         int           `gorm:"column:Cavity"`
 }
 
 func (Order) TableName() string {

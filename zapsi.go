@@ -405,7 +405,7 @@ package main
 //	return true
 //}
 //
-//func StartOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
+//func StartTerminalInputOrderInZapsi(userid []string, orderid []string, operationid []string, workplaceid []string, radio []string) bool {
 //	LogInfo("MAIN", "Starting order "+orderid[0])
 //	sytelineOrder := GetOrderFromSyteline(orderid)
 //	sytelineOperation := GetOperationFromSyteline(orderid, operationid)

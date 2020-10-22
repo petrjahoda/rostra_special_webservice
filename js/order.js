@@ -54,6 +54,7 @@ function processOrderInput() {
                 sessionStorage.setItem("orderInput", result.OrderInput)
                 infoOrderInput.textContent = result.OrderInput
                 sessionStorage.setItem("priznakSeriovaVyroba", result.PriznakSeriovaVyroba)
+                sessionStorage.setItem("productId", result.ProductId)
                 infoOrderPriznakSeriovaVyroba.textContent = result.PriznakSeriovaVyroba
                 let operace = {};
                 for (operation of result.Operations) {

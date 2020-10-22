@@ -14,6 +14,7 @@ import (
 type OperationInputData struct {
 	OperationSelect string
 	OrderInput      string
+	ProductId       string
 }
 
 type OperationResponseData struct {
@@ -30,6 +31,7 @@ type OperationResponseData struct {
 	Mn3Ks              string
 	PriznakNasobnost   string
 	Nasobnost          string
+	OrderId            string
 }
 
 func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
@@ -47,7 +49,7 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 		logInfo("Check operation", "Ended with error")
 		return
 	}
-	logInfo("Check operation", "Data: operation: "+data.OperationSelect+", order: "+data.OrderInput)
+	logInfo("Check operation", "Data: operation: "+data.OperationSelect+", order: "+data.OrderInput+", productId: "+data.ProductId)
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
 		logError("Check operation", "Problem opening database: "+err.Error())
@@ -134,6 +136,7 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 		}
 		if len(updatedSytelineWorkplaces) > 0 {
 			logInfo("Check operation", "Workplaces found: "+strconv.Itoa(len(updatedSytelineWorkplaces)))
+			orderId := createOrderInZapsiIfNotExists(data.OrderInput, data.OperationSelect, data.ProductId, sytelineOperation.Mn2Ks)
 			var responseData OperationResponseData
 			responseData.Result = "ok"
 			responseData.OperationInput = data.OperationSelect
@@ -142,6 +145,7 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 			responseData.SeznamParovychDilu = sytelineOperation.SeznamParDilu.String
 			responseData.JenPrenosMnozstvi = sytelineOperation.JenPrenosMnozstvi
 			responseData.PriznakMn2 = sytelineOperation.PriznakMn2
+			responseData.OrderId = strconv.Itoa(orderId)
 			logInfo("Check operation", sytelineOperation.Mn2Ks)
 			logInfo("Check operation", sytelineOperation.Mn3Ks)
 			if strings.Contains(sytelineOperation.Mn2Ks, ".") {
@@ -184,6 +188,43 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 		logInfo("Check operation", "Ended with error")
 		return
 	}
+}
+
+func createOrderInZapsiIfNotExists(orderInput string, operationSelect string, productId string, mn2Ks string) int {
+	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	if err != nil {
+		logError("Check operation", "Problem opening database: "+err.Error())
+		return 0
+	}
+	sqlDB, err := db.DB()
+	defer sqlDB.Close()
+	zapsiOrderName := orderInput + "-" + operationSelect
+	var zapsiOrder Order
+	db.Where("Name = ?", zapsiOrderName).Find(&zapsiOrder)
+	if zapsiOrder.OID > 0 {
+		logInfo("Check operation", "Order "+zapsiOrder.Name+" already exists")
+		return zapsiOrder.OID
+	}
+	logInfo("Check operation", "Order "+zapsiOrder.Name+" does not exist, creating order in zapsi")
+
+	productIdAsInt, err := strconv.Atoi(productId)
+	if err != nil {
+		logError("Check operation", "Problem parsing productId: "+productId)
+	}
+	countAsInt, err := strconv.Atoi(mn2Ks)
+	if err != nil {
+		logError("Check operation", "Problem parsing mn2Ks: "+productId)
+	}
+	var newOrder Order
+	newOrder.Name = zapsiOrderName
+	newOrder.Barcode = zapsiOrderName
+	newOrder.ProductID = productIdAsInt
+	newOrder.OrderStatusID = 1
+	newOrder.CountRequested = countAsInt
+	db.Create(&newOrder)
+	var returnOrder Order
+	db.Where("Name = ?", zapsiOrderName).Find(&returnOrder)
+	return returnOrder.OID
 }
 
 func ParseOperation(operationid string) string {

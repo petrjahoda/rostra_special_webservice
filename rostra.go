@@ -169,7 +169,7 @@ package main
 //		workplaceIdSplitted = strings.Split(workplaceid[0], ";")
 //	}
 //	logInfo("MAIN", "Starting order for "+workplaceIdSplitted[0]+" and "+radio[0])
-//	zapsiOrderCreated := StartOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted, radio)
+//	zapsiOrderCreated := StartTerminalInputOrderInZapsi(userid, orderid, operationid, workplaceIdSplitted, radio)
 //	actualTimeDivisor := GetActualTimeDivisor(workplaceIdSplitted)
 //	actualZapsiOpenorders := GetActualZapsiOpenFor(workplaceIdSplitted)
 //	if actualZapsiOpenorders > actualTimeDivisor {

@@ -89,6 +89,7 @@ function processTableRow(row) {
                 infoOrderInput.textContent = result.OrderInput
                 sessionStorage.setItem("priznakSeriovaVyroba", result.PriznakSeriovaVyroba)
                 infoOrderPriznakSeriovaVyroba.textContent = result.PriznakSeriovaVyroba
+                sessionStorage.setItem("productId", result.ProductId)
                 let operace = {};
                 for (operation of result.Operations) {
                     if (operationInputData === operation.Operace) {
@@ -148,9 +149,9 @@ function processTableRow(row) {
                             select.data({
                                 "Načtené pracoviště": pracoviste
                             });
+                            sessionStorage.setItem("orderId", result.OrderId)
                             infoRostra.textContent = ""
                             infoError.textContent = ""
-
 
 
                             for (workplace of savedWorkplaces) {
@@ -198,7 +199,7 @@ function processTableRow(row) {
                                                     countButton.disabled = false
                                                     let chyby = {};
                                                     for (nokType of result.NokTypes) {
-                                                        chyby[nokType.Nazev] = nokType.Kod + ";" + nokType.Nazev + ""
+                                                        chyby[nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")] = nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")
                                                     }
                                                     const select = Metro.getPlugin("#nok-type-select", 'select');
                                                     select.data({
@@ -233,8 +234,6 @@ function processTableRow(row) {
                                     }).catch((error) => {
                                         infoError.textContent = error.toString()
                                     });
-                                } else {
-                                    infoError.textContent = "Pracoviště nebylo nalezeno"
                                 }
                             }
                         } else {
@@ -244,9 +243,6 @@ function processTableRow(row) {
                 }).catch((error) => {
                     infoError.textContent = error.toString()
                 });
-
-
-
 
 
             } else {
