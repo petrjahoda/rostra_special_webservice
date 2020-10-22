@@ -84,6 +84,15 @@ func checkCountInput(writer http.ResponseWriter, request *http.Request, params h
 		logInfo("Check count", "Ended with error")
 		return
 	}
+	okCountAsInt, err := strconv.Atoi(data.OkCount)
+	if err != nil {
+		logError("Check count", "Problem parsing ok count: "+err.Error())
+	}
+	nokCountAsInt, err := strconv.Atoi(data.NokCount)
+	if err != nil {
+		logError("Check count", "Problem parsing nok count: "+err.Error())
+	}
+	totalCount := okCountAsInt + nokCountAsInt
 	switch data.JenPrenosMnozstvi {
 	case "1":
 		{
@@ -98,7 +107,7 @@ func checkCountInput(writer http.ResponseWriter, request *http.Request, params h
 					responseData.Result = "nok"
 					responseData.Transfer = "false"
 					responseData.End = "false"
-					responseData.RostraError = "Součet OK a NOK [" + data.OkCount + ":" + data.NokCount + "] je více než rozdíl přeneseného množství [" + strconv.Itoa(countFromSyteline) + "] a celkového množství k aktuální práci v Zapsi [" + strconv.Itoa(countFromZapsi) + "]"
+					responseData.RostraError = "Nelze provést přenos množství " + strconv.Itoa(totalCount) + "ks, v Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + "ks, do Syteline již přeneseno " + strconv.Itoa(countFromSyteline) + "ks , je možno přenést maximálně " + strconv.Itoa(countFromZapsi-countFromSyteline) + "ks"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
 					logInfo("Check count", "Ended with error")
@@ -128,7 +137,7 @@ func checkCountInput(writer http.ResponseWriter, request *http.Request, params h
 					responseData.Result = "nok"
 					responseData.Transfer = "false"
 					responseData.End = "false"
-					responseData.RostraError = "Součet OK a NOK [" + data.OkCount + ":" + data.NokCount + "] je více než mn2  [" + data.Mn2Ks + "]"
+					responseData.RostraError = "Nelze provést přenos množství " + strconv.Itoa(totalCount) + "ks, z předchozí operace bylo předáno " + data.Mn2Ks + "ks"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
 					logInfo("Check count", "Ended with error")
@@ -156,7 +165,7 @@ func checkCountInput(writer http.ResponseWriter, request *http.Request, params h
 					responseData.Result = "nok"
 					responseData.Transfer = "false"
 					responseData.End = "false"
-					responseData.RostraError = "Součet OK a NOK [" + data.OkCount + ":" + data.NokCount + "] je více než mn3  [" + data.Mn3Ks + "]"
+					responseData.RostraError = "Nelze provést přenos množství " + strconv.Itoa(totalCount) + "ks, do operace bylo vydáno " + data.Mn3Ks + "ks"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
 					logInfo("Check count", "Ended with error")
@@ -184,7 +193,7 @@ func checkCountInput(writer http.ResponseWriter, request *http.Request, params h
 					responseData.Result = "nok"
 					responseData.Transfer = "false"
 					responseData.End = "false"
-					responseData.RostraError = "Součet OK a NOK [" + data.OkCount + ":" + data.NokCount + "] je více než rozdíl přeneseného množství [" + strconv.Itoa(countFromSyteline) + "] a celkového množství k aktuální práci v Zapsi [" + strconv.Itoa(countFromZapsi) + "]"
+					responseData.RostraError = "Nelze provést přenos množství " + strconv.Itoa(totalCount) + "ks, v Zapsi je vyrobeno " + strconv.Itoa(countFromZapsi) + "ks, do Syteline již přeneseno " + strconv.Itoa(countFromSyteline) + "ks , je možno přenést maximálně " + strconv.Itoa(countFromZapsi-countFromSyteline) + "ks"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
 					logInfo("Check count", "Ended with error")
@@ -214,7 +223,7 @@ func checkCountInput(writer http.ResponseWriter, request *http.Request, params h
 					responseData.Result = "nok"
 					responseData.Transfer = "false"
 					responseData.End = "false"
-					responseData.RostraError = "Součet OK a NOK [" + data.OkCount + ":" + data.NokCount + "] je více než mn2  [" + data.Mn2Ks + "]"
+					responseData.RostraError = "Nelze provést přenos množství " + strconv.Itoa(totalCount) + "ks, z předchozí operace bylo předáno " + data.Mn2Ks + "ks"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
 					logInfo("Check count", "Ended with error")
@@ -242,7 +251,7 @@ func checkCountInput(writer http.ResponseWriter, request *http.Request, params h
 					responseData.Result = "nok"
 					responseData.Transfer = "false"
 					responseData.End = "false"
-					responseData.RostraError = "Součet OK a NOK [" + data.OkCount + ":" + data.NokCount + "] je více než mn3  [" + data.Mn3Ks + "]"
+					responseData.RostraError = "Nelze provést přenos množství " + strconv.Itoa(totalCount) + "ks, do operace bylo vydáno " + data.Mn3Ks + "ks"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
 					logInfo("Check count", "Ended with error")
