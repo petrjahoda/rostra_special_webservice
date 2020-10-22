@@ -11,7 +11,7 @@ type HomePageData struct {
 	Version string
 }
 
-func home(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func home(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	ipAddress := strings.Split(request.RemoteAddr, ":")
 	logInfo(ipAddress[0], "Sending home page")
 	var data HomePageData

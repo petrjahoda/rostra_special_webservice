@@ -19,6 +19,9 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 ### Added
 - fully working start-transfer-end buttons
 
+### Changed
+- removed old files and unused files to reduce docker image size
+
 ### Fixed
 - updated fetch functions in table.js to match operation.js and order.js
 

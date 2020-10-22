@@ -31,7 +31,8 @@ Updated [here](CHANGELOG.md)
 ## ToDo
 - [ ] Kontrola novych pozadavku
 - [ ] Upraveni logovani
-- [ ] Procisteni kodu, zlepseni citelnosti, happy path
-- [ ] Dokumentace, aktualizace readme
+- [ ] Happy Path
+- [ ] Zlepseni citelnosto kodu
+- [ ] Dokumentace v readme
 
 ©2020 Petr Jahoda

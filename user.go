@@ -41,7 +41,7 @@ type Table struct {
 	TotalNokCount                      string
 }
 
-func checkUserInput(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	logInfo("Check user", "Started")
 	var data UserInputData
 	err := json.NewDecoder(request.Body).Decode(&data)

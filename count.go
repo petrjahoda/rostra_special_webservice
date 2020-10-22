@@ -41,7 +41,7 @@ type CountResponseData struct {
 	RostraError string
 }
 
-func checkCountInput(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+func checkCountInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	logInfo("Check count", "Started")
 	var data CountInputData
 	err := json.NewDecoder(request.Body).Decode(&data)
