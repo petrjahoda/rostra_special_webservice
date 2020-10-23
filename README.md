@@ -16,23 +16,44 @@
 
 # Rostra Special WebService
 
-![Figure 1-1](screenshot.png?raw=true)
+![Example](/gif/example.gif)
 
 ## Installation
 * use docker image from https://cloud.docker.com/r/petrjahoda/rostra_special_webservice
-* use linux, mac or windows version and make it run like a service
 
 ## Description
-Go webservice that enables operators to start and end their work described [here](logika.pdf)
+Go webservice with js frontend that enables operators to start and end their work described [here](logika.pdf)
+Service communicates with Zapsi MySQL database and Syteline SQL Server database.
+Numeral checks are made in the background before an action (database changes) is made.
+
+## Information
+### User check button action
+- user.js
+- table.js (for displaying data for actual user)
+- user.go
+### Order check button action
+- order.js
+- order.go
+### Operation check button action
+- operation.js
+- operation.go
+### Workplace check button action
+- workplace.js
+- workplace.go
+### Count check button action
+- count.js
+- count.go
+### Start order button action
+- start.js
+- start.go
+### End order button action
+- end.js
+- end.go
+### End order button action
+- end.js
+- end.go
 
 ## Changelog
 Updated [here](CHANGELOG.md)
-
-## ToDo
-- [ ] Kontrola novych pozadavku
-- [ ] Upraveni logovani
-- [ ] Happy Path
-- [ ] Zlepseni citelnosto kodu
-- [ ] Dokumentace v readme
 
 ©2020 Petr Jahoda

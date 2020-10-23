@@ -32,22 +32,23 @@ type TransferOrderResponseData struct {
 }
 
 func transferOrder(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	logInfo("Transfer order", "Started")
+	logInfo("MAIN", "Parsing data from page started")
 	var data TransferOrderInputData
 	err := json.NewDecoder(request.Body).Decode(&data)
 	if err != nil {
-		logError("Transfer order", "Error parsing input: "+err.Error())
+		logError("MAIN", "Error parsing data: "+err.Error())
 		var responseData TransferOrderResponseData
 		responseData.Result = "nok"
 		responseData.TransferOrderError = "Problem parsing input: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Transfer order", "Ended with error")
+		logInfo("MAIN", "Parsing data from page ended")
 		return
 	}
-	thisOpenOrderInZapsi := CheckThisOpenOrderInZapsi(data.UserId, data.OrderId, data.WorkplaceCode)
+	logInfo(data.UserInput, "Transfer order started")
+	thisOpenOrderInZapsi := CheckThisOpenOrderInZapsi(data.UserId, data.OrderId, data.WorkplaceCode, data.UserInput)
 	if !thisOpenOrderInZapsi {
-		StartWithCloseOrderInZapsi(data.UserId, data.OrderId, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType, data.Nasobnost)
+		CreateAndCloseOrderInZapsi(data.UserId, data.OrderId, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType, data.Nasobnost, data.UserInput)
 	}
 	transferredToSyteline := TransferOkAndNokToSyteline(data.UserInput, data.OrderInput, data.OperationSelect, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType)
 	if transferredToSyteline {
@@ -55,48 +56,49 @@ func transferOrder(writer http.ResponseWriter, request *http.Request, _ httprout
 		responseData.Result = "ok"
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Transfer order", "Ended successfully")
+		logInfo(data.UserInput, "Transfer order ended")
 		return
 	} else {
-		logError("Transfer order", "Problem transferring order to Syteline")
+		logError(data.UserInput, "Problem transferring order to Syteline")
 		var responseData TransferOrderResponseData
 		responseData.Result = "nok"
 		responseData.TransferOrderError = "Problem transferring order to Syteline"
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
+		logInfo(data.UserInput, "Transfer order ended")
 		return
 	}
 }
 
 func TransferOkAndNokToSyteline(userInput string, orderInput string, operationSelect string, workplaceCode string, okCount string, nokCount string, nokType string) bool {
-	logInfo("Transfer order", "Transferring ok and nok to Syteline")
+	logInfo(userInput, "Transferring ok and nok to Syteline started")
 	splittedOrderInput := strings.Split(orderInput, ".")
 	if len(splittedOrderInput) < 2 {
-		logError("Transfer order", "Problem with order, not containing suffix: "+orderInput)
+		logError(userInput, "Transferring ok and nok to Syteline ended, problem with order, not containing suffix: "+orderInput)
 		return false
 	}
 	order := splittedOrderInput[0]
 	suffixAsNumber := splittedOrderInput[1]
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Transfer order", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
 	okAsInt, err := strconv.Atoi(okCount)
 	if err != nil {
-		logError("Transfer order", "Problem parsing ok count: "+okCount)
+		logError(userInput, "Transferring ok and nok to Syteline ended, problem parsing ok count: "+err.Error())
 		return false
 	}
 	nokAsInt, err := strconv.Atoi(nokCount)
 	if err != nil {
-		logError("Transfer order", "Problem parsing nok count: "+nokCount)
+		logError(userInput, "Transferring ok and nok to Syteline ended, problem parsing nok count: "+err.Error())
 		return false
 	}
 	parsedFail := strings.Split(nokType, ";")
 	if len(parsedFail) < 2 {
-		logError("Transfer order", "Problem parsing fail, does not contain ; "+nokType)
+		logError(userInput, "Transferring ok and nok to Syteline ended, problem parsing nok type: "+okCount)
 		return false
 	}
 	failBarcode := parsedFail[0]
@@ -106,42 +108,43 @@ func TransferOkAndNokToSyteline(userInput string, orderInput string, operationSe
 		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
 			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, "5", order, suffixAsNumber, operationSelect, workplaceCode, 0.0, float64(nokAsInt), 0.0, failBarcode)
 	}
+	logInfo(userInput, "Transferring ok and nok to Syteline ended")
 	return true
 
 }
 
-func StartWithCloseOrderInZapsi(userId string, orderId string, workplaceCode string, okCount string, nokCount string, nokType string, nasobnost string) {
-	logInfo("Transfer order", "Starting and closing terminal input order in Zapsi")
+func CreateAndCloseOrderInZapsi(userId string, orderId string, workplaceCode string, okCount string, nokCount string, nokType string, nasobnost string, userInput string) {
+	logInfo(userInput, "Creating and closing terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Transfer order", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
 	orderIdAsInt, err := strconv.Atoi(orderId)
 	if err != nil {
-		logError("Transfer order", "Problem parsing order id: "+orderId)
+		logError(userInput, "Creating and closing terminal input order in Zapsi ended, problem parsing orderid: "+err.Error())
 		return
 	}
 	userIdAsInt, err := strconv.Atoi(userId)
 	if err != nil {
-		logError("Transfer order", "Problem parsing user id: "+userId)
+		logError(userInput, "Creating and closing terminal input order in Zapsi ended, problem parsing userid: "+err.Error())
 		return
 	}
 	nasobnostAsInt, err := strconv.Atoi(nasobnost)
 	if err != nil {
-		logError("Transfer order", "Problem parsing user id: "+nasobnost)
+		logError(userInput, "Creating and closing terminal input order in Zapsi ended, problem parsing nasobnost: "+err.Error())
 		return
 	}
 	okCountAsInt, err := strconv.Atoi(okCount)
 	if err != nil {
-		logError("Transfer order", "Problem parsing ok count: "+okCount)
+		logError(userInput, "Creating and closing terminal input order in Zapsi ended, problem parsing ok count: "+err.Error())
 		return
 	}
 	nokCountAsInt, err := strconv.Atoi(nokCount)
 	if err != nil {
-		logError("Transfer order", "Problem parsing nok count: "+nokCount)
+		logError(userInput, "Creating and closing terminal input order in Zapsi ended, problem parsing nok count: "+err.Error())
 		return
 	}
 	var workplace Workplace
@@ -161,7 +164,7 @@ func StartWithCloseOrderInZapsi(userId string, orderId string, workplaceCode str
 	terminalInputOrder.Fail = nokCountAsInt
 	db.Create(&terminalInputOrder)
 	if nokCountAsInt > 0 {
-		logInfo("Transfer order", "Saving "+nokType+" fails to Zapsi")
+		logInfo(userInput, "Saving "+nokType+" fails to Zapsi")
 		failId := CheckFailInZapsi(nokType)
 		for i := 0; i < nokCountAsInt; i++ {
 			var terminalInputFail TerminalInputFail
@@ -173,6 +176,7 @@ func StartWithCloseOrderInZapsi(userId string, orderId string, workplaceCode str
 			db.Create(&terminalInputFail)
 		}
 	}
+	logInfo(userInput, "Creating and closing terminal input order in Zapsi ended")
 }
 
 func CheckFailInZapsi(nokType string) int {
@@ -207,11 +211,11 @@ func CheckFailInZapsi(nokType string) int {
 	return checkFail.OID
 }
 
-func CheckThisOpenOrderInZapsi(userId string, orderId string, workplaceCode string) bool {
-	logInfo("Transfer order", "Checking for open order in Zapsi")
+func CheckThisOpenOrderInZapsi(userId string, orderId string, workplaceCode string, userInput string) bool {
+	logInfo(userInput, "Checking for open terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Transfer order", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
 	sqlDB, err := db.DB()
@@ -221,7 +225,9 @@ func CheckThisOpenOrderInZapsi(userId string, orderId string, workplaceCode stri
 	var terminalInputOrder TerminalInputOrder
 	db.Where("OrderId = ?", orderId).Where("UserId = ?", userId).Where("DeviceId = ?", workplace.DeviceID).Where("Dte is null").Find(&terminalInputOrder)
 	if terminalInputOrder.OID > 0 {
+		logInfo(userInput, "Checking for open terminal input order in Zapsi ended, order found")
 		return true
 	}
+	logInfo(userInput, "Checking for open terminal input order in Zapsi ended, order not found")
 	return false
 }

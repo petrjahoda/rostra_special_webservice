@@ -10,7 +10,6 @@ operationBackButton.addEventListener("click", () => {
     orderOkButton.disabled = false;
     orderBackButton.disabled = false;
     infoRostra.textContent = ""
-    infoError.textContent = ""
     infoOperationNasobnost.textContent = ""
     infoOperationPriznakNasobnost.textContent = ""
     infoOperationMn2Ks.textContent = ""
@@ -40,7 +39,7 @@ function processOperationInput() {
         OperationSelect: operationSelect.value,
         OrderInput: sessionStorage.getItem("orderInput"),
         ProductId: sessionStorage.getItem("productId"),
-        Nasobnost: sessionStorage.getItem("nasobnost")
+        UserInput: sessionStorage.getItem("userInput")
     };
     fetch("/check_operation_input", {
         method: "POST",
@@ -77,23 +76,22 @@ function processOperationInput() {
                 infoOperationNasobnost.textContent = result.Nasobnost
                 infoOrderId.textContent = result.OrderId
                 sessionStorage.setItem("orderId", result.OrderId)
-                let pracoviste = {};
+                let tableData = {};
                 savedWorkplaces = result.Workplaces;
-                for (workplace of result.Workplaces) {
-                    pracoviste[workplace.ZapsiZdroj] = workplace.ZapsiZdroj
+                for (let workplace of result.Workplaces) {
+                    tableData[workplace.ZapsiZdroj] = workplace.ZapsiZdroj
                 }
                 const select = Metro.getPlugin("#workplace-select", 'select');
                 select.data({
-                    "Načtené pracoviště": pracoviste
+                    "Načtené pracoviště": tableData
                 });
                 infoRostra.textContent = ""
-                infoError.textContent = ""
                 workplaceSelect.focus()
             } else {
-                infoError.textContent = result.OperationError;
+                infoRostra.textContent = result.OperationError;
             }
         });
     }).catch((error) => {
-        infoError.textContent = error.toString()
+        infoRostra.textContent = error.toString()
     });
 }

@@ -15,6 +15,7 @@ type OperationInputData struct {
 	OperationSelect string
 	OrderInput      string
 	ProductId       string
+	UserInput       string
 }
 
 type OperationResponseData struct {
@@ -35,48 +36,48 @@ type OperationResponseData struct {
 }
 
 func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	logInfo("Check operation", "Started")
+	logInfo("MAIN", "Parsing data from page started")
 	var data OperationInputData
 	err := json.NewDecoder(request.Body).Decode(&data)
 	if err != nil {
-		logError("Check operation", "Error parsing input: "+err.Error())
+		logError("MAIN", "Error parsing data: "+err.Error())
 		var responseData OperationResponseData
 		responseData.Result = "nok"
 		responseData.OperationInput = data.OperationSelect
 		responseData.OperationError = "Problem parsing input: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check operation", "Ended with error")
+		logInfo("MAIN", "Parsing data from page ended")
 		return
 	}
-	logInfo("Check operation", "Data: operation: "+data.OperationSelect+", order: "+data.OrderInput+", productId: "+data.ProductId)
+	logInfo(data.UserInput, "Data parsed, checking operation in syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check operation", "Problem opening database: "+err.Error())
+		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData OperationResponseData
 		responseData.Result = "nok"
 		responseData.OperationInput = data.OperationSelect
 		responseData.OperationError = "Problem connecting Syteline database: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check operation", "Ended with error")
+		logInfo(data.UserInput, "Checking operation in syteline ended")
 		return
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
-	order, suffix := ParseOrder(data.OrderInput)
-	operation := ParseOperation(data.OperationSelect)
+	order, suffix := ParseOrder(data.OrderInput, data.UserInput)
+	operation := ParseOperation(data.OperationSelect, data.UserInput)
 	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
-		logError("Check operation", "Error: "+err.Error())
+		logError(data.UserInput, "Error reading data from Syteline: "+err.Error())
 		var responseData OperationResponseData
 		responseData.Result = "nok"
 		responseData.OperationInput = data.OperationSelect
-		responseData.OperationError = "Problem connecting getting data: " + err.Error()
+		responseData.OperationError = "Problem reading data from Syteline: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check operation", "Ended with error")
+		logInfo(data.UserInput, "Checking operation in syteline ended")
 		return
 	}
 
@@ -87,30 +88,30 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 	for rows.Next() {
 		err = rows.Scan(&sytelineOperation.Pracoviste, &sytelineOperation.PracovistePopis, &sytelineOperation.UvolnenoOp, &sytelineOperation.PriznakMn2, &sytelineOperation.Mn2Ks, &sytelineOperation.PriznakMn3, &sytelineOperation.Mn3Ks, &sytelineOperation.JenPrenosMnozstvi, &sytelineOperation.PriznakNasobnost, &sytelineOperation.Nasobnost, &sytelineOperation.ParovyDil, &sytelineOperation.SeznamParDilu)
 		if err != nil {
-			logError("Check operation", "Error: "+err.Error())
+			logError(data.UserInput, "Error reading data from Syteline: "+err.Error())
 			var responseData OperationResponseData
 			responseData.Result = "nok"
 			responseData.OperationInput = data.OperationSelect
-			responseData.OperationError = "Problem connecting getting data: " + err.Error()
+			responseData.OperationError = "Problem reading data from Syteline: " + err.Error()
 			writer.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(writer).Encode(responseData)
-			logInfo("Check operation", "Ended with error")
+			logInfo(data.UserInput, "Checking operation in syteline ended")
 			return
 		}
 	}
 	if len(sytelineOperation.Pracoviste) > 0 {
-		logInfo("Check operation", "Operation found: "+data.OperationSelect)
+		logInfo(data.UserInput, "Operation "+data.OperationSelect+" found")
 		command = "declare @CisloVP JobType, @PriponaVP SuffixType, @Operace OperNumType select   @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec dbo.ZapsiZdrojeOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP , @Operace = @Operace;\n"
 		workplaceRows, err := db.Raw(command).Rows()
 		if err != nil {
-			logError("Check operation", "Error: "+err.Error())
+			logError(data.UserInput, "Error reading data from Syteline: "+err.Error())
 			var responseData OperationResponseData
 			responseData.Result = "nok"
 			responseData.OperationInput = data.OperationSelect
-			responseData.OperationError = "Problem connecting getting data: " + err.Error()
+			responseData.OperationError = "Problem reading data from Syteline: " + err.Error()
 			writer.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(writer).Encode(responseData)
-			logInfo("Check operation", "Ended with error")
+			logInfo(data.UserInput, "Checking operation in syteline ended")
 			return
 		}
 		defer workplaceRows.Close()
@@ -119,24 +120,24 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 			err = workplaceRows.Scan(&sytelineWorkplace.ZapsiZdroj, &sytelineWorkplace.PriznakMn1, &sytelineWorkplace.ViceVp, &sytelineWorkplace.SlPrac, &sytelineWorkplace.TypZdrojeZapsi, &sytelineWorkplace.AutoPrevodMnozstvi, &sytelineWorkplace.MnozstviAutoPrevodu)
 			sytelineWorkplaces = append(sytelineWorkplaces, sytelineWorkplace)
 			if err != nil {
-				logError("Check operation", "Error: "+err.Error())
+				logError(data.UserInput, "Error reading data from Syteline: "+err.Error())
 				var responseData OperationResponseData
 				responseData.Result = "nok"
 				responseData.OperationInput = data.OperationSelect
-				responseData.OperationError = "Problem connecting getting data: " + err.Error()
+				responseData.OperationError = "Problem reading data from Syteline: " + err.Error()
 				writer.Header().Set("Content-Type", "application/json")
 				_ = json.NewEncoder(writer).Encode(responseData)
-				logInfo("Check operation", "Ended with error")
+				logInfo(data.UserInput, "Checking operation in syteline ended")
 				return
 			}
 		}
 		for _, sytelineWorkplace := range sytelineWorkplaces {
-			sytelineWorkplace.ZapsiZdroj = UpdateZapsiZdrojFor(sytelineWorkplace)
+			sytelineWorkplace.ZapsiZdroj = UpdateZapsiZdrojFor(sytelineWorkplace, data.UserInput)
 			updatedSytelineWorkplaces = append(updatedSytelineWorkplaces, sytelineWorkplace)
 		}
 		if len(updatedSytelineWorkplaces) > 0 {
-			logInfo("Check operation", "Workplaces found: "+strconv.Itoa(len(updatedSytelineWorkplaces)))
-			orderId := createOrderInZapsiIfNotExists(data.OrderInput, data.OperationSelect, data.ProductId, sytelineOperation.Mn2Ks)
+			logInfo(data.UserInput, "Found workplaces: "+strconv.Itoa(len(updatedSytelineWorkplaces)))
+			orderId := checkOrderInZapsi(data.OrderInput, data.OperationSelect, data.ProductId, sytelineOperation.Mn2Ks, data.UserInput)
 			var responseData OperationResponseData
 			responseData.Result = "ok"
 			responseData.OperationInput = data.OperationSelect
@@ -146,8 +147,6 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 			responseData.JenPrenosMnozstvi = sytelineOperation.JenPrenosMnozstvi
 			responseData.PriznakMn2 = sytelineOperation.PriznakMn2
 			responseData.OrderId = strconv.Itoa(orderId)
-			logInfo("Check operation", sytelineOperation.Mn2Ks)
-			logInfo("Check operation", sytelineOperation.Mn3Ks)
 			if strings.Contains(sytelineOperation.Mn2Ks, ".") {
 				responseData.Mn2Ks = sytelineOperation.Mn2Ks[:strings.Index(sytelineOperation.Mn2Ks, ".")]
 			} else {
@@ -164,36 +163,37 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 			responseData.Workplaces = updatedSytelineWorkplaces
 			writer.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(writer).Encode(responseData)
-			logInfo("Check operation", "Ended successfully")
+			logInfo(data.UserInput, "Checking operation in syteline ended")
 			return
 		} else {
-			logInfo("Check operation", "Workplaces not found for "+data.OperationSelect)
+			logInfo(data.UserInput, "Workplaces not found for "+data.OperationSelect)
 			var responseData OperationResponseData
 			responseData.Result = "nok"
 			responseData.OperationInput = data.OperationSelect
-			responseData.OperationError = "Workplaces not found"
+			responseData.OperationError = "No workplace found for " + data.OperationSelect
 			writer.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(writer).Encode(responseData)
-			logInfo("Check operation", "Ended with error")
+			logInfo(data.UserInput, "Checking operation in syteline ended")
 			return
 		}
 	} else {
-		logInfo("Check operation", "Operation not found for "+data.OperationSelect)
+		logInfo(data.UserInput, "Operation "+data.OperationSelect+" not found")
 		var responseData OperationResponseData
 		responseData.Result = "nok"
 		responseData.OperationInput = data.OperationSelect
-		responseData.OperationError = "Operation not found"
+		responseData.OperationError = "Operation not found for " + data.OperationSelect
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check operation", "Ended with error")
+		logInfo(data.UserInput, "Checking operation in syteline ended")
 		return
 	}
 }
 
-func createOrderInZapsiIfNotExists(orderInput string, operationSelect string, productId string, mn2Ks string) int {
+func checkOrderInZapsi(orderInput string, operationSelect string, productId string, mn2Ks string, userInput string) int {
+	logInfo(userInput, "Checking order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check operation", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return 0
 	}
 	sqlDB, err := db.DB()
@@ -202,18 +202,19 @@ func createOrderInZapsiIfNotExists(orderInput string, operationSelect string, pr
 	var zapsiOrder Order
 	db.Where("Name = ?", zapsiOrderName).Find(&zapsiOrder)
 	if zapsiOrder.OID > 0 {
-		logInfo("Check operation", "Order "+zapsiOrder.Name+" already exists")
+		logInfo(userInput, "Checking order in Zapsi ended, order "+zapsiOrder.Name+" already exists")
 		return zapsiOrder.OID
 	}
-	logInfo("Check operation", "Order "+zapsiOrder.Name+" does not exist, creating order in zapsi")
-
+	logInfo(userInput, "Order "+zapsiOrder.Name+" does not exist, creating order in zapsi")
 	productIdAsInt, err := strconv.Atoi(productId)
 	if err != nil {
-		logError("Check operation", "Problem parsing productId: "+productId)
+		logError(userInput, "Checking order in Zapsi ended, problem parsing productId: "+productId)
+		return 0
 	}
 	countAsInt, err := strconv.Atoi(mn2Ks)
 	if err != nil {
-		logError("Check operation", "Problem parsing mn2Ks: "+productId)
+		logError(userInput, "Checking order in Zapsi ended, problem parsing mn2Ks: "+productId)
+		return 0
 	}
 	var newOrder Order
 	newOrder.Name = zapsiOrderName
@@ -224,28 +225,32 @@ func createOrderInZapsiIfNotExists(orderInput string, operationSelect string, pr
 	db.Create(&newOrder)
 	var returnOrder Order
 	db.Where("Name = ?", zapsiOrderName).Find(&returnOrder)
+	logInfo(userInput, "Checking order in Zapsi ended")
 	return returnOrder.OID
 }
 
-func ParseOperation(operationid string) string {
+func ParseOperation(operationid string, userInput string) string {
+	logInfo(userInput, "Parsing operation started")
 	if strings.Contains(operationid, ";") {
 		parsedOperation := strings.Split(operationid, ";")
+		logInfo(userInput, "Parsing operation ended")
 		return parsedOperation[0]
 	}
+	logInfo(userInput, "Parsing operation ended")
 	return operationid
 }
 
-func UpdateZapsiZdrojFor(workplace SytelineWorkplace) string {
-	logInfo("Check operation", "Updating workplace name: "+workplace.ZapsiZdroj)
+func UpdateZapsiZdrojFor(workplace SytelineWorkplace, userInput string) string {
+	logInfo(userInput, "Updating ZapsiZdroj for workplace"+workplace.ZapsiZdroj)
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check operation", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return ""
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplace.ZapsiZdroj).Find(&zapsiWorkplace)
-	logInfo("Check operation", "Updated to: "+workplace.ZapsiZdroj+";"+zapsiWorkplace.Name)
+	logInfo(userInput, "Zapsi Zdroj updated to: "+workplace.ZapsiZdroj+";"+zapsiWorkplace.Name)
 	return workplace.ZapsiZdroj + ";" + zapsiWorkplace.Name
 }

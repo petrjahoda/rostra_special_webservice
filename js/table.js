@@ -65,7 +65,7 @@ function processTableRow(row) {
     let workplaceCode = workplaceSplitted[0]
     let workplaceName = workplaceSplitted[1]
     console.log("Workplace Input data: " + workplaceCode)
-    let data = {OrderInput: orderInputData};
+    let data = {OrderInput: orderInputData, UserInput: sessionStorage.getItem("userInput")};
     fetch("/check_order_input", {
         method: "POST",
         body: JSON.stringify(data)
@@ -90,21 +90,23 @@ function processTableRow(row) {
                 sessionStorage.setItem("priznakSeriovaVyroba", result.PriznakSeriovaVyroba)
                 infoOrderPriznakSeriovaVyroba.textContent = result.PriznakSeriovaVyroba
                 sessionStorage.setItem("productId", result.ProductId)
-                let operace = {};
-                for (operation of result.Operations) {
+                let tableData = {};
+                for (let operation of result.Operations) {
                     if (operationInputData === operation.Operace) {
-                        operace[operation.Operace] = operation.Operace + ": " + operation.Pracoviste + " [" + operation.PracovistePopis + "]"
+                        tableData[operation.Operace] = operation.Operace + ": " + operation.Pracoviste + " [" + operation.PracovistePopis + "]"
                     }
                 }
                 const select = Metro.getPlugin("#operation-select", 'select');
                 select.data({
-                    "Načtené operace": operace
+                    "Načtené operace": tableData
                 });
                 infoRostra.textContent = ""
-                infoError.textContent = ""
-
-
-                data = {OperationSelect: operationInputData, OrderInput: sessionStorage.getItem("orderInput")};
+                data = {
+                    OperationSelect: operationSelect.value,
+                    OrderInput: sessionStorage.getItem("orderInput"),
+                    ProductId: sessionStorage.getItem("productId"),
+                    UserInput: sessionStorage.getItem("userInput")
+                };
                 fetch("/check_operation_input", {
                     method: "POST",
                     body: JSON.stringify(data)
@@ -138,23 +140,24 @@ function processTableRow(row) {
                             infoOperationPriznakNasobnost.textContent = result.PriznakNasobnost
                             sessionStorage.setItem("nasobnost", result.Nasobnost)
                             infoOperationNasobnost.textContent = result.Nasobnost
-                            let pracoviste = {};
+                            infoOrderId.textContent = result.OrderId
+                            sessionStorage.setItem("orderId", result.OrderId)
+                            let tableData = {};
                             savedWorkplaces = result.Workplaces;
-                            for (workplace of result.Workplaces) {
+                            for (let workplace of result.Workplaces) {
                                 if (workplace.ZapsiZdroj.includes(workplaceCode)) {
-                                    pracoviste[workplace.ZapsiZdroj] = workplace.ZapsiZdroj
+                                    tableData[workplace.ZapsiZdroj] = workplace.ZapsiZdroj
                                 }
                             }
                             const select = Metro.getPlugin("#workplace-select", 'select');
                             select.data({
-                                "Načtené pracoviště": pracoviste
+                                "Načtené pracoviště": tableData
                             });
                             sessionStorage.setItem("orderId", result.OrderId)
                             infoRostra.textContent = ""
-                            infoError.textContent = ""
 
 
-                            for (workplace of savedWorkplaces) {
+                            for (let workplace of savedWorkplaces) {
                                 if (workplace.ZapsiZdroj.includes(workplaceCode)) {
                                     console.log("Workplace found: " + workplaceSelect.value);
                                     workplaceBackButton.disabled = true
@@ -177,7 +180,8 @@ function processTableRow(row) {
                                         SeznamParovychDilu: sessionStorage.getItem("seznamParovychDilu"),
                                         JenPrenosMnozstvi: sessionStorage.getItem("jenPrenosMnozstvi"),
                                         TypZdrojeZapsi: sessionStorage.getItem("typZdrojeZapsi"),
-                                        ViceVp: sessionStorage.getItem("viceVp")
+                                        ViceVp: sessionStorage.getItem("viceVp"),
+                                        UserInput: sessionStorage.getItem("userInput")
                                     };
                                     fetch("/check_workplace_input", {
                                         method: "POST",
@@ -197,13 +201,13 @@ function processTableRow(row) {
                                                     nokRow.classList.remove("disabled")
                                                     countBackButton.disabled = false
                                                     countButton.disabled = false
-                                                    let chyby = {};
-                                                    for (nokType of result.NokTypes) {
-                                                        chyby[nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")] = nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")
+                                                    let tableData = {};
+                                                    for (let nokType of result.NokTypes) {
+                                                        tableData[nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")] = nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")
                                                     }
                                                     const select = Metro.getPlugin("#nok-type-select", 'select');
                                                     select.data({
-                                                        "Načtené neshody": chyby
+                                                        "Načtené neshody": tableData
                                                     });
                                                 }
                                                 if (result.StartButton === "true") {
@@ -225,34 +229,33 @@ function processTableRow(row) {
                                                     strojRadio.disabled = false
                                                 }
                                                 infoRostra.textContent = ""
-                                                infoError.textContent = ""
                                             } else {
-                                                infoError.text = result.WorkplaceError
+                                                infoRostra.text = result.WorkplaceError
                                             }
 
                                         });
                                     }).catch((error) => {
-                                        infoError.textContent = error.toString()
+                                        infoRostra.textContent = error.toString()
                                     });
                                 }
                             }
                         } else {
-                            infoError.textContent = result.OperationError;
+                            infoRostra.textContent = result.OperationError;
                         }
                     });
                 }).catch((error) => {
-                    infoError.textContent = error.toString()
+                    infoRostra.textContent = error.toString()
                 });
 
 
             } else {
-                infoError.textContent = result.OrderError
+                infoRostra.textContent = result.OrderError
                 orderInput.placeholder = result.OrderError
                 orderInput.value = ""
             }
         });
     }).catch((error) => {
-        infoError.textContent = error.toString()
+        infoRostra.textContent = error.toString()
     });
 }
 

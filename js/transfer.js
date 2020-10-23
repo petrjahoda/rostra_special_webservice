@@ -22,10 +22,10 @@ transferOrderButton.addEventListener("click", () => {
                 infoRostra.textContent = "Data uložena"
                 setTimeout(() => window.location.replace(''), 3000)
             } else {
-                infoError.textContent = result.TransferOrderError;
+                infoRostra.textContent = result.TransferOrderError;
             }
         });
     }).catch((error) => {
-        infoError.textContent = error.toString()
+        infoRostra.textContent = error.toString()
     });
 })

@@ -13,7 +13,7 @@ type HomePageData struct {
 
 func home(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	ipAddress := strings.Split(request.RemoteAddr, ":")
-	logInfo(ipAddress[0], "Sending home page")
+	logInfo("MAIN", "Sending home page to "+ipAddress[0])
 	var data HomePageData
 	data.Version = version
 	writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
@@ -21,5 +21,5 @@ func home(writer http.ResponseWriter, request *http.Request, _ httprouter.Params
 	writer.Header().Set("Expires", "0")
 	tmpl := template.Must(template.ParseFiles("./html/home.html"))
 	_ = tmpl.Execute(writer, data)
-	logInfo(ipAddress[0], "Home page sent")
+	logInfo("MAIN", "Home page sent")
 }

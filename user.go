@@ -42,31 +42,31 @@ type Table struct {
 }
 
 func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	logInfo("Check user", "Started")
+	logInfo("MAIN", "Parsing data from page started")
 	var data UserInputData
 	err := json.NewDecoder(request.Body).Decode(&data)
 	if err != nil {
-		logError("Check user", "Error parsing input: "+err.Error())
+		logError("MAIN", "Error parsing data: "+err.Error())
 		var responseData UserResponseData
 		responseData.Result = "nok"
 		responseData.UserInput = data.UserInput
-		responseData.UserError = "Problem parsing input: " + err.Error()
+		responseData.UserError = "Problem parsing data: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check user", "Ended with error")
+		logInfo("MAIN", "Parsing data from page ended")
 		return
 	}
-	logInfo("Check user", "Data: "+data.UserInput)
+	logInfo(data.UserInput, "Data parsed, checking user in syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check user", "Problem opening database: "+err.Error())
+		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData UserResponseData
 		responseData.Result = "nok"
 		responseData.UserInput = data.UserInput
 		responseData.UserError = "Problem connecting Syteline database: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check user", "Ended with error")
+		logInfo(data.UserInput, "Checking user in syteline ended")
 		return
 	}
 	sqlDB, err := db.DB()
@@ -75,9 +75,9 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprou
 	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType, @Chyba Infobar  Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + data.UserInput + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output, @Chyba = @Chyba output select JePlatny = @JePlatny, Jmeno = @Jmeno, Chyba = @Chyba;\n"
 	db.Raw(command).Scan(&sytelineUser)
 	if sytelineUser.JePlatny == "1" {
-		logInfo("Check user", "User found: "+data.UserInput)
-		userId := CreateUserInZapsiIfNotExists(sytelineUser, data.UserInput)
-		tableData := GetDataForUser(userId, sytelineUser.Jmeno.String)
+		logInfo(data.UserInput, "User found")
+		userId := checkUserInZapsi(sytelineUser, data.UserInput)
+		tableData := checkOpenOrderInZapsi(userId, data.UserInput)
 		var responseData UserResponseData
 		responseData.Result = "ok"
 		responseData.UserInput = data.UserInput
@@ -86,26 +86,27 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprou
 		responseData.TableData = tableData
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check user", "Ended successfully")
+		logInfo(data.UserInput, "Checking user in syteline ended")
 		return
 	} else {
-		logInfo("Check user", "User not found: "+sytelineUser.Chyba.String)
+		logInfo(data.UserInput, "User not found: "+sytelineUser.Chyba.String)
 		var responseData UserResponseData
 		responseData.Result = "nok"
 		responseData.UserInput = data.UserInput
 		responseData.UserError = sytelineUser.Chyba.String
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check user", "Ended successfully with no user found")
+		logInfo(data.UserInput, "Checking user in syteline ended")
 		return
 	}
 }
 
-func GetDataForUser(userId int, sytelineUserName string) []Table {
+func checkOpenOrderInZapsi(userId int, userInput string) []Table {
+	logInfo(userInput, "Checking open orders in Zapsi")
 	var dataTable []Table
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check user", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return dataTable
 	}
 	sqlDB, err := db.DB()
@@ -114,16 +115,17 @@ func GetDataForUser(userId int, sytelineUserName string) []Table {
 	db.Where("DTE is null").Where("UserId = ?", userId).Find(&terminalInputOrder)
 	var user User
 	db.Where("OID = ?", userId).Find(&user)
-	logInfo("Check user", "For user "+sytelineUserName+" found "+strconv.Itoa(len(terminalInputOrder))+" open orders")
+	logInfo(userInput, "Found "+strconv.Itoa(len(terminalInputOrder))+" open orders in Zapsi")
 	for _, terminalInputOrder := range terminalInputOrder {
-		oneTableData := GetDataForActualDisplayOrder(terminalInputOrder, user)
+		oneTableData := DownloadDataForOrder(terminalInputOrder, user, userInput)
 		dataTable = append(dataTable, oneTableData)
 	}
-	logInfo("Check user", "Found "+strconv.Itoa(len(dataTable))+" open orders")
+	logInfo(userInput, "Updated "+strconv.Itoa(len(dataTable))+" open orders")
 	return dataTable
 }
 
-func GetDataForActualDisplayOrder(terminalInputOrder TerminalInputOrder, user User) Table {
+func DownloadDataForOrder(terminalInputOrder TerminalInputOrder, user User, userInput string) Table {
+	logInfo(userInput, "Downloading data for order with id: "+strconv.Itoa(terminalInputOrder.OID)+" started")
 	var oneTableData Table
 	if terminalInputOrder.Note == "clovek" {
 		oneTableData.OrderCode = "PC"
@@ -134,9 +136,10 @@ func GetDataForActualDisplayOrder(terminalInputOrder TerminalInputOrder, user Us
 	} else {
 		oneTableData.OrderCode = "N/A"
 	}
+	logInfo(userInput, "Downloading data from Zapsi")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check user", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return oneTableData
 	}
 	sqlDB, err := db.DB()
@@ -163,14 +166,14 @@ func GetDataForActualDisplayOrder(terminalInputOrder TerminalInputOrder, user Us
 	}
 	oneTableData.TotalProducedCount = strconv.Itoa(totalCount)
 
+	logInfo(userInput, "Downloading data from Syteline")
 	dbSyteline, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check user", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return oneTableData
 	}
 	sqlDBSyteline, err := dbSyteline.DB()
 	defer sqlDBSyteline.Close()
-
 	parsedOrderName := order.Name
 	if strings.Contains(order.Name, ".") {
 		parsedOrderName = strings.Split(order.Name, ".")[0]
@@ -187,7 +190,6 @@ func GetDataForActualDisplayOrder(terminalInputOrder TerminalInputOrder, user Us
 	oneTableData.TotalNokTransferredCount = strconv.Itoa(transferredNok)
 	var zapsiTransThisOrder []zapsi_trans
 	dbSyteline.Raw("SELECT * FROM [zapsi_trans]  WHERE (job = '" + parsedOrderName + "') AND (qty_complete is not null) AND (trans_date > '" + terminalInputOrder.DTS.Format("2006-01-02 15:04:05") + "') AND (emp_num = '" + user.Login + "')").Find(&zapsiTransThisOrder)
-	logInfo("Check user", "Checking "+strconv.Itoa(len(zapsiTransThisOrder))+" transferred orders for "+parsedOrderName)
 	transferredTotalThisOrder := 0
 	for _, thisTrans := range zapsiTransThisOrder {
 		transferredTotalThisOrder += int(thisTrans.QtyComplete)
@@ -195,35 +197,36 @@ func GetDataForActualDisplayOrder(terminalInputOrder TerminalInputOrder, user Us
 	oneTableData.TerminalInputOrderTransferredCount = strconv.Itoa(transferredTotalThisOrder)
 	forSave := terminalInputOrder.Count - transferredTotalThisOrder
 	oneTableData.WaitingForTransferCount = strconv.Itoa(forSave)
+	logInfo(userInput, "Downloading data for order with id: "+strconv.Itoa(terminalInputOrder.OID)+" ended")
 	return oneTableData
 }
 
-func CreateUserInZapsiIfNotExists(user SytelineUser, input string) int {
-	logInfo("Check user", "Checking user in Zapsi")
+func checkUserInZapsi(user SytelineUser, userInput string) int {
+	logInfo(userInput, "Checking user in Zapsi started")
 	userFirstName := strings.Split(user.Jmeno.String, ",")[0]
 	userSecondName := strings.Split(user.Jmeno.String, ",")[1]
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check user", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return 0
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
 	var zapsiUser User
-	db.Where("Login LIKE ?", input).Find(&zapsiUser)
+	db.Where("Login LIKE ?", userInput).Find(&zapsiUser)
 	if zapsiUser.OID > 0 {
-		logInfo("Check user", "User "+user.Jmeno.String+"already exists")
+		logInfo(userInput, "User already exists")
 		return zapsiUser.OID
 	}
-	logInfo("Check user", "User "+user.Jmeno.String+" does not exist, creating user "+user.Jmeno.String)
-	zapsiUser.Login = input
+	logInfo(userInput, "User does not exist, creating")
+	zapsiUser.Login = userInput
 	zapsiUser.FirstName = userFirstName
 	zapsiUser.Name = userSecondName
 	zapsiUser.UserRoleID = "1"
 	zapsiUser.UserTypeID = "1"
 	db.Create(&zapsiUser)
-	logInfo("Check user", "User "+user.Jmeno.String+" created")
 	var newUser User
-	db.Where("Login LIKE ?", input).Find(&newUser)
+	db.Where("Login LIKE ?", userInput).Find(&newUser)
+	logInfo(userInput, "Checking user in Zapsi ended")
 	return newUser.OID
 }

@@ -35,7 +35,6 @@ const endOrderButton = document.getElementById("end-order-button");
 const transferOrderButton = document.getElementById("transfer-order-button");
 
 const table = document.getElementById("table");
-const tableBody = document.getElementById("table-body");
 
 let savedWorkplaces = {};
 
@@ -73,8 +72,6 @@ const infoWorkplaceTypZdrojeZapsi = document.getElementById("info-workplace-typ-
 const infoWorkplaceViceVp = document.getElementById("info-workplace-vice-vp");
 const infoWorkplacePriznakMn1 = document.getElementById("info-workplace-priznak-mn1");
 
-
-const infoError = document.getElementById("info-error");
 const infoRostra = document.getElementById("info-rostra");
 
 const userInputCell = document.getElementById("user-input-cell")

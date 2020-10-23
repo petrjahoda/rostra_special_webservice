@@ -2,6 +2,9 @@
   <dictionary name="petrjahoda">
     <words>
       <w>entrypoint</w>
+      <w>nasobnost</w>
+      <w>načtené</w>
+      <w>operace</w>
       <w>operationid</w>
       <w>orderid</w>
       <w>rostra</w>

@@ -11,7 +11,6 @@ countBackButton.addEventListener("click", () => {
     workplaceOkButton.disabled = false
     workplaceBackButton.disabled = false
     infoRostra.textContent = ""
-    infoError.textContent = ""
     workplaceSelect.focus()
 })
 
@@ -93,14 +92,12 @@ function processCountInput() {
                     serizeniRadio.disabled = false
                 }
                 infoRostra.textContent = ""
-                infoError.textContent = ""
             } else {
                 console.log("nok")
-                infoError.textContent = result.CountError;
-                infoRostra.textContent = result.RostraError;
+                infoRostra.textContent = result.CountError;
             }
         });
     }).catch((error) => {
-        infoError.textContent = error.toString()
+        infoRostra.textContent = error.toString()
     });
 }

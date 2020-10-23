@@ -21,6 +21,7 @@ type WorkplaceInputData struct {
 	JenPrenosMnozstvi  string
 	TypZdrojeZapsi     string
 	ViceVp             string
+	UserInput          string
 }
 
 type WorkplaceResponseData struct {
@@ -39,44 +40,43 @@ type WorkplaceResponseData struct {
 }
 
 func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	logInfo("Check workplace", "Started")
+	logInfo("MAIN", "Parsing data from page started")
 	var data WorkplaceInputData
 	err := json.NewDecoder(request.Body).Decode(&data)
 	if err != nil {
-		logError("Check workplace", "Error parsing input: "+err.Error())
+		logError("MAIN", "Error parsing data: "+err.Error())
 		var responseData WorkplaceResponseData
 		responseData.Result = "nok"
 		responseData.WorkplaceError = "Problem parsing input: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check workplace", "Ended with error")
+		logInfo("MAIN", "Parsing data from page ended")
 		return
 	}
-	logInfo("Check workplace", "Data: "+data.WorkplaceCode+", "+data.OrderInput+", "+data.UserId+", "+data.OperationSelect+", "+data.ParovyDil+", "+data.SeznamParovychDilu+", "+data.JenPrenosMnozstvi)
+	logInfo(data.UserInput, "Data parsed, checking workplace in Syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check workplace", "Problem opening database: "+err.Error())
+		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData WorkplaceResponseData
 		responseData.Result = "nok"
 		responseData.WorkplaceError = "Problem connecting Syteline database: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check workplace", "Ended with error")
+		logInfo(data.UserInput, "Checking workplace in Syteline ended")
 		return
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
-	anyOpenOrderInZapsi := CheckAnyOpenOrderInZapsi(data.WorkplaceCode)
+	anyOpenOrderInZapsi := CheckAnyOpenOrderInZapsi(data.WorkplaceCode, data.UserInput)
 	if anyOpenOrderInZapsi {
-		logInfo("Check workplace", data.WorkplaceCode+" has some open order in Zapsi")
-		sameOrder, sameUser := CheckSameUserAndSameOrderInZapsi(data.UserId, data.OrderInput, data.OperationSelect, data.WorkplaceCode)
+		logInfo(data.UserInput, data.WorkplaceCode+" has an open order in Zapsi")
+		sameOrder, sameUser := CheckSameUserAndSameOrderInZapsi(data.UserId, data.OrderInput, data.OperationSelect, data.WorkplaceCode, data.UserInput)
 		if sameOrder {
-			logInfo("Check workplace", data.WorkplaceCode+" has the same open order in Zapsi")
+			logInfo(data.UserInput, data.WorkplaceCode+" has the same open order in Zapsi")
 			if sameUser {
-				logInfo("Check workplace", data.WorkplaceCode+"has the same open order in Zapsi with the same user")
-				logInfo("Check workplace", "Enabling OK and NOK")
+				logInfo(data.UserInput, data.WorkplaceCode+" has the same user in Zapsi")
 				var responseData WorkplaceResponseData
-				nokTypes := GetNokTypesFromSyteline()
+				nokTypes := GetNokTypesFromSyteline(data.UserInput)
 				responseData.NokTypes = nokTypes
 				responseData.Result = "ok"
 				responseData.OkInput = "true"
@@ -89,11 +89,12 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 				responseData.StrojSelection = "false"
 				writer.Header().Set("Content-Type", "application/json")
 				_ = json.NewEncoder(writer).Encode(responseData)
+				logInfo(data.UserInput, "Checking workplace in Syteline ended")
 				return
 			} else {
+				logInfo(data.UserInput, data.WorkplaceCode+" has not the same user in Zapsi")
 				if data.TypZdrojeZapsi == "0" {
-					logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
-					logInfo("Check workplace", "Enabling Clovek and Start")
+					logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi equals zero, enabling Clovek and Start")
 					var responseData WorkplaceResponseData
 					responseData.Result = "ok"
 					responseData.OkInput = "false"
@@ -106,10 +107,10 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 					responseData.StrojSelection = "false"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
+					logInfo(data.UserInput, "Checking workplace in Syteline ended")
 					return
 				} else {
-					logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi does not equal zero")
-					logInfo("Check workplace", "Enabling Clovek Serizeni, Stroj and Start")
+					logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi does not equal zero, enabling Clovek, Serizeni, Stroj and Start")
 					var responseData WorkplaceResponseData
 					responseData.Result = "ok"
 					responseData.OkInput = "false"
@@ -122,16 +123,16 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 					responseData.StrojSelection = "true"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
+					logInfo(data.UserInput, "Checking workplace in Syteline ended")
 					return
 				}
 			}
 		} else {
-			logInfo("Check workplace", data.WorkplaceCode+" has not the same order in Zapsi")
+			logInfo(data.UserInput, data.WorkplaceCode+" has not the same open order in Zapsi")
 			if data.ViceVp == "1" {
-				logInfo("Check workplace", "sytelineOperationSource.Vice_vp equals one")
+				logInfo(data.UserInput, "sytelineOperationSource.Vice_vp equals one")
 				if data.TypZdrojeZapsi == "0" {
-					logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi equals zero")
-					logInfo("Check workplace", "Enabling Clovek and Start")
+					logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi equals zero, enabling Clovek and Start")
 					var responseData WorkplaceResponseData
 					responseData.Result = "ok"
 					responseData.OkInput = "false"
@@ -144,10 +145,10 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 					responseData.StrojSelection = "false"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
+					logInfo(data.UserInput, "Checking workplace in Syteline ended")
 					return
 				} else {
-					logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi does not equal zero")
-					logInfo("Check workplace", "Enabling Clovek Serizeni, Stroj and Start")
+					logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi does not equal zero, enabling Clovek, Serizeni, Stroj and Start")
 					var responseData WorkplaceResponseData
 					responseData.Result = "ok"
 					responseData.OkInput = "false"
@@ -160,21 +161,21 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 					responseData.StrojSelection = "true"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
+					logInfo(data.UserInput, "Checking workplace in Syteline ended")
 					return
 				}
 			} else {
-				logInfo("Check workplace", "sytelineOperationSource.Vice_vp does not equal one")
+				logInfo(data.UserInput, "sytelineOperationSource.Vice_vp does not equals one")
 				if data.ParovyDil == "1" {
-					logInfo("Check workplace", "sytelineOperation.ParovyDil equals one")
+					logInfo(data.UserInput, "sytelineOperation.ParovyDil equals one")
 					if len(data.SeznamParovychDilu) > 0 {
-						logInfo("Check workplace", "sytelineOperation.SeznamParDilu not empty: "+data.SeznamParovychDilu)
-						var zapsiProducts = CheckProductsInZapsi(data.SeznamParovychDilu)
-						anyOpenOrderHasOneOfProducts := CheckIfAnyOpenOrderHasOneOfProducts(data.WorkplaceCode, zapsiProducts)
+						logInfo(data.UserInput, "sytelineOperation.SeznamParDilu not empty: "+data.SeznamParovychDilu)
+						var zapsiProducts = CheckProductsInZapsi(data.SeznamParovychDilu, data.UserInput)
+						anyOpenOrderHasOneOfProducts := CheckIfAnyOpenOrderHasOneOfProducts(data.WorkplaceCode, zapsiProducts, data.UserInput)
 						if anyOpenOrderHasOneOfProducts {
-							logInfo("Check workplace", "Some open order in Zapsi contains any of pair parts")
+							logInfo(data.UserInput, "Some open order in Zapsi contains any of pair parts")
 							if data.TypZdrojeZapsi == "0" {
-								logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi is zero")
-								logInfo("Check workplace", "Enabling Clovek and Start")
+								logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi is zero, enabling Clovek and Start")
 								var responseData WorkplaceResponseData
 								responseData.Result = "ok"
 								responseData.OkInput = "false"
@@ -187,10 +188,10 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 								responseData.StrojSelection = "false"
 								writer.Header().Set("Content-Type", "application/json")
 								_ = json.NewEncoder(writer).Encode(responseData)
+								logInfo(data.UserInput, "Checking workplace in Syteline ended")
 								return
 							} else {
-								logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi is not zero")
-								logInfo("Check workplace", "Enabling Clovek Serizeni, Stroj and Start")
+								logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi is not zero, enabling Clovek, Serizeni, Stroj and Start")
 								var responseData WorkplaceResponseData
 								responseData.Result = "ok"
 								responseData.OkInput = "false"
@@ -203,44 +204,47 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 								responseData.StrojSelection = "true"
 								writer.Header().Set("Content-Type", "application/json")
 								_ = json.NewEncoder(writer).Encode(responseData)
+								logInfo(data.UserInput, "Checking workplace in Syteline ended")
 								return
 							}
 						} else {
-							logInfo("Check workplace", "No open order in Zapsi contains any of pair parts")
+							logInfo(data.UserInput, "No open order in Zapsi contains any of pair parts")
 							var responseData WorkplaceResponseData
 							responseData.Result = "nok"
 							responseData.WorkplaceError = "Žádná otevřená zakázka neobsahuje žádný z dílu"
 							writer.Header().Set("Content-Type", "application/json")
 							_ = json.NewEncoder(writer).Encode(responseData)
+							logInfo(data.UserInput, "Checking workplace in Syteline ended")
 							return
 						}
 					} else {
-						logInfo("Check workplace", "sytelineOperation.SeznamParDilu is empty")
+						logInfo(data.UserInput, "sytelineOperation.SeznamParDilu is empty")
 						var responseData WorkplaceResponseData
 						responseData.Result = "nok"
 						responseData.WorkplaceError = "Seznam párových dílů je prázdný"
 						writer.Header().Set("Content-Type", "application/json")
 						_ = json.NewEncoder(writer).Encode(responseData)
+						logInfo(data.UserInput, "Checking workplace in Syteline ended")
 						return
 					}
 				} else {
-					logInfo("Check workplace", "sytelineOperation.ParovyDil does not equal one")
+					logInfo(data.UserInput, "sytelineOperation.ParovyDil does not equals one")
 					var responseData WorkplaceResponseData
 					responseData.Result = "nok"
 					responseData.WorkplaceError = "Parametr párový díl se nerovná 1"
 					writer.Header().Set("Content-Type", "application/json")
 					_ = json.NewEncoder(writer).Encode(responseData)
+					logInfo(data.UserInput, "Checking workplace in Syteline ended")
 					return
 				}
 			}
 		}
 	} else {
-		logInfo("Check workplace", data.WorkplaceCode+" does not have any open order in Zapsi")
+		logInfo(data.UserInput, data.WorkplaceCode+" has not any open order in Zapsi")
 		if data.JenPrenosMnozstvi == "1" {
-			logInfo("Check workplace", "sytelineOperation.JenPrenosMnozstvi is one")
-			logInfo("Check workplace", "Enabling OK and NOK")
+			logInfo(data.UserInput, "sytelineOperation.JenPrenosMnozstvi is one, enabling ok and nok")
 			var responseData WorkplaceResponseData
-			nokTypes := GetNokTypesFromSyteline()
+			nokTypes := GetNokTypesFromSyteline(data.UserInput)
 			responseData.NokTypes = nokTypes
 			responseData.Result = "ok"
 			responseData.OkInput = "true"
@@ -253,12 +257,12 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 			responseData.StrojSelection = "false"
 			writer.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(writer).Encode(responseData)
+			logInfo(data.UserInput, "Checking workplace in Syteline ended")
 			return
 		} else {
-			logInfo("Check workplace", "sytelineOperation.JenPrenosMnozstvi is not one")
+			logInfo(data.UserInput, "sytelineOperation.JenPrenosMnozstvi is not one")
 			if data.TypZdrojeZapsi == "0" {
-				logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi is zero")
-				logInfo("Check workplace", "Enabling Clovek and Start")
+				logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi is zero, enabling Clovek and Start")
 				var responseData WorkplaceResponseData
 				responseData.Result = "ok"
 				responseData.OkInput = "false"
@@ -271,10 +275,10 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 				responseData.StrojSelection = "false"
 				writer.Header().Set("Content-Type", "application/json")
 				_ = json.NewEncoder(writer).Encode(responseData)
+				logInfo(data.UserInput, "Checking workplace in Syteline ended")
 				return
 			} else {
-				logInfo("Check workplace", "sytelineWorkplace.typ_zdroje_zapsi is not zero")
-				logInfo("Check workplace", "Enabling Clovek Serizeni, Stroj and Start")
+				logInfo(data.UserInput, "sytelineWorkplace.typ_zdroje_zapsi is not zero, enabling Clovek, Serizeni, Stroj and Start")
 				var responseData WorkplaceResponseData
 				responseData.Result = "ok"
 				responseData.OkInput = "false"
@@ -287,17 +291,19 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 				responseData.StrojSelection = "true"
 				writer.Header().Set("Content-Type", "application/json")
 				_ = json.NewEncoder(writer).Encode(responseData)
+				logInfo(data.UserInput, "Checking workplace in Syteline ended")
 				return
 			}
 		}
 	}
 }
 
-func GetNokTypesFromSyteline() []SytelineNok {
+func GetNokTypesFromSyteline(userInput string) []SytelineNok {
+	logInfo(userInput, "Downloading nok types from Syteline started")
 	var nokTypes []SytelineNok
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check workplace", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return nokTypes
 	}
 	sqlDB, err := db.DB()
@@ -305,7 +311,8 @@ func GetNokTypesFromSyteline() []SytelineNok {
 	command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports_test].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
-		logError("Check workplace", "Error: "+err.Error())
+		logError(userInput, "Error downloading data from Syteline: "+err.Error())
+		return nokTypes
 	}
 	defer rows.Close()
 	for rows.Next() {
@@ -313,18 +320,20 @@ func GetNokTypesFromSyteline() []SytelineNok {
 		err = rows.Scan(&nokType.Kod, &nokType.Nazev)
 		nokTypes = append(nokTypes, nokType)
 		if err != nil {
-			logError("Check workplace", "Error: "+err.Error())
+			logError(userInput, "Error downloading data from Syteline: "+err.Error())
+			return nokTypes
 		}
 	}
-	logInfo("Check workplace", "Found "+strconv.Itoa(len(nokTypes))+" noktypes")
+	logInfo(userInput, "Downloading nok types from Syteline ended with "+strconv.Itoa(len(nokTypes))+" noktypes")
 	return nokTypes
 }
 
-func CheckIfAnyOpenOrderHasOneOfProducts(workplaceCode string, products []Product) bool {
+func CheckIfAnyOpenOrderHasOneOfProducts(workplaceCode string, products []Product, userInput string) bool {
+	logInfo(userInput, "Checking for any open order for any products started")
 	var terminalInputOrders []TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check operation", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
 	sqlDB, err := db.DB()
@@ -337,14 +346,17 @@ func CheckIfAnyOpenOrderHasOneOfProducts(workplaceCode string, products []Produc
 		db.Where("OID = ?", terminalInputOrder.OrderID).Find(&zapsiOrder)
 		for _, zapsiProduct := range products {
 			if zapsiProduct.OID == zapsiOrder.ProductID {
+				logInfo(userInput, "Checking for any open order for any products ended, result found")
 				return true
 			}
 		}
 	}
+	logInfo(userInput, "Checking for any open order for any products ended, no result found")
 	return false
 }
 
-func CheckProductsInZapsi(seznamParovychDilu string) []Product {
+func CheckProductsInZapsi(seznamParovychDilu string, userInput string) []Product {
+	logInfo(userInput, "Checking products in Zapsi started")
 	var zapsiProducts []Product
 	var products []string
 	if strings.Contains(seznamParovychDilu, "|") {
@@ -354,7 +366,7 @@ func CheckProductsInZapsi(seznamParovychDilu string) []Product {
 	}
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check operation", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return zapsiProducts
 	}
 	sqlDB, err := db.DB()
@@ -363,9 +375,9 @@ func CheckProductsInZapsi(seznamParovychDilu string) []Product {
 		var zapsiProduct Product
 		db.Where("Name = ?", product).Find(&zapsiProduct)
 		if zapsiProduct.OID > 0 {
-			logInfo("Check workplace", "Product "+product+" already exists")
+			logInfo(userInput, "Product "+product+" already exists")
 		} else {
-			logInfo("Check workplace", "Product "+product+" does not exist, creating product")
+			logInfo(userInput, "Product "+product+" does not exist, creating product")
 			zapsiProduct.Name = product
 			zapsiProduct.Barcode = product
 			zapsiProduct.Cycle = 1
@@ -380,20 +392,21 @@ func CheckProductsInZapsi(seznamParovychDilu string) []Product {
 		db.Where("Name = ?", product).Find(&zapsiProduct)
 		zapsiProducts = append(zapsiProducts, zapsiProduct)
 	}
+	logInfo(userInput, "Checking products in Zapsi ended")
 	return zapsiProducts
 }
 
-func CheckSameUserAndSameOrderInZapsi(userId string, orderInput string, operationInput string, workplaceCode string) (bool, bool) {
-	order, suffix := ParseOrder(orderInput)
-	operation := ParseOperation(operationInput)
+func CheckSameUserAndSameOrderInZapsi(userId string, orderInput string, operationInput string, workplaceCode string, userInput string) (bool, bool) {
+	logInfo(userInput, "Checking for same order and same user started")
+	order, suffix := ParseOrder(orderInput, userInput)
+	operation := ParseOperation(operationInput, userInput)
 	orderName := order + "." + suffix + "-" + operation
 	var zapsiUser User
-
 	var thisOrder TerminalInputOrder
 	var thisUser TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check operation", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return false, false
 	}
 	sqlDB, err := db.DB()
@@ -403,18 +416,19 @@ func CheckSameUserAndSameOrderInZapsi(userId string, orderInput string, operatio
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Find(&thisOrder)
-
 	db.Where("OID = ?", userId).Find(&zapsiUser)
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Find(&thisUser)
+	logInfo(userInput, "Checking for same order and same user ended")
 	return thisOrder.OID > 0, thisUser.OID > 0
 }
 
-func CheckAnyOpenOrderInZapsi(workplaceCode string) bool {
+func CheckAnyOpenOrderInZapsi(workplaceCode string, userInput string) bool {
+	logInfo(userInput, "Checking for any open order in Zapsi for workplace "+workplaceCode+" started")
 	var terminalInputOrder TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check operation", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
 	sqlDB, err := db.DB()
@@ -423,7 +437,9 @@ func CheckAnyOpenOrderInZapsi(workplaceCode string) bool {
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is not null").Find(&terminalInputOrder)
 	if terminalInputOrder.OID > 0 {
+		logInfo(userInput, "Checking for any open order in Zapsi ended, open order found")
 		return true
 	}
+	logInfo(userInput, "Checking for any open order in Zapsi ended, open order not found")
 	return false
 }

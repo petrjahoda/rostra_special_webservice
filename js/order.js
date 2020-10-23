@@ -9,7 +9,6 @@ orderBackButton.addEventListener("click", () => {
     orderOkButton.disabled = true;
     orderBackButton.disabled = true;
     infoRostra.textContent = ""
-    infoError.textContent = ""
     infoOrderPriznakSeriovaVyroba.textContent = ""
     infoOrderInput.textContent = ""
     infoOrderName.textContent = ""
@@ -30,8 +29,8 @@ orderInput.addEventListener("keyup", function (event) {
 });
 
 function processOrderInput() {
-    console.log("Order entered: " + orderInput.value);
-    let data = {OrderInput: orderInput.value};
+    console.log("Order value: " + orderInput.value);
+    let data = {OrderInput: orderInput.value, UserInput: sessionStorage.getItem("userInput")};
     fetch("/check_order_input", {
         method: "POST",
         body: JSON.stringify(data)
@@ -56,24 +55,23 @@ function processOrderInput() {
                 sessionStorage.setItem("priznakSeriovaVyroba", result.PriznakSeriovaVyroba)
                 sessionStorage.setItem("productId", result.ProductId)
                 infoOrderPriznakSeriovaVyroba.textContent = result.PriznakSeriovaVyroba
-                let operace = {};
-                for (operation of result.Operations) {
-                    operace[operation.Operace] = operation.Operace + ": " + operation.Pracoviste + " [" + operation.PracovistePopis + "]"
+                let tableData = {};
+                for (let operation of result.Operations) {
+                    tableData[operation.Operace] = operation.Operace + ": " + operation.Pracoviste + " [" + operation.PracovistePopis + "]"
                 }
                 const select = Metro.getPlugin("#operation-select", 'select');
                 select.data({
-                    "Načtené operace": operace
+                    "Načtené operace": tableData
                 });
                 infoRostra.textContent = ""
-                infoError.textContent = ""
                 operationSelect.focus();
             } else {
-                infoError.textContent = result.OrderError
+                infoRostra.textContent = result.OrderError
                 orderInput.placeholder = result.OrderError
                 orderInput.value = ""
             }
         });
     }).catch((error) => {
-        infoError.textContent = error.toString()
+        infoRostra.textContent = error.toString()
     });
 }

@@ -8,7 +8,6 @@ workplaceBackButton.addEventListener("click", () => {
     operationBackButton.disabled = false
     operationOkButton.disabled = false
     infoRostra.textContent = ""
-    infoError.textContent = ""
     infoWorkplaceName.textContent = ""
     infoWorkplacePriznakMn1.textContent = ""
     infoWorkplaceViceVp.textContent = ""
@@ -53,7 +52,8 @@ function processWorkplaceInput() {
                 SeznamParovychDilu: sessionStorage.getItem("seznamParovychDilu"),
                 JenPrenosMnozstvi: sessionStorage.getItem("jenPrenosMnozstvi"),
                 TypZdrojeZapsi: sessionStorage.getItem("typZdrojeZapsi"),
-                ViceVp: sessionStorage.getItem("viceVp")
+                ViceVp: sessionStorage.getItem("viceVp"),
+                UserInput: sessionStorage.getItem("userInput")
             };
             fetch("/check_workplace_input", {
                 method: "POST",
@@ -73,13 +73,13 @@ function processWorkplaceInput() {
                             nokRow.classList.remove("disabled")
                             countBackButton.disabled = false
                             countButton.disabled = false
-                            let chyby = {};
-                            for (nokType of result.NokTypes) {
-                                chyby[nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")] = nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")
+                            let tableData = {};
+                            for (let nokType of result.NokTypes) {
+                                tableData[nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")] = nokType.Kod + ";" + nokType.Nazev.replaceAll(" ", "")
                             }
                             const select = Metro.getPlugin("#nok-type-select", 'select');
                             select.data({
-                                "Načtené neshody": chyby
+                                "Načtené neshody": tableData
                             });
                         }
                         if (result.StartButton === "true") {
@@ -101,17 +101,16 @@ function processWorkplaceInput() {
                             strojRadio.disabled = false
                         }
                         infoRostra.textContent = ""
-                        infoError.textContent = ""
                     } else {
-                        infoError.text = result.WorkplaceError
+                        infoRostra.text = result.WorkplaceError
                     }
 
                 });
             }).catch((error) => {
-                infoError.textContent = error.toString()
+                infoRostra.textContent = error.toString()
             });
         } else {
-            infoError.textContent = "Pracoviště nebylo nalezeno"
+            infoRostra.textContent = "Pracoviště nebylo nalezeno"
         }
     }
 

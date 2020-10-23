@@ -10,7 +10,7 @@ userOkButton.addEventListener("click", () => {
 
 
 function processUserInput() {
-    console.log("User entered: " + userInput.value);
+    console.log("User value: " + userInput.value);
     let data = {UserInput: userInput.value};
     fetch("/check_user_input", {
         method: "POST",
@@ -35,18 +35,16 @@ function processUserInput() {
                 infoUserName.textContent = result.UserName
                 sessionStorage.setItem("userInput", result.UserInput)
                 infoUserInput.textContent = result.UserInput
-                infoError.textContent = ""
                 infoRostra.textContent = ""
-                infoError.textContent = ""
                 displayTable(result.TableData)
                 orderInput.focus();
             } else {
-                infoError.textContent = result.UserError;
+                infoRostra.textContent = result.UserError;
                 userInput.placeholder = result.UserError;
                 userInput.value = ""
             }
         });
     }).catch((error) => {
-        infoError.textContent = error.toString()
+        infoRostra.textContent = error.toString()
     });
 }

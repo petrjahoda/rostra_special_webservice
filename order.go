@@ -13,6 +13,7 @@ import (
 
 type OrderInputData struct {
 	OrderInput string
+	UserInput  string
 }
 
 type OrderResponseData struct {
@@ -26,47 +27,47 @@ type OrderResponseData struct {
 }
 
 func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	logInfo("Check order", "Started")
+	logInfo("MAIN", "Parsing data from page started")
 	var data OrderInputData
 	err := json.NewDecoder(request.Body).Decode(&data)
 	if err != nil {
-		logError("Check order", "Error parsing input: "+err.Error())
+		logError("MAIN", "Error parsing data: "+err.Error())
 		var responseData OrderResponseData
 		responseData.Result = "nok"
 		responseData.OrderInput = data.OrderInput
-		responseData.OrderError = "Problem parsing input: " + err.Error()
+		responseData.OrderError = "Problem parsing data: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check order", "Ended with error")
+		logInfo("MAIN", "Parsing data from page ended")
 		return
 	}
-	logInfo("Check order", "Data: "+data.OrderInput)
+	logInfo(data.UserInput, "Data parsed, checking order in syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check order", "Problem opening database: "+err.Error())
+		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData OrderResponseData
 		responseData.Result = "nok"
 		responseData.OrderInput = data.OrderInput
 		responseData.OrderError = "Problem connecting Syteline database: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check order", "Ended with error")
+		logInfo(data.UserInput, "Checking order in syteline ended")
 		return
 	}
 	sqlDB, err := db.DB()
 	defer sqlDB.Close()
-	order, suffix := ParseOrder(data.OrderInput)
+	order, suffix := ParseOrder(data.OrderInput, data.UserInput)
 	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
-		logError("Check order", "Error: "+err.Error())
+		logError(data.UserInput, "Error: "+err.Error())
 		var responseData OrderResponseData
 		responseData.Result = "nok"
 		responseData.OrderInput = data.OrderInput
 		responseData.OrderError = "Problem getting data from syteline: " + err.Error()
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check order", "Ended with error")
+		logInfo(data.UserInput, "Checking order in syteline ended")
 		return
 	}
 	defer rows.Close()
@@ -74,23 +75,22 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 	for rows.Next() {
 		err = rows.Scan(&sytelineOrder.CisloVp, &sytelineOrder.SuffixVp, &sytelineOrder.PolozkaVp, &sytelineOrder.PopisPolVp, &sytelineOrder.PriznakSeriovaVyroba)
 		if err != nil {
-			logError("Check order", "Error: "+err.Error())
+			logError(data.UserInput, "Error: "+err.Error())
 		}
 	}
 	if len(sytelineOrder.CisloVp) > 0 {
-		logInfo("Check order", "Order found: "+data.OrderInput+", getting list of operations ")
-
+		logInfo(data.UserInput, "Order found: "+data.OrderInput+", getting list of operations ")
 		command := "declare @CisloVP JobType, @PriponaVP SuffixType select @CisloVP = N'3VP0014981', @PriponaVP = 0 exec [rostra_exports_test].dbo.ZapsiOperaceVpSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP;\n"
 		rows, err := db.Raw(command).Rows()
 		if err != nil {
-			logError("Check order", "Error: "+err.Error())
+			logError(data.UserInput, "Error: "+err.Error())
 			var responseData OrderResponseData
 			responseData.Result = "nok"
 			responseData.OrderInput = data.OrderInput
 			responseData.OrderError = "Problem getting data from syteline: " + err.Error()
 			writer.Header().Set("Content-Type", "application/json")
 			_ = json.NewEncoder(writer).Encode(responseData)
-			logInfo("Check order", "Ended with error")
+			logInfo(data.UserInput, "Checking order in syteline ended")
 			return
 		}
 		var operationList []OperationList
@@ -98,12 +98,12 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 			var operation OperationList
 			err = rows.Scan(&operation.Operace, &operation.Pracoviste, &operation.PracovistePopis)
 			if err != nil {
-				logError("Check order", "Error: "+err.Error())
+				logError(data.UserInput, "Error: "+err.Error())
 			}
 			operationList = append(operationList, operation)
 		}
-		logInfo("Check order", "Scanned: "+strconv.Itoa(len(operationList))+" operations")
-		productId := createProductInZapsiIfNotExists(sytelineOrder.PolozkaVp)
+		logInfo(data.UserInput, "Scanned: "+strconv.Itoa(len(operationList))+" operations")
+		productId := checkProductInZapsi(sytelineOrder.PolozkaVp, data.UserInput)
 		var responseData OrderResponseData
 		responseData.Result = "ok"
 		responseData.OrderInput = order + "." + suffix
@@ -113,24 +113,26 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 		responseData.PriznakSeriovaVyroba = sytelineOrder.PriznakSeriovaVyroba
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
+		logInfo(data.UserInput, "Checking order in syteline ended")
 		return
 	} else {
-		logInfo("Check order", "Order not found for "+data.OrderInput+" for command "+command)
+		logInfo(data.UserInput, "Order not found for "+data.OrderInput+" for command "+command)
 		var responseData OrderResponseData
 		responseData.Result = "nok"
 		responseData.OrderInput = data.OrderInput
 		responseData.OrderError = "Výrobní příkaz " + data.OrderInput + " neexistuje, zopakujte zadání"
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
-		logInfo("Check order", "Ended with error")
+		logInfo(data.UserInput, "Checking order in syteline ended")
 		return
 	}
 }
 
-func createProductInZapsiIfNotExists(polozkaVp string) int {
+func checkProductInZapsi(polozkaVp string, userInput string) int {
+	logInfo(userInput, "Checking product in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	if err != nil {
-		logError("Check order", "Problem opening database: "+err.Error())
+		logError(userInput, "Problem opening database: "+err.Error())
 		return 0
 	}
 	sqlDB, err := db.DB()
@@ -138,10 +140,10 @@ func createProductInZapsiIfNotExists(polozkaVp string) int {
 	var zapsiProduct Product
 	db.Where("Name = ?", polozkaVp).Find(&zapsiProduct)
 	if zapsiProduct.OID > 0 {
-		logInfo("Check order", "Product "+polozkaVp+" already exists")
+		logInfo(userInput, "Checking product in Zapsi ended, product "+polozkaVp+" already exists")
 		return zapsiProduct.OID
 	}
-	logInfo("Check order", "Product "+polozkaVp+" does not exist, creating product")
+	logInfo(userInput, "Product "+polozkaVp+" does not exist, creating product")
 	zapsiProduct.Name = polozkaVp
 	zapsiProduct.Barcode = polozkaVp
 	zapsiProduct.Cycle = 1
@@ -151,27 +153,31 @@ func createProductInZapsiIfNotExists(polozkaVp string) int {
 	db.Create(&zapsiProduct)
 	var newZapsiProduct Product
 	db.Where("Name = ?", polozkaVp).Find(&newZapsiProduct)
+	logInfo(userInput, "Checking product in Zapsi ended")
 	return newZapsiProduct.OID
 }
 
-func ParseOrder(orderId string) (string, string) {
+func ParseOrder(orderId string, userInput string) (string, string) {
+	logInfo(userInput, "Parsing order started")
 	if strings.Contains(orderId, ";") {
 		splitted := strings.Split(orderId, ";")
 		if strings.Contains(splitted[0], "-") {
 			splittedOrder := strings.Split(splitted[0], "-")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
+				logError(userInput, "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
+			logInfo(userInput, "Parsing order ended")
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
 		} else if strings.Contains(splitted[0], ".") {
 			splittedOrder := strings.Split(splitted[0], ".")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
+				logError(userInput, "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
+			logInfo(userInput, "Parsing order ended")
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
 		}
 	} else {
@@ -179,17 +185,19 @@ func ParseOrder(orderId string) (string, string) {
 			splittedOrder := strings.Split(orderId, "-")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
+				logError(userInput, "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
+			logInfo(userInput, "Parsing order ended")
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
 		} else if strings.Contains(orderId, ".") {
 			splittedOrder := strings.Split(orderId, ".")
 			suffixAsNumber, err := strconv.Atoi(splittedOrder[1])
 			if err != nil {
-				logError("Check order", "Problem converting suffix: "+splittedOrder[1])
+				logError(userInput, "Problem converting suffix: "+splittedOrder[1])
 				return splittedOrder[0], splittedOrder[1]
 			}
+			logInfo(userInput, "Parsing order ended")
 			return splittedOrder[0], strconv.Itoa(suffixAsNumber)
 		}
 	}
