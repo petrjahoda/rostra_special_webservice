@@ -13,6 +13,8 @@ orderBackButton.addEventListener("click", () => {
     infoOrderInput.textContent = ""
     infoOrderName.textContent = ""
     infoOrderId.textContent = ""
+    const select = Metro.getPlugin("table", 'select');
+    select.data({});
     userInput.focus()
 })
 

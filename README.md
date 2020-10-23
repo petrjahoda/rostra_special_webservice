@@ -49,9 +49,6 @@ Numeral checks are made in the background before an action (database changes) is
 ### End order button action
 - end.js
 - end.go
-### End order button action
-- end.js
-- end.go
 
 ## Changelog
 Updated [here](CHANGELOG.md)
