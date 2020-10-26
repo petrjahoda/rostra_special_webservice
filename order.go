@@ -43,6 +43,8 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 	}
 	logInfo(data.UserInput, "Data parsed, checking order in syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData OrderResponseData
@@ -54,8 +56,6 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 		logInfo(data.UserInput, "Checking order in syteline ended")
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	order, suffix := ParseOrder(data.OrderInput, data.UserInput)
 	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
 	rows, err := db.Raw(command).Rows()
@@ -131,12 +131,12 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 func checkProductInZapsi(polozkaVp string, userInput string) int {
 	logInfo(userInput, "Checking product in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return 0
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiProduct Product
 	db.Where("Name = ?", polozkaVp).Find(&zapsiProduct)
 	if zapsiProduct.OID > 0 {

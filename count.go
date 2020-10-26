@@ -430,12 +430,12 @@ func DownloadCountForAllTransferredToSyteline(orderInput string, operationInput 
 	operation := ParseOperation(operationInput, userInput)
 	orderName := order + "." + suffix + "-" + operation
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return 0
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiTransThisOrder []zapsi_trans
 	db.Raw("SELECT * FROM [zapsi_trans]  WHERE (job = '" + orderName + "') AND (qty_complete is not null) AND (trans_date > '" + terminalInputOrder.DTS.Format("2006-01-02 15:04:05") + "') AND (emp_num = '" + userInput + "')").Find(&zapsiTransThisOrder)
 	logInfo(userInput, "Checking "+strconv.Itoa(len(zapsiTransThisOrder))+" transferred orders for "+orderName)
@@ -454,12 +454,12 @@ func DownloadCountForActualOpenOrder(workplaceCode string, userId string, orderI
 
 	var thisOrder TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return 0, thisOrder
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
 	var zapsiOrder Order

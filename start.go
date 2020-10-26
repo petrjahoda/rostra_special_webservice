@@ -128,12 +128,12 @@ func CreateOrderRecordInSyteline(closingNumber string, userInput string, orderIn
 		timeToInsert = terminalInputOrderDts
 	}
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
 		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
 	logInfo(userInput, "Creating order record in Syteline ended")
@@ -143,11 +143,11 @@ func CreateOrderRecordInSyteline(closingNumber string, userInput string, orderIn
 func UpdateDeviceWithNew(numberOfOpenTerminalInputOrder int, deviceId int, workplaceCode string, userInput string) {
 	logInfo(userInput, "Updating number of open orders for: "+workplaceCode+" started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var device Device
 	db.Model(&device).Where("OID = ?", deviceId).Update("Setting", numberOfOpenTerminalInputOrder)
 	logInfo(userInput, "Updating number of open orders ended")
@@ -156,12 +156,12 @@ func UpdateDeviceWithNew(numberOfOpenTerminalInputOrder int, deviceId int, workp
 func DownloadActualTimeDivisor(workplaceCode string, userInput string) int {
 	logInfo(userInput, "Downloading actual time divisor for workplace: "+workplaceCode+" started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return 1
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
 	var device Device
@@ -179,12 +179,12 @@ func DownloadActualTimeDivisor(workplaceCode string, userInput string) int {
 func CreateTerminalInputOrderInZapsi(userId string, workplaceCode string, radioSelect string, orderId string, nasobnost string, userInput string) (bool, int, int, time.Time) {
 	logInfo(userInput, "Creating terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false, 0, 0, time.Now()
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var terminalInputOrder TerminalInputOrder
 	var existingTerminalInputOrder TerminalInputOrder
 	var zapsiWorkplace Workplace

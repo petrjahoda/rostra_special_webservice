@@ -55,6 +55,8 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 	}
 	logInfo(data.UserInput, "Data parsed, checking workplace in Syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData WorkplaceResponseData
@@ -65,8 +67,6 @@ func checkWorkplaceInput(writer http.ResponseWriter, request *http.Request, _ ht
 		logInfo(data.UserInput, "Checking workplace in Syteline ended")
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	anyOpenOrderInZapsi := CheckAnyOpenOrderInZapsi(data.WorkplaceCode, data.UserInput)
 	if anyOpenOrderInZapsi {
 		logInfo(data.UserInput, data.WorkplaceCode+" has an open order in Zapsi")
@@ -302,12 +302,12 @@ func GetNokTypesFromSyteline(userInput string) []SytelineNok {
 	logInfo(userInput, "Downloading nok types from Syteline started")
 	var nokTypes []SytelineNok
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return nokTypes
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports_test].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
@@ -332,12 +332,12 @@ func CheckIfAnyOpenOrderHasOneOfProducts(workplaceCode string, products []Produc
 	logInfo(userInput, "Checking for any open order for any products started")
 	var terminalInputOrders []TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
 	db.Where("DTE is null").Find(&terminalInputOrders)
@@ -365,12 +365,12 @@ func CheckProductsInZapsi(seznamParovychDilu string, userInput string) []Product
 		products = append(products, seznamParovychDilu)
 	}
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return zapsiProducts
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	for _, product := range products {
 		var zapsiProduct Product
 		db.Where("Name = ?", product).Find(&zapsiProduct)
@@ -405,12 +405,12 @@ func CheckSameUserAndSameOrderInZapsi(userId string, orderInput string, operatio
 	var thisOrder TerminalInputOrder
 	var thisUser TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false, false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiOrder Order
 	db.Where("Name = ?", orderName).Find(&zapsiOrder)
 	var zapsiWorkplace Workplace
@@ -427,12 +427,12 @@ func CheckAnyOpenOrderInZapsi(workplaceCode string, userInput string) bool {
 	logInfo(userInput, "Checking for any open order in Zapsi for workplace "+workplaceCode+" started")
 	var terminalInputOrder TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserId is not null").Find(&terminalInputOrder)

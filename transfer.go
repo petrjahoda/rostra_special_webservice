@@ -80,12 +80,12 @@ func TransferOkAndNokToSyteline(userInput string, orderInput string, operationSe
 	order := splittedOrderInput[0]
 	suffixAsNumber := splittedOrderInput[1]
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	okAsInt, err := strconv.Atoi(okCount)
 	if err != nil {
 		logError(userInput, "Transferring ok and nok to Syteline ended, problem parsing ok count: "+err.Error())
@@ -116,12 +116,12 @@ func TransferOkAndNokToSyteline(userInput string, orderInput string, operationSe
 func CreateAndCloseOrderInZapsi(userId string, orderId string, workplaceCode string, okCount string, nokCount string, nokType string, nasobnost string, userInput string) {
 	logInfo(userInput, "Creating and closing terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	orderIdAsInt, err := strconv.Atoi(orderId)
 	if err != nil {
 		logError(userInput, "Creating and closing terminal input order in Zapsi ended, problem parsing orderid: "+err.Error())
@@ -189,12 +189,12 @@ func CheckFailInZapsi(nokType string) int {
 	failBarcode := parsedFail[0]
 	failName := parsedFail[1]
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError("Transfer order", "Problem opening database: "+err.Error())
 		return 0
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var fail Fail
 	db.Where("Barcode = ?", failBarcode).Find(&fail)
 	if fail.OID > 0 {
@@ -214,12 +214,12 @@ func CheckFailInZapsi(nokType string) int {
 func CheckThisOpenOrderInZapsi(userId string, orderId string, workplaceCode string, userInput string) bool {
 	logInfo(userInput, "Checking for open terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var workplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&workplace)
 	var terminalInputOrder TerminalInputOrder

@@ -52,6 +52,8 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 	}
 	logInfo(data.UserInput, "Data parsed, checking operation in syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData OperationResponseData
@@ -63,8 +65,6 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 		logInfo(data.UserInput, "Checking operation in syteline ended")
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	order, suffix := ParseOrder(data.OrderInput, data.UserInput)
 	operation := ParseOperation(data.OperationSelect, data.UserInput)
 	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
@@ -192,12 +192,12 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 func checkOrderInZapsi(orderInput string, operationSelect string, productId string, mn2Ks string, userInput string) int {
 	logInfo(userInput, "Checking order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return 0
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	zapsiOrderName := orderInput + "-" + operationSelect
 	var zapsiOrder Order
 	db.Where("Name = ?", zapsiOrderName).Find(&zapsiOrder)
@@ -243,12 +243,12 @@ func ParseOperation(operationid string, userInput string) string {
 func UpdateZapsiZdrojFor(workplace SytelineWorkplace, userInput string) string {
 	logInfo(userInput, "Updating ZapsiZdroj for workplace"+workplace.ZapsiZdroj)
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return ""
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiWorkplace Workplace
 	db.Where("Code = ?", workplace.ZapsiZdroj).Find(&zapsiWorkplace)
 	logInfo(userInput, "Zapsi Zdroj updated to: "+workplace.ZapsiZdroj+";"+zapsiWorkplace.Name)

@@ -85,12 +85,12 @@ func endOrder(writer http.ResponseWriter, request *http.Request, _ httprouter.Pa
 func CloseOrderInZapsi(userId string, workplaceCode string, nokCount string, nokType string, actualterminalInputOrder TerminalInputOrder, userInput string) bool {
 	logInfo(userInput, "Closing terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	userIdAsInt, err := strconv.Atoi(userId)
 	if err != nil {
 		logError(userInput, "Closing terminal input order in Zapsi ended, problem parsing userid: "+err.Error())
@@ -125,12 +125,12 @@ func CloseOrderInZapsi(userId string, workplaceCode string, nokCount string, nok
 func CheckActualDivisorFor(workplaceCode string, userInput string) {
 	logInfo(userInput, "Checking actual divisor for workplace started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var workplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&workplace)
 	var terminalInputOrder []TerminalInputOrder
@@ -147,12 +147,12 @@ func DownloadActualTerminalInputOrder(userId string, workplaceCode string, order
 	logInfo(userInput, "Downloading actual open terminal input order from Zapsi started")
 	var terminalInputOrder TerminalInputOrder
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return terminalInputOrder
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var workplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&workplace)
 	db.Where("OrderId = ?", orderId).Where("DeviceId = ?", workplace.DeviceID).Where("DTE is null").Where("UserId = ?", userId).Find(&terminalInputOrder)
@@ -204,12 +204,12 @@ func CloseOrderRecordInSyteline(closingNumber string, userInput string, orderInp
 	order := splittedOrderInput[0]
 	suffixAsNumber := splittedOrderInput[1]
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
 		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: dts, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisor)
 	logInfo(userInput, "Closing order record in Syteline ended")

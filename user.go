@@ -58,6 +58,8 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprou
 	}
 	logInfo(data.UserInput, "Data parsed, checking user in syteline started")
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(data.UserInput, "Problem opening database: "+err.Error())
 		var responseData UserResponseData
@@ -69,8 +71,6 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprou
 		logInfo(data.UserInput, "Checking user in syteline ended")
 		return
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var sytelineUser SytelineUser
 	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType, @Chyba Infobar  Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + data.UserInput + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output, @Chyba = @Chyba output select JePlatny = @JePlatny, Jmeno = @Jmeno, Chyba = @Chyba;\n"
 	db.Raw(command).Scan(&sytelineUser)
@@ -105,12 +105,12 @@ func checkOpenOrderInZapsi(userId int, userInput string) []Table {
 	logInfo(userInput, "Checking open orders in Zapsi")
 	var dataTable []Table
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return dataTable
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var terminalInputOrder []TerminalInputOrder
 	db.Where("DTE is null").Where("UserId = ?", userId).Find(&terminalInputOrder)
 	var user User
@@ -138,12 +138,12 @@ func DownloadDataForOrder(terminalInputOrder TerminalInputOrder, user User, user
 	}
 	logInfo(userInput, "Downloading data from Zapsi")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return oneTableData
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var order Order
 	db.Where("OID = ?", terminalInputOrder.OrderID).Find(&order)
 	oneTableData.OrderName = order.Name
@@ -206,12 +206,12 @@ func checkUserInZapsi(user SytelineUser, userInput string) int {
 	userFirstName := strings.Split(user.Jmeno.String, ",")[0]
 	userSecondName := strings.Split(user.Jmeno.String, ",")[1]
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return 0
 	}
-	sqlDB, err := db.DB()
-	defer sqlDB.Close()
 	var zapsiUser User
 	db.Where("Login LIKE ?", userInput).Find(&zapsiUser)
 	if zapsiUser.OID > 0 {
