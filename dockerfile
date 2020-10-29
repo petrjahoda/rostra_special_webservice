@@ -20,5 +20,6 @@ COPY --from=build /etc/localtime /etc/localtime
 COPY /css /css
 COPY /html html
 COPY /js js
+COPY /mif mif
 COPY /linux /
 CMD ["/rostra_special_webservice_linux"]

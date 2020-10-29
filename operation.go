@@ -211,9 +211,12 @@ func checkOrderInZapsi(orderInput string, operationSelect string, productId stri
 		logError(userInput, "Checking order in Zapsi ended, problem parsing productId: "+productId)
 		return 0
 	}
+	if strings.Contains(mn2Ks, ".") {
+		mn2Ks = mn2Ks[:strings.Index(mn2Ks, ".")]
+	}
 	countAsInt, err := strconv.Atoi(mn2Ks)
 	if err != nil {
-		logError(userInput, "Checking order in Zapsi ended, problem parsing mn2Ks: "+productId)
+		logError(userInput, "Checking order in Zapsi ended, problem parsing mn2Ks: "+mn2Ks)
 		return 0
 	}
 	var newOrder Order

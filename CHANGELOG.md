@@ -14,6 +14,12 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.4.1.29] - 2020-10-29
+
+### Fixed
+- parsing mn2ks when creating order in zapsi
+- downloading operations from syteline (order and operation was hardcoded in the code)
+
 ## [2020.4.1.26] - 2020-10-26
 
 ### Fixed

@@ -80,8 +80,8 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 	}
 	if len(sytelineOrder.CisloVp) > 0 {
 		logInfo(data.UserInput, "Order found: "+data.OrderInput+", getting list of operations ")
-		command := "declare @CisloVP JobType, @PriponaVP SuffixType select @CisloVP = N'3VP0014981', @PriponaVP = 0 exec [rostra_exports_test].dbo.ZapsiOperaceVpSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP;\n"
-		rows, err := db.Raw(command).Rows()
+		command := "declare @CisloVP JobType, @PriponaVP SuffixType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + " exec [rostra_exports_test].dbo.ZapsiOperaceVpSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP;\n"
+		rows, err := db.Debug().Raw(command).Rows()
 		if err != nil {
 			logError(data.UserInput, "Error: "+err.Error())
 			var responseData OrderResponseData
@@ -100,6 +100,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 			if err != nil {
 				logError(data.UserInput, "Error: "+err.Error())
 			}
+			logInfo(data.UserInput, operation.Operace+"-"+operation.Pracoviste+"-"+operation.PracovistePopis)
 			operationList = append(operationList, operation)
 		}
 		logInfo(data.UserInput, "Scanned: "+strconv.Itoa(len(operationList))+" operations")
