@@ -20,7 +20,7 @@ startOrderButton.addEventListener("click", () => {
             let result = JSON.parse(data);
             if (result.Result === "ok") {
                 infoRostra.textContent = "Data uložena"
-                setTimeout(() => window.location.replace(''), 3000)
+                setTimeout(() => window.location.replace(''), 1500)
             } else {
                 infoRostra.textContent = result.StartOrderError;
             }

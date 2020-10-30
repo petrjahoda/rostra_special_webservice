@@ -170,6 +170,7 @@ func CloseOrderInSyteline(userInput string, orderInput string, operationSelect s
 	} else {
 		logInfo(userInput, "Typ Zdroje Zapsi is not zero")
 		transferredToSyteline = TransferOkAndNokToSyteline(userInput, orderInput, operationSelect, workplaceCode, okCount, nokCount, nokType)
+		logInfo(userInput, "Selected: "+radioSelect)
 		switch radioSelect {
 		case "clovek":
 			{

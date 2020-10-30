@@ -82,14 +82,23 @@ function processCountInput() {
                 if (result.End === "true") {
                     endOrderButton.disabled = false
                 }
-                if (result.Clovek === true) {
+                if (result.Clovek === "true") {
+                    console.log("Clovek result: " + result.Clovek)
                     clovekRadio.disabled = false
+                    clovekRadio.checked = true
+                    sessionStorage.setItem("radio", "clovek")
                 }
-                if (result.Stroj === true) {
+                if (result.Stroj === "true") {
+                    console.log("Stroj result: " + result.Stroj)
                     strojRadio.disabled = false
+                    strojRadio.checked = true
+                    sessionStorage.setItem("radio", "stroj")
                 }
-                if (result.Serizeni === true) {
+                if (result.Serizeni === "true") {
+                    console.log("Serizeni result: " + result.Serizeni)
                     serizeniRadio.disabled = false
+                    serizeniRadio.checked = true
+                    sessionStorage.setItem("radio", "serizeni")
                 }
                 infoRostra.textContent = ""
             } else {

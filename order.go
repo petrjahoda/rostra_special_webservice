@@ -81,7 +81,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 	if len(sytelineOrder.CisloVp) > 0 {
 		logInfo(data.UserInput, "Order found: "+data.OrderInput+", getting list of operations ")
 		command := "declare @CisloVP JobType, @PriponaVP SuffixType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + " exec [rostra_exports_test].dbo.ZapsiOperaceVpSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP;\n"
-		rows, err := db.Debug().Raw(command).Rows()
+		rows, err := db.Raw(command).Rows()
 		if err != nil {
 			logError(data.UserInput, "Error: "+err.Error())
 			var responseData OrderResponseData
