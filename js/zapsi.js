@@ -88,3 +88,10 @@ serizeniRadio.addEventListener("click", () => {
 strojRadio.addEventListener("click", () => {
     sessionStorage.setItem("radio", "stroj")
 })
+
+
+const time = new EventSource('/time');
+time.addEventListener('time', (e) => {
+    document.getElementById("time").innerHTML = e.data;
+
+}, false);

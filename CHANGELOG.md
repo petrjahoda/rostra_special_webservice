@@ -16,6 +16,9 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 
 ## [2020.4.2.3] - 2020-11-3
 
+### Added
+- displaying actual time on the top of the windows
+
 ### Fixed
 - when checking for "same user", also checking for same order at the same device
 

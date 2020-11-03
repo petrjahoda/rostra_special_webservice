@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/goodsign/monday"
 	"github.com/julienschmidt/httprouter"
+	"github.com/julienschmidt/sse"
 	"github.com/kardianos/service"
 	"net/http"
 	"os"
@@ -47,12 +49,15 @@ func main() {
 
 func (p *program) run() {
 	router := httprouter.New()
+	timer := sse.New()
+
 	router.ServeFiles("/js/*filepath", http.Dir("js"))
 	router.ServeFiles("/html/*filepath", http.Dir("html"))
 	router.ServeFiles("/css/*filepath", http.Dir("css"))
 	router.ServeFiles("/mif/*filepath", http.Dir("mif"))
 
 	router.GET("/", home)
+	router.Handler("GET", "/time", timer)
 
 	router.POST("/check_user_input", checkUserInput)
 	router.POST("/check_order_input", checkOrderInput)
@@ -63,10 +68,20 @@ func (p *program) run() {
 	router.POST("/transfer_order", transferOrder)
 	router.POST("/end_order", endOrder)
 
+	go streamTime(timer)
+
 	err := http.ListenAndServe(":80", router)
 	if err != nil {
 		logError("MAIN", "Problem starting service: "+err.Error())
 		os.Exit(-1)
 	}
 	logInfo("MAIN", serviceName+" ["+version+"] running")
+}
+
+func streamTime(streamer *sse.Streamer) {
+	logInfo("SSE", "Streaming time process started")
+	for {
+		streamer.SendString("", "time", monday.Format(time.Now(), "Monday, 2. January 2006, 15:04:05", monday.LocaleCsCZ))
+		time.Sleep(1 * time.Second)
+	}
 }
