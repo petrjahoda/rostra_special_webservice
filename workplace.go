@@ -418,7 +418,7 @@ func CheckSameUserAndSameOrderInZapsi(userId string, orderInput string, operatio
 	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Find(&thisOrder)
 	db.Where("OID = ?", userId).Find(&zapsiUser)
 	db.Where("Code = ?", workplaceCode).Find(&zapsiWorkplace)
-	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("UserID = ?", zapsiUser.OID).Find(&thisUser)
+	db.Where("DeviceID = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Where("OrderID = ?", zapsiOrder.OID).Where("UserID = ?", zapsiUser.OID).Find(&thisUser)
 	logInfo(userInput, "Checking for same order and same user ended")
 	return thisOrder.OID > 0, thisUser.OID > 0
 }

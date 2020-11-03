@@ -5,9 +5,10 @@ import (
 	"github.com/kardianos/service"
 	"net/http"
 	"os"
+	"time"
 )
 
-const version = "2020.4.1.30"
+const version = "2020.4.2.3"
 const serviceName = "Rostra Special Web Service"
 const serviceDescription = "Rostra Special Web Service"
 const zapsiDatabaseConnection = "zapsi_uzivatel:zapsi@tcp(zapsidatabase:3306)/zapsi2?charset=utf8mb4&parseTime=True&loc=Local"
@@ -16,7 +17,7 @@ const sytelineDatabaseConnection = "sqlserver://zapsi:Zapsi_8513@192.168.1.26?da
 type program struct{}
 
 func (p *program) Start(s service.Service) error {
-	logInfo("MAIN", serviceName+" ["+version+"] started")
+	logInfo("MAIN", serviceName+" ["+version+"] started at "+time.Now().String())
 	go p.run()
 	return nil
 }

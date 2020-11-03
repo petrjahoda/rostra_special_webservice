@@ -49,8 +49,10 @@ func startOrder(writer http.ResponseWriter, request *http.Request, _ httprouter.
 	terminalInputOrderCreated, numberOfOpenTerminalInputOrder, deviceId, terminalInputOrderDts := CreateTerminalInputOrderInZapsi(data.UserId, data.WorkplaceCode, data.RadioSelect, data.OrderId, data.Nasobnost, data.UserInput)
 	if terminalInputOrderCreated {
 		actualTimeDivisor := DownloadActualTimeDivisor(data.WorkplaceCode, data.UserInput)
+		logDebug(data.UserInput, "Actual time divisor:  "+strconv.Itoa(actualTimeDivisor))
+		logDebug(data.UserInput, "Number of open orders:  "+strconv.Itoa(numberOfOpenTerminalInputOrder))
 		if numberOfOpenTerminalInputOrder > actualTimeDivisor {
-			logInfo(data.UserInput, "There are more open terminal inoput order than divisor, updating")
+			logInfo(data.UserInput, "There are more open terminal input order than divisor, updating")
 			UpdateDeviceWithNew(numberOfOpenTerminalInputOrder, deviceId, data.WorkplaceCode, data.UserInput)
 		}
 		sytelineOrderCreated := CreateOrderInSyteline(data.TypZdrojeZapsi, data.RadioSelect, data.UserInput, data.OrderInput, data.OperationSelect, data.WorkplaceCode, terminalInputOrderDts)

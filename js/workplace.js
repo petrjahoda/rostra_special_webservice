@@ -82,15 +82,6 @@ function processWorkplaceInput() {
                                 "Načtené neshody": tableData
                             });
                         }
-                        if (result.StartButton === "true") {
-                            startOrderButton.disabled = false
-                        }
-                        if (result.EndButton === "true") {
-                            endOrderButton.disabled = false
-                        }
-                        if (result.TransferButton === "true") {
-                            transferOrderButton.disabled = false
-                        }
                         if (result.ClovekSelection === "true") {
                             clovekRadio.disabled = false
                         }
@@ -99,6 +90,17 @@ function processWorkplaceInput() {
                         }
                         if (result.StrojSelection === "true") {
                             strojRadio.disabled = false
+                        }
+                        if (result.StartButton === "true") {
+                            startOrderButton.disabled = false
+                            clovekRadio.checked = true
+                            sessionStorage.setItem("radio", "clovek")
+                        }
+                        if (result.EndButton === "true") {
+                            endOrderButton.disabled = false
+                        }
+                        if (result.TransferButton === "true") {
+                            transferOrderButton.disabled = false
                         }
                         infoRostra.textContent = ""
                     } else {

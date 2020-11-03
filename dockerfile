@@ -2,7 +2,7 @@
 # RUN apk update && apk upgrade && apk add bash && apk add procps && apk add nano
 # RUN apk add tzdata
 # RUN rm -rf /var/cache/apk/*
-# RUN cp /usr/share/zoneinfo/Europe/Prague /etc/localtime
+# RUN cp /usr/share/zoneinfo/Europe/London /etc/localtime
 # WORKDIR /bin
 # COPY /css /bin/css
 # COPY /html /bin/html
@@ -10,12 +10,13 @@
 # COPY /mif /bin/mif
 # COPY /linux /bin
 # ENTRYPOINT rostra_special_webservice_linux
-FROM alpine:latest as build
+
+FROM alpine:3.8 as build
 RUN apk add tzdata
-RUN cp /usr/share/zoneinfo/Europe/Prague /etc/localtime
+RUN cp /usr/share/zoneinfo/Europe/London /etc/localtime
 
 FROM scratch as final
-COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=build /usr/share/zoneinfo/Europe/London /usr/share/zoneinfo/Europe/London
 COPY --from=build /etc/localtime /etc/localtime
 COPY /css /css
 COPY /html html
