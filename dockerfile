@@ -13,10 +13,10 @@
 
 FROM alpine:3.8 as build
 RUN apk add tzdata
-RUN cp /usr/share/zoneinfo/Europe/London /etc/localtime
+RUN cp /usr/share/zoneinfo/Europe/Prague /etc/localtime
 
 FROM scratch as final
-COPY --from=build /usr/share/zoneinfo/Europe/London /usr/share/zoneinfo/Europe/London
+COPY --from=build /usr/share/zoneinfo/Europe/Prague /usr/share/zoneinfo/Europe/Prague
 COPY --from=build /etc/localtime /etc/localtime
 COPY /css /css
 COPY /html html
