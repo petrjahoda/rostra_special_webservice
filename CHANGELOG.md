@@ -18,6 +18,7 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 
 ### Added
 - displaying actual time on the top of the windows
+- when checking for order, Chyba, if available, is send back to user
 
 ### Fixed
 - when checking for "same user", also checking for same order at the same device

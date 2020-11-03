@@ -57,7 +57,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 		return
 	}
 	order, suffix := ParseOrder(data.OrderInput, data.UserInput)
-	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "' exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
+	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "', @Chyba Infobar exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny, Chyba = @Chyba;\n"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		logError(data.UserInput, "Error: "+err.Error())
@@ -76,6 +76,15 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 		err = rows.Scan(&sytelineOrder.CisloVp, &sytelineOrder.SuffixVp, &sytelineOrder.PolozkaVp, &sytelineOrder.PopisPolVp, &sytelineOrder.PriznakSeriovaVyroba)
 		if err != nil {
 			logError(data.UserInput, "Error: "+err.Error())
+		}
+	}
+	var platny Platny
+	for rows.NextResultSet() {
+		for rows.Next() {
+			err = rows.Scan(&platny.JePlatny, &platny.Chyba)
+			if err != nil {
+				println(err.Error())
+			}
 		}
 	}
 	if len(sytelineOrder.CisloVp) > 0 {
@@ -121,7 +130,11 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 		var responseData OrderResponseData
 		responseData.Result = "nok"
 		responseData.OrderInput = data.OrderInput
-		responseData.OrderError = "Výrobní příkaz " + data.OrderInput + " neexistuje, zopakujte zadání"
+		if platny.Chyba.String == "" {
+			responseData.OrderError = "Výrobní příkaz " + data.OrderInput + " neexistuje, zopakujte zadání"
+		} else {
+			responseData.OrderError = platny.Chyba.String
+		}
 		writer.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(writer).Encode(responseData)
 		logInfo(data.UserInput, "Checking order in syteline ended")

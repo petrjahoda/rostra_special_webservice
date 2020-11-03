@@ -45,6 +45,11 @@ type SytelineUser struct {
 	Chyba    sql.NullString `gorm:"column:Chyba"`
 }
 
+type Platny struct {
+	JePlatny string         `gorm:"column:JePlatny"`
+	Chyba    sql.NullString `gorm:"column:Chyba"`
+}
+
 type SytelineOrder struct {
 	CisloVp              string `gorm:"column:CisloVp"`
 	SuffixVp             string `gorm:"column:SuffixVp"`
