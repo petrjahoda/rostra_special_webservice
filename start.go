@@ -90,25 +90,25 @@ func CreateOrderInSyteline(typZdrojeZapsi string, radio string, userInput string
 	sytelineOrderStarted := false
 	if typZdrojeZapsi == "0" {
 		logInfo(userInput, "Typ Zdroje Zapsi is zero")
-		sytelineOrderStarted = CreateOrderRecordInSyteline("3", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts)
+		sytelineOrderStarted = CreateOrderRecordInSyteline("3", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts, typZdrojeZapsi)
 	} else {
 		logInfo(userInput, "Typ Zdroje Zapsi is not zero")
 		switch radio {
 		case "clovek":
 			{
 				logInfo(userInput, "Radio has value of clovek")
-				sytelineOrderStarted = CreateOrderRecordInSyteline("3", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts)
-				sytelineOrderStarted = CreateOrderRecordInSyteline("8", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts)
+				sytelineOrderStarted = CreateOrderRecordInSyteline("3", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts, typZdrojeZapsi)
+				sytelineOrderStarted = CreateOrderRecordInSyteline("8", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts, typZdrojeZapsi)
 			}
 		case "stroj":
 			{
 				logInfo(userInput, "Radio has value of stroj")
-				sytelineOrderStarted = CreateOrderRecordInSyteline("8", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts)
+				sytelineOrderStarted = CreateOrderRecordInSyteline("8", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts, typZdrojeZapsi)
 			}
 		case "serizeni":
 			{
 				logInfo(userInput, "Radio has value of serizeni")
-				sytelineOrderStarted = CreateOrderRecordInSyteline("1", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts)
+				sytelineOrderStarted = CreateOrderRecordInSyteline("1", userInput, orderInput, operationSelect, workplaceCode, terminalInputOrderDts, typZdrojeZapsi)
 			}
 		}
 	}
@@ -116,7 +116,7 @@ func CreateOrderInSyteline(typZdrojeZapsi string, radio string, userInput string
 	return sytelineOrderStarted
 }
 
-func CreateOrderRecordInSyteline(closingNumber string, userInput string, orderInput string, operationSelect string, workplaceCode string, terminalInputOrderDts time.Time) bool {
+func CreateOrderRecordInSyteline(closingNumber string, userInput string, orderInput string, operationSelect string, workplaceCode string, terminalInputOrderDts time.Time, typZdrojeZapsi string) bool {
 	logInfo(userInput, "Creating order record in Syteline started")
 	splittedOrderInput := strings.Split(orderInput, ".")
 	if len(splittedOrderInput) < 2 {
@@ -128,6 +128,9 @@ func CreateOrderRecordInSyteline(closingNumber string, userInput string, orderIn
 	timeToInsert := time.Now()
 	if terminalInputOrderDts.Before(time.Now()) {
 		timeToInsert = terminalInputOrderDts
+	}
+	if typZdrojeZapsi == "1" || typZdrojeZapsi == "0" {
+		timeToInsert = time.Now()
 	}
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	sqlDB, _ := db.DB()

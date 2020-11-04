@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/TwinProduction/go-color v0.0.2
-	github.com/denisenkom/go-mssqldb v0.0.0-20201103052722-628e054fa9c3 // indirect
+	github.com/denisenkom/go-mssqldb v0.0.0-20201104001602-427686ac8ec1 // indirect
 	github.com/goodsign/monday v1.0.0
 	github.com/jinzhu/gorm v1.9.16
 	github.com/julienschmidt/httprouter v1.3.0

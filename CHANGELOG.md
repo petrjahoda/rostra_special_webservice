@@ -14,6 +14,15 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+
+## [2020.4.2.4] - 2020-11-4
+
+### Fixed
+- proper sql select when checking order
+
+### Changed
+- michalcik request: when creating order, if typ_zdroje_zapsi == 1 || typ_zdroje_zapsi == 0, then time.now is used as a starting time
+
 ## [2020.4.2.3] - 2020-11-3
 
 ### Added

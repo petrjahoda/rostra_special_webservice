@@ -57,7 +57,7 @@ func checkOrderInput(writer http.ResponseWriter, request *http.Request, _ httpro
 		return
 	}
 	order, suffix := ParseOrder(data.OrderInput, data.UserInput)
-	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "', @Chyba Infobar exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output select JePlatny = @JePlatny, Chyba = @Chyba;\n"
+	command := "declare @JePlatny ListYesNoType, @VP Infobar = N'" + order + "." + suffix + "', @Chyba Infobar exec [rostra_exports_test].dbo.ZapsiKontrolaVPSp @VP= @VP, @JePlatny = @JePlatny output, @Chyba = @Chyba output select JePlatny = @JePlatny, Chyba = @Chyba;\n"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		logError(data.UserInput, "Error: "+err.Error())
