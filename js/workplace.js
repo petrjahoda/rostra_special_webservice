@@ -1,8 +1,8 @@
 workplaceBackButton.addEventListener("click", () => {
     operationRow.classList.remove("disabled");
-    workplaceRow.classList.add("disabled")
     const select = Metro.getPlugin("#workplace-select", 'select');
     select.data({});
+    workplaceRow.classList.add("disabled")
     workplaceOkButton.disabled = true
     workplaceBackButton.disabled = true
     operationBackButton.disabled = false
@@ -55,12 +55,14 @@ function processWorkplaceInput() {
                 ViceVp: sessionStorage.getItem("viceVp"),
                 UserInput: sessionStorage.getItem("userInput")
             };
+            console.log("checking workplace input")
             fetch("/check_workplace_input", {
                 method: "POST",
                 body: JSON.stringify(data)
             }).then((response) => {
                 response.text().then(function (data) {
                     let result = JSON.parse(data);
+                    console.log("Result: " + result.Result)
                     if (result.Result === "ok") {
                         workplaceRow.classList.add("disabled")
                         if (result.OkInput === "true") {
@@ -104,15 +106,18 @@ function processWorkplaceInput() {
                         }
                         infoRostra.textContent = ""
                     } else {
-                        infoRostra.text = result.WorkplaceError
+                        infoRostra.textContent = result.WorkplaceError
+                        console.log("Response error: " + result.WorkplaceError)
+                        workplaceRow.classList.remove("disabled")
+                        workplaceOkButton.disabled = false
+                        workplaceBackButton.disabled = false
                     }
 
                 });
             }).catch((error) => {
+                console.log("Catch error: " + error.toString())
                 infoRostra.textContent = error.toString()
             });
-        } else {
-            infoRostra.textContent = "Pracoviště nebylo nalezeno"
         }
     }
 

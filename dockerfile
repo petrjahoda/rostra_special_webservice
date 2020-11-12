@@ -11,7 +11,7 @@
 # COPY /linux /bin
 # ENTRYPOINT rostra_special_webservice_linux
 
-FROM alpine:3.8 as build
+FROM alpine:latest as build
 RUN apk add tzdata
 RUN cp /usr/share/zoneinfo/Europe/Prague /etc/localtime
 
