@@ -12,8 +12,8 @@ require (
 	github.com/kardianos/service v1.1.0
 	github.com/lib/pq v1.8.0 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
-	golang.org/x/sys v0.0.0-20201112073958-5cba982894dd // indirect
+	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9 // indirect
+	golang.org/x/sys v0.0.0-20201113233024-12cec1faf1ba // indirect
 	gorm.io/driver/mysql v1.0.3
 	gorm.io/driver/sqlserver v1.0.5
 	gorm.io/gorm v1.20.6
