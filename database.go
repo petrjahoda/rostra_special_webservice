@@ -104,6 +104,8 @@ type TerminalInputOrder struct {
 	Note            string        `gorm:"column:Note"`
 	WorkshiftID     sql.NullInt32 `gorm:"column:WorkshiftID"`
 	Cavity          int           `gorm:"column:Cavity"`
+	ExtID           int           `gorm:"column:ExtID"`
+	ExtNum          float32       `gorm:"column:ExtNum"`
 }
 
 func (TerminalInputOrder) TableName() string {

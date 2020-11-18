@@ -63,7 +63,7 @@ func endOrder(writer http.ResponseWriter, request *http.Request, _ httprouter.Pa
 		return
 	}
 	CheckActualDivisorFor(data.WorkplaceCode, data.UserInput)
-	zapsiOrderEnded := CloseOrderInZapsi(data.UserId, data.WorkplaceCode, data.NokCount, data.NokType, actualTerminalInputOrder, data.UserInput)
+	zapsiOrderEnded := CloseOrderInZapsi(data.UserId, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType, actualTerminalInputOrder, data.UserInput)
 	if !zapsiOrderEnded {
 		logError(data.UserInput, "Order not ended in Zapsi")
 		var responseData EndOrderResponseData
@@ -82,7 +82,7 @@ func endOrder(writer http.ResponseWriter, request *http.Request, _ httprouter.Pa
 	return
 }
 
-func CloseOrderInZapsi(userId string, workplaceCode string, nokCount string, nokType string, actualterminalInputOrder TerminalInputOrder, userInput string) bool {
+func CloseOrderInZapsi(userId string, workplaceCode string, okCount string, nokCount string, nokType string, actualterminalInputOrder TerminalInputOrder, userInput string) bool {
 	logInfo(userInput, "Closing terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	sqlDB, _ := db.DB()
@@ -96,13 +96,28 @@ func CloseOrderInZapsi(userId string, workplaceCode string, nokCount string, nok
 		logError(userInput, "Closing terminal input order in Zapsi ended, problem parsing userid: "+err.Error())
 		return false
 	}
+	okAsInt, err := strconv.Atoi(okCount)
+	if err != nil {
+		logError(userInput, "Updating terminal input order failed, problem parsing ok count: "+err.Error())
+		return false
+	}
 	nokCountAsInt, err := strconv.Atoi(nokCount)
 	if err != nil {
 		logError(userInput, "Closing terminal input order in Zapsi ended, problem parsing  nok count: "+err.Error())
 		return false
 	}
 	var terminalInputOrder TerminalInputOrder
-	db.Model(&terminalInputOrder).Where("OID = ?", actualterminalInputOrder.OID).Updates(map[string]interface{}{"DTE": time.Now(), "Interval": float32(time.Now().Sub(terminalInputOrder.DTS).Seconds())})
+
+	db.Model(&TerminalInputOrder{}).Where(TerminalInputOrder{OID: actualterminalInputOrder.OID}).Updates(TerminalInputOrder{
+		DTE: sql.NullTime{
+			Time:  time.Now(),
+			Valid: true,
+		},
+		Interval: float32(time.Now().Sub(terminalInputOrder.DTS).Seconds()),
+		ExtID:    actualterminalInputOrder.ExtID + okAsInt,
+		ExtNum:   actualterminalInputOrder.ExtNum + float32(nokCountAsInt),
+	})
+	//db.Model(&terminalInputOrder).Where("OID = ?", actualterminalInputOrder.OID).Updates(map[string]interface{}{"DTE": time.Now(), "Interval": float32(time.Now().Sub(terminalInputOrder.DTS).Seconds()), })
 	if nokCountAsInt > 0 {
 		logInfo(userInput, "Saving "+nokType+" fails to Zapsi")
 		var workplace Workplace

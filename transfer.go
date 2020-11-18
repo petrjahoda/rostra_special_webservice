@@ -47,8 +47,10 @@ func transferOrder(writer http.ResponseWriter, request *http.Request, _ httprout
 	}
 	logInfo(data.UserInput, "Transfer order started")
 	thisOpenOrderInZapsi := CheckThisOpenOrderInZapsi(data.UserId, data.OrderId, data.WorkplaceCode, data.UserInput)
-	if !thisOpenOrderInZapsi {
+	if thisOpenOrderInZapsi.OID == 0 {
 		CreateAndCloseOrderInZapsi(data.UserId, data.OrderId, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType, data.Nasobnost, data.UserInput)
+	} else {
+		UpdateTerminalInputOrder(thisOpenOrderInZapsi, data.UserId, data.OrderId, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType, data.Nasobnost, data.UserInput)
 	}
 	transferredToSyteline := TransferOkAndNokToSyteline(data.UserInput, data.OrderInput, data.OperationSelect, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType)
 	if transferredToSyteline {
@@ -68,6 +70,30 @@ func transferOrder(writer http.ResponseWriter, request *http.Request, _ httprout
 		logInfo(data.UserInput, "Transfer order ended")
 		return
 	}
+}
+
+func UpdateTerminalInputOrder(thisOpenOrder TerminalInputOrder, userId string, orderId string, workplaceCode string, okCount string, nokCount string, nokType string, nasobnost string, userInput string) {
+	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
+	sqlDB, _ := db.DB()
+	defer sqlDB.Close()
+	if err != nil {
+		logError(userInput, "Problem opening database: "+err.Error())
+		return
+	}
+	okAsInt, err := strconv.Atoi(okCount)
+	if err != nil {
+		logError(userInput, "Updating terminal input order failed, problem parsing ok count: "+err.Error())
+		return
+	}
+	nokAsInt, err := strconv.Atoi(nokCount)
+	if err != nil {
+		logError(userInput, "Updating terminal input order failed, problem parsing nok count: "+err.Error())
+		return
+	}
+	db.Model(&TerminalInputOrder{}).Where(TerminalInputOrder{OID: thisOpenOrder.OID}).Updates(TerminalInputOrder{
+		ExtID:  thisOpenOrder.ExtID + okAsInt,
+		ExtNum: thisOpenOrder.ExtNum + float32(nokAsInt),
+	})
 }
 
 func TransferOkAndNokToSyteline(userInput string, orderInput string, operationSelect string, workplaceCode string, okCount string, nokCount string, nokType string) bool {
@@ -211,23 +237,23 @@ func CheckFailInZapsi(nokType string) int {
 	return checkFail.OID
 }
 
-func CheckThisOpenOrderInZapsi(userId string, orderId string, workplaceCode string, userInput string) bool {
+func CheckThisOpenOrderInZapsi(userId string, orderId string, workplaceCode string, userInput string) TerminalInputOrder {
 	logInfo(userInput, "Checking for open terminal input order in Zapsi started")
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
+	var terminalInputOrder TerminalInputOrder
 	if err != nil {
 		logError(userInput, "Problem opening database: "+err.Error())
-		return false
+		return terminalInputOrder
 	}
 	var workplace Workplace
 	db.Where("Code = ?", workplaceCode).Find(&workplace)
-	var terminalInputOrder TerminalInputOrder
 	db.Where("OrderId = ?", orderId).Where("UserId = ?", userId).Where("DeviceId = ?", workplace.DeviceID).Where("Dte is null").Find(&terminalInputOrder)
 	if terminalInputOrder.OID > 0 {
 		logInfo(userInput, "Checking for open terminal input order in Zapsi ended, order found")
-		return true
+		return terminalInputOrder
 	}
 	logInfo(userInput, "Checking for open terminal input order in Zapsi ended, order not found")
-	return false
+	return terminalInputOrder
 }

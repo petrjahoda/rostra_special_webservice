@@ -14,6 +14,13 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+
+## [2020.4.2.18] - 2020-11-18
+
+### Changed
+- added two columns to terminal_input_order: ExtID, ExtNum
+- when updating or closing terminal_input_order, ExtID contains all OK pcs and ExtNum contains all NOK pcs
+
 ## [2020.4.2.14] - 2020-11-14
 
 ### Changed
