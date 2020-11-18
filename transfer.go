@@ -188,6 +188,8 @@ func CreateAndCloseOrderInZapsi(userId string, orderId string, workplaceCode str
 	terminalInputOrder.Cavity = nasobnostAsInt
 	terminalInputOrder.Count = okCountAsInt + nokCountAsInt
 	terminalInputOrder.Fail = nokCountAsInt
+	terminalInputOrder.ExtID = okCountAsInt
+	terminalInputOrder.ExtNum = float32(nokCountAsInt)
 	db.Create(&terminalInputOrder)
 	if nokCountAsInt > 0 {
 		logInfo(userInput, "Saving "+nokType+" fails to Zapsi")

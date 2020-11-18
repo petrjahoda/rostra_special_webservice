@@ -13,7 +13,7 @@ require (
 	github.com/lib/pq v1.8.0 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20201117144127-c1f2f97bffc9 // indirect
-	golang.org/x/sys v0.0.0-20201117222635-ba5294a509c7 // indirect
+	golang.org/x/sys v0.0.0-20201118182958-a01c418693c7 // indirect
 	gorm.io/driver/mysql v1.0.3
 	gorm.io/driver/sqlserver v1.0.5
 	gorm.io/gorm v1.20.6

@@ -189,7 +189,7 @@ func DownloadDataForOrder(terminalInputOrder TerminalInputOrder, user User, user
 	oneTableData.TotalTransferredCount = strconv.Itoa(transferredTotal)
 	oneTableData.TotalNokTransferredCount = strconv.Itoa(transferredNok)
 	var zapsiTransThisOrder []zapsi_trans
-	dbSyteline.Raw("SELECT * FROM [zapsi_trans]  WHERE (job = '" + parsedOrderName + "') AND (qty_complete is not null) AND (trans_date > '" + terminalInputOrder.DTS.Format("2006-01-02 15:04:05") + "') AND (emp_num = '" + user.Login + "')").Find(&zapsiTransThisOrder)
+	dbSyteline.Raw("SELECT * FROM [zapsi_trans]  WHERE (job = '" + parsedOrderName + "') AND (qty_complete is not null) AND (trans_date >= '" + terminalInputOrder.DTS.Format("2006-01-02 15:04:05") + "') AND (emp_num = '" + user.Login + "')").Find(&zapsiTransThisOrder)
 	transferredTotalThisOrder := 0
 	for _, thisTrans := range zapsiTransThisOrder {
 		transferredTotalThisOrder += int(thisTrans.QtyComplete)
