@@ -181,7 +181,7 @@ func CloseOrderInSyteline(userInput string, orderInput string, operationSelect s
 	if typZdrojeZapsi == "0" {
 		logInfo(userInput, "Typ Zdroje Zapsi is zero")
 		transferredToSyteline = TransferOkAndNokToSyteline(userInput, orderInput, operationSelect, workplaceCode, okCount, nokCount, nokType)
-		transferredToSyteline = CloseOrderRecordInSyteline("4", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts)
+		transferredToSyteline = CloseOrderRecordInSyteline("4", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts, typZdrojeZapsi)
 	} else {
 		logInfo(userInput, "Typ Zdroje Zapsi is not zero")
 		transferredToSyteline = TransferOkAndNokToSyteline(userInput, orderInput, operationSelect, workplaceCode, okCount, nokCount, nokType)
@@ -190,18 +190,18 @@ func CloseOrderInSyteline(userInput string, orderInput string, operationSelect s
 		case "clovek":
 			{
 				logInfo(userInput, "Radio has value of clovek")
-				transferredToSyteline = CloseOrderRecordInSyteline("9", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts)
-				transferredToSyteline = CloseOrderRecordInSyteline("4", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts)
+				transferredToSyteline = CloseOrderRecordInSyteline("9", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts, typZdrojeZapsi)
+				transferredToSyteline = CloseOrderRecordInSyteline("4", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts, typZdrojeZapsi)
 			}
 		case "stroj":
 			{
 				logInfo(userInput, "Radio has value of stroj")
-				transferredToSyteline = CloseOrderRecordInSyteline("9", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts)
+				transferredToSyteline = CloseOrderRecordInSyteline("9", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts, typZdrojeZapsi)
 			}
 		case "serizeni":
 			{
 				logInfo(userInput, "Radio has value of serizeni")
-				transferredToSyteline = CloseOrderRecordInSyteline("2", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts)
+				transferredToSyteline = CloseOrderRecordInSyteline("2", userInput, orderInput, operationSelect, workplaceCode, actualTimeDivisor, dts, typZdrojeZapsi)
 			}
 		}
 
@@ -210,7 +210,7 @@ func CloseOrderInSyteline(userInput string, orderInput string, operationSelect s
 	return transferredToSyteline
 }
 
-func CloseOrderRecordInSyteline(closingNumber string, userInput string, orderInput string, operationSelect string, workplaceCode string, timeDivisor int, dts time.Time) bool {
+func CloseOrderRecordInSyteline(closingNumber string, userInput string, orderInput string, operationSelect string, workplaceCode string, timeDivisor int, dts time.Time, typZdrojeZapsi string) bool {
 	logInfo(userInput, "Closing order record in Syteline started")
 	splittedOrderInput := strings.Split(orderInput, ".")
 	if len(splittedOrderInput) < 2 {
@@ -226,8 +226,14 @@ func CloseOrderRecordInSyteline(closingNumber string, userInput string, orderInp
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
-		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: dts, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisor)
+	if typZdrojeZapsi == "2" {
+		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: dts, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisor)
+	} else {
+		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: time.Now(), Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisor)
+	}
+
 	logInfo(userInput, "Closing order record in Syteline ended")
 	return true
 }

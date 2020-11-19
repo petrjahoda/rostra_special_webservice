@@ -14,6 +14,11 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2020.4.2.19] - 2020-11-19
+
+### Changed
+- michalcik request: when ending order, if typ_zdroje_zapsi == 1 || typ_zdroje_zapsi == 0, then time.now is used as a starting time
+- html updated: removed infopanel, www.zapsi.eu, version
 
 ## [2020.4.2.18] - 2020-11-18
 

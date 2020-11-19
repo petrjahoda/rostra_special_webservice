@@ -106,7 +106,7 @@
         <div class="cell">
             <div>
                 <input disabled name="syteline" type="radio" data-role="radio" id="clovek-radio"
-                       data-caption="Člověk">
+                       data-caption="Výroba">
             </div>
         </div>
         <div class="cell-2"></div>
@@ -135,7 +135,7 @@
         <div class="cell-4"></div>
         <div class="cell">
             <input disabled name="syteline" type="radio" data-role="radio" id="stroj-radio"
-                   data-caption="Stroj">
+                   data-caption="Bezobsluha">
         </div>
         <div class="cell-2"></div>
         <div class="cell">
@@ -166,6 +166,7 @@
             </tbody>
         </table>
     </div>
+    <div hidden>
     <p style="position: fixed;margin-left: 10px;margin-top: 10px;font-weight: bold;">Osobní číslo:</p>
     <p style="position: fixed;margin-left: 190px;margin-top: 10px" id="info-user-input"></p>
     <p style="position: fixed;margin-left: 10px;margin-top: 30px">Jméno a příjmení: </p>
@@ -213,19 +214,20 @@
     <p style="position: fixed;margin-left: 190px;margin-top: 440px" id="info-workplace-vice-vp"></p>
     <p style="position: fixed;margin-left: 10px;margin-top: 460px">[p] Mn1:</p>
     <p style="position: fixed;margin-left: 190px;margin-top: 460px" id="info-workplace-priznak-mn1"></p>
-
+    </div>
     <p style="position: fixed;margin-left: 10px;margin-top: 510px;color: blue;font-weight: bold">Rostra:</p>
     <p style="position: fixed;margin-left: 190px;margin-top: 510px;color: blue" id="info-rostra"></p>
+
 </div>
 
 <div id="time" class="text-leader"
      style="position:absolute;font-size: 1.5vw;font-weight: 500;top:1%;left:50%;transform: translate(-50%);">
 </div>
-<div class="text"
+<div class="text" hidden
      style="position:absolute;font-size: 1vw;font-weight: 100;bottom:2%;right:1%">
     {{.Version}}
 </div>
-<div class="text-leader"
+<div class="text-leader" hidden
      style="position:absolute;font-size: 1.5vw;font-weight: 500;bottom:1%;left:50%;transform: translate(-50%);">
     www.zapsi.eu
 </div>
