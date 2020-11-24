@@ -46,14 +46,14 @@ func startOrder(writer http.ResponseWriter, request *http.Request, _ httprouter.
 		return
 	}
 	logInfo(data.UserInput, "Create order started")
-	terminalInputOrderCreated, numberOfOpenTerminalInputOrder, deviceId, terminalInputOrderDts := CreateTerminalInputOrderInZapsi(data.UserId, data.WorkplaceCode, data.RadioSelect, data.OrderId, data.Nasobnost, data.UserInput)
+	terminalInputOrderCreated, numberOfOpenTerminalInputOrders, deviceId, terminalInputOrderDts := CreateTerminalInputOrderInZapsi(data.UserId, data.WorkplaceCode, data.RadioSelect, data.OrderId, data.Nasobnost, data.UserInput)
 	if terminalInputOrderCreated {
 		actualTimeDivisor := DownloadActualTimeDivisor(data.WorkplaceCode, data.UserInput)
 		logDebug(data.UserInput, "Actual time divisor:  "+strconv.Itoa(actualTimeDivisor))
-		logDebug(data.UserInput, "Number of open orders:  "+strconv.Itoa(numberOfOpenTerminalInputOrder))
-		if numberOfOpenTerminalInputOrder > actualTimeDivisor {
+		logDebug(data.UserInput, "Number of open orders:  "+strconv.Itoa(numberOfOpenTerminalInputOrders))
+		if numberOfOpenTerminalInputOrders > actualTimeDivisor {
 			logInfo(data.UserInput, "There are more open terminal input order than divisor, updating")
-			UpdateDeviceWithNew(numberOfOpenTerminalInputOrder, deviceId, data.WorkplaceCode, data.UserInput)
+			UpdateDeviceWithNew(numberOfOpenTerminalInputOrders, deviceId, data.WorkplaceCode, data.UserInput)
 		}
 		sytelineOrderCreated := CreateOrderInSyteline(data.TypZdrojeZapsi, data.RadioSelect, data.UserInput, data.OrderInput, data.OperationSelect, data.WorkplaceCode, terminalInputOrderDts)
 		if sytelineOrderCreated {
@@ -200,7 +200,9 @@ func CreateTerminalInputOrderInZapsi(userId string, workplaceCode string, radioS
 		db.Model(&terminalInputOrder).Where("OID = ?", existingTerminalInputOrder.OID).Updates(map[string]interface{}{"OrderID": orderId, "UserID": userId,
 			"Cavity": nasobnost, "Note": radioSelect})
 		logInfo(userInput, "Creating terminal input order in Zapsi ended")
-		return true, existingTerminalInputOrder.OID, zapsiWorkplace.DeviceID, existingTerminalInputOrder.DTS
+		var actualRunningOrders []TerminalInputOrder
+		db.Debug().Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Find(&actualRunningOrders)
+		return true, len(actualRunningOrders), zapsiWorkplace.DeviceID, existingTerminalInputOrder.DTS
 	} else {
 		logInfo(userInput, "Creating new terminal input order")
 		orderIdAsInt, err := strconv.Atoi(orderId)
@@ -232,8 +234,8 @@ func CreateTerminalInputOrderInZapsi(userId string, workplaceCode string, radioS
 		terminalInputOrder.Note = radioSelect
 		db.Create(&terminalInputOrder)
 	}
-	var actualRunningOrder []TerminalInputOrder
-	db.Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Find(&actualRunningOrder)
+	var actualRunningOrders []TerminalInputOrder
+	db.Debug().Where("DeviceId = ?", zapsiWorkplace.DeviceID).Where("DTE is null").Find(&actualRunningOrders)
 	logInfo(userInput, "Creating terminal input order in Zapsi ended")
-	return true, len(actualRunningOrder), zapsiWorkplace.DeviceID, time.Now()
+	return true, len(actualRunningOrders), zapsiWorkplace.DeviceID, time.Now()
 }

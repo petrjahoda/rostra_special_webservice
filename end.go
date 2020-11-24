@@ -49,6 +49,7 @@ func endOrder(writer http.ResponseWriter, request *http.Request, _ httprouter.Pa
 	}
 	logInfo(data.UserInput, "Closing order started")
 	actualTimeDivisor := DownloadActualTimeDivisor(data.WorkplaceCode, data.UserInput)
+	logDebug(data.UserInput, "Actual time divisor:  "+strconv.Itoa(actualTimeDivisor))
 	actualTerminalInputOrder := DownloadActualTerminalInputOrder(data.UserId, data.WorkplaceCode, data.OrderId, data.UserInput)
 	logInfo(data.UserInput, "Actual running terminal input order id: "+strconv.Itoa(actualTerminalInputOrder.OID))
 	sytelineOrderEnded := CloseOrderInSyteline(data.UserInput, data.OrderInput, data.OperationSelect, data.WorkplaceCode, data.OkCount, data.NokCount, data.NokType, data.RadioSelect, actualTimeDivisor, data.TypZdrojeZapsi, actualTerminalInputOrder.DTS)
@@ -226,12 +227,12 @@ func CloseOrderRecordInSyteline(closingNumber string, userInput string, orderInp
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	if typZdrojeZapsi == "2" {
-		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
-			" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: dts, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisor)
-	} else {
+	if typZdrojeZapsi == "1" || typZdrojeZapsi == "0" {
 		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
 			" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: time.Now(), Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisor)
+	} else {
+		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code, time_divisor)"+
+			" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: dts, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true}, timeDivisor)
 	}
 
 	logInfo(userInput, "Closing order record in Syteline ended")
