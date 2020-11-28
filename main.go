@@ -10,11 +10,11 @@ import (
 	"time"
 )
 
-const version = "2020.4.2.24"
+const version = "2020.4.2.28"
 const serviceName = "Rostra Special Web Service"
 const serviceDescription = "Rostra Special Web Service"
 const zapsiDatabaseConnection = "zapsi_uzivatel:zapsi@tcp(zapsidatabase:3306)/zapsi2?charset=utf8mb4&parseTime=True&loc=Local"
-const sytelineDatabaseConnection = "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports_test"
+const sytelineDatabaseConnection = "sqlserver://zapsi:Zapsi_8513@192.168.1.26?database=rostra_exports"
 
 type program struct{}
 
