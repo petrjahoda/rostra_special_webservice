@@ -139,7 +139,7 @@ func CreateOrderRecordInSyteline(closingNumber string, userInput string, orderIn
 		logError(userInput, "Problem opening database: "+err.Error())
 		return false
 	}
-	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
 		" VALUES ( ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?, null, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, closingNumber, order, suffixAsNumber, operationSelect, workplaceCode, sql.NullTime{Time: timeToInsert, Valid: true}, sql.NullTime{Time: time.Now(), Valid: true})
 	logInfo(userInput, "Creating order record in Syteline ended")
 	return true

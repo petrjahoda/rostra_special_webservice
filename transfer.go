@@ -128,10 +128,10 @@ func TransferOkAndNokToSyteline(userInput string, orderInput string, operationSe
 		return false
 	}
 	failBarcode := parsedFail[0]
-	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+	db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
 		" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, null);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, "5", order, suffixAsNumber, operationSelect, workplaceCode, float64(okAsInt), 0.0, 0.0)
 	if nokAsInt > 0 {
-		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports_test.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
+		db.Exec("SET ANSI_WARNINGS OFF;INSERT INTO rostra_exports.dbo.zapsi_trans (trans_date, emp_num, trans_type, job, suffix, oper_num, wc, qty_complete, qty_scrapped, start_date_time, end_date_time, complete_op, reason_code)"+
 			" VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, null, null, ?, ?);SET ANSI_WARNINGS ON;", sql.NullTime{Time: time.Now(), Valid: true}, userInput, "5", order, suffixAsNumber, operationSelect, workplaceCode, 0.0, float64(nokAsInt), 0.0, failBarcode)
 	}
 	logInfo(userInput, "Transferring ok and nok to Syteline ended")
