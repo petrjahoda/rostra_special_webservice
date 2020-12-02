@@ -67,7 +67,7 @@ func checkOperationInput(writer http.ResponseWriter, request *http.Request, _ ht
 	}
 	order, suffix := ParseOrder(data.OrderInput, data.UserInput)
 	operation := ParseOperation(data.OperationSelect, data.UserInput)
-	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports_test].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
+	command := "declare @JePlatny ListYesNoType, @CisloVP JobType, @PriponaVP  SuffixType, @Operace OperNumType select @CisloVP = N'" + order + "', @PriponaVP = " + suffix + ", @Operace = " + operation + " exec [rostra_exports].dbo.ZapsiKontrolaOperaceSp @CisloVP = @CisloVP, @PriponaVp = @PriponaVP, @Operace = @Operace, @JePlatny = @JePlatny output select JePlatny = @JePlatny;\n"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		logError(data.UserInput, "Error reading data from Syteline: "+err.Error())

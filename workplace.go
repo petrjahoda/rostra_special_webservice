@@ -308,7 +308,7 @@ func GetNokTypesFromSyteline(userInput string) []SytelineNok {
 		logError(userInput, "Problem opening database: "+err.Error())
 		return nokTypes
 	}
-	command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports_test].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
+	command := "declare @JePlatny ListYesNoType, @Kod ReasonCodeType = NULL exec [rostra_exports].dbo.ZapsiKodyDuvoduZmetkuSp @Kod= @Kod, @JePlatny = @JePlatny output select JePlatny = @JePlatny"
 	rows, err := db.Raw(command).Rows()
 	if err != nil {
 		logError(userInput, "Error downloading data from Syteline: "+err.Error())

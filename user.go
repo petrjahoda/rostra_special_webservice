@@ -72,7 +72,7 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprou
 		return
 	}
 	var sytelineUser SytelineUser
-	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType, @Chyba Infobar  Exec [rostra_exports_test].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + data.UserInput + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output, @Chyba = @Chyba output select JePlatny = @JePlatny, Jmeno = @Jmeno, Chyba = @Chyba;\n"
+	command := "declare @Zamestnanec EmpNumType, @JePlatny ListYesNoType, @Jmeno NameType, @Chyba Infobar  Exec [rostra_exports].dbo.ZapsiKontrolaZamSp @Zamestnanec = N'" + data.UserInput + "', @JePlatny = @JePlatny output, @Jmeno = @Jmeno output, @Chyba = @Chyba output select JePlatny = @JePlatny, Jmeno = @Jmeno, Chyba = @Chyba;\n"
 	db.Raw(command).Scan(&sytelineUser)
 	if sytelineUser.JePlatny == "1" {
 		logInfo(data.UserInput, "User found")
