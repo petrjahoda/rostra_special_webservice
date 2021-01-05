@@ -17,7 +17,7 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 ## [2021.1.1.5] - 2021-01-05
 
 ### Changed
-- every user code input on page is changed to numerical value 
+- removing empty characters from user input
 
 ## [2020.4.3.2] - 2020-12-02
 

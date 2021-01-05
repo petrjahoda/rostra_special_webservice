@@ -56,7 +56,7 @@ func checkUserInput(writer http.ResponseWriter, request *http.Request, _ httprou
 		logInfo("MAIN", "Parsing data from page ended")
 		return
 	}
-	logInfo(data.UserInput, "Data parsed, checking user in syteline started")
+	logInfo(data.UserInput, "Data parsed, checking user in syteline started for user "+data.UserInput)
 	db, err := gorm.Open(sqlserver.Open(sytelineDatabaseConnection), &gorm.Config{})
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()

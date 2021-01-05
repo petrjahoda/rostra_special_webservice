@@ -10,8 +10,9 @@ userOkButton.addEventListener("click", () => {
 
 
 function processUserInput() {
-    console.log("User value: " + +userInput.value);
-    let data = {UserInput: +userInput.value};
+    let updatedUserInput = userInput.value.replaceAll(" ", "")
+    console.log("User value: " + updatedUserInput);
+    let data = {UserInput: updatedUserInput};
     fetch("/check_user_input", {
         method: "POST",
         body: JSON.stringify(data)
