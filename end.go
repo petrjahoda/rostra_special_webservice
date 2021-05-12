@@ -107,14 +107,12 @@ func CloseOrderInZapsi(userId string, workplaceCode string, okCount string, nokC
 		logError(userInput, "Closing terminal input order in Zapsi ended, problem parsing  nok count: "+err.Error())
 		return false
 	}
-	var terminalInputOrder TerminalInputOrder
-
 	db.Model(&TerminalInputOrder{}).Where(TerminalInputOrder{OID: actualterminalInputOrder.OID}).Updates(TerminalInputOrder{
 		DTE: sql.NullTime{
 			Time:  time.Now(),
 			Valid: true,
 		},
-		Interval: float32(time.Now().Sub(terminalInputOrder.DTS).Seconds()),
+		Interval: float32(time.Now().Sub(actualterminalInputOrder.DTS).Seconds()),
 		ExtID:    actualterminalInputOrder.ExtID + okAsInt,
 		ExtNum:   actualterminalInputOrder.ExtNum + float32(nokCountAsInt),
 	})

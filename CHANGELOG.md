@@ -14,6 +14,11 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2021.2.2.12] - 2021-05-12
+
+### Fixed
+- proper Interval when closing order
+
 ## [2021.1.1.5] - 2021-01-05
 
 ### Changed
