@@ -14,6 +14,11 @@ adhere to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) rules.
 * ```Fixed``` for any bug fixes.
 * ```Security``` in case of vulnerabilities.
 
+## [2021.3.1.9] - 2021-07-09
+
+### Changed
+- when saving new user to zapsi, changed name and surname
+
 ## [2021.2.2.12] - 2021-05-12
 
 ### Fixed

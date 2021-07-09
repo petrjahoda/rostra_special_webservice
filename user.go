@@ -203,8 +203,8 @@ func DownloadDataForOrder(terminalInputOrder TerminalInputOrder, user User, user
 
 func checkUserInZapsi(user SytelineUser, userInput string) int {
 	logInfo(userInput, "Checking user in Zapsi started")
-	userFirstName := strings.Split(user.Jmeno.String, ",")[0]
-	userSecondName := strings.Split(user.Jmeno.String, ",")[1]
+	userFirstName := strings.Split(user.Jmeno.String, ",")[1]
+	userSecondName := strings.Split(user.Jmeno.String, ",")[0]
 	db, err := gorm.Open(mysql.Open(zapsiDatabaseConnection), &gorm.Config{})
 	sqlDB, _ := db.DB()
 	defer sqlDB.Close()
